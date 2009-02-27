@@ -26,6 +26,7 @@ static RCBCPlugins rcbc_plugins;
 static int rcbc_initilized = 0;
 
 int RCBC_Init() {
+	logit("RCBC initilizing...");
 	rcbc_plugins.render = (void*)RCBC_RENDER_RENDER;
 
 	logit("Initilizing XML parser...");
@@ -41,6 +42,7 @@ int RCBC_Init() {
 	}
 
 	rcbc_initilized = 1;
+	logit("RCBC initilzed successfuly %s", SYMBOL_SMILEY);
 	return 0;
 }
 

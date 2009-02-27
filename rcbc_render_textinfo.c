@@ -2,7 +2,7 @@
 #include "rcbc_render_textinfo.h"
 
 int RCBC_TextInfo_Init() {
-	logit("Initilized text renderer...");
+	logit("Initilized textinfo renderer...");
 	return 0;
 }
 
