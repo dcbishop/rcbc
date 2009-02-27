@@ -3,6 +3,7 @@
 
 #include "rcbc.h"
 
+int RCBC_GL_Init();
 int RCBC_GL_Render(RCBCThing* thing);
 
 #endif

@@ -2,6 +2,7 @@
 
 #include "rcbc.h"
 #include "rcbc_defaults.h"
+#include "console.h"
 
 #ifdef RCBC_RENDER_OPENGL
 #include "rcbc_render_gl.h"
@@ -17,8 +18,8 @@
 
 #ifdef RCBC_XML_TINYXML
 #include "rcbc_xml_tinyxml.h"
-#define RCBC_XML_XMLINIT RCBC_TinyXML_Init
-#define RCBC_XML_XMLLOAD RCBC_TinyXML_Load
+#define RCBC_XML_INIT RCBC_TinyXML_Init
+#define RCBC_XML_LOAD RCBC_TinyXML_Load
 #endif
 
 static RCBCPlugins rcbc_plugins;
@@ -27,7 +28,15 @@ static int rcbc_initilized = 0;
 int RCBC_Init() {
 	rcbc_plugins.render = (void*)RCBC_RENDER_RENDER;
 
-	if(!RCBC_RENDER_INIT()) {
+	logit("Initilizing XML parser...");
+	if(RCBC_XML_INIT()) {
+		errorit("Failed to initilize XML parser... %s", SYMBOL_FATAL);
+		return 1;
+	}
+
+	logit("Initilizing render...");
+	if(RCBC_RENDER_INIT()) {
+		errorit("Failed to initilize XML parser... %s", SYMBOL_FATAL);
 		return 1;
 	}
 

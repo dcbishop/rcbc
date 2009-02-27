@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include "rcbc_render_gl.h"
+#include "console.h"
 
 int RCBC_GL_Init() {
-	printf("Initilizing GL render...\n");
+	logit("Initilizing GL render...");
 	return 0;
 }
 
 int RCBC_GL_Render(RCBCThing* thing) {
-	printf("Rendering %p.\n", thing);
+	logit("Rendering %p.", thing);
 }

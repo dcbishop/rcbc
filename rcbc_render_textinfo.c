@@ -2,10 +2,10 @@
 #include "rcbc_render_textinfo.h"
 
 int RCBC_TextInfo_Init() {
-	printf("Initilized text renderer...\n");
+	logit("Initilized text renderer...");
 	return 0;
 }
 
 int RCBC_TextInfo_Render(RCBCThing* thing) {
-	printf("[TEXTINFO]: Rendering %p.\n", thing);
+	logit("[TEXTINFO]: Rendering %p.", thing);
 }
