@@ -28,5 +28,9 @@ RCBCThing* RCBC_MiniXML_Load(char* filename) {
 		return NULL;
 	}
 	logit("[MINIXML]: Successfuly loaded... %s", SYMBOL_SMILEY);
-	return malloc(sizeof(RCBCThing));
+
+	RCBCThing* thing = malloc(sizeof(RCBCThing));
+
+	mxmlDelete(tree);
+	return thing;
 }
