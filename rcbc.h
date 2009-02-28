@@ -12,8 +12,8 @@ typedef struct RCBCThing {
  * that draws a cube around the model or whatever. In theory anyway, for now
  * not all of this might actually be replacable. */
 typedef struct RCBCPlugins {
-	int (*render)(const RCBCThing* thing);
-	int (*xmlload)(const char* filename);
+	int (*render_draw)(const RCBCThing* thing);
+	RCBCThing* (*xml_load)(const char* filename);
 } RCBCPlugins;
 
 int RCBC_Init();

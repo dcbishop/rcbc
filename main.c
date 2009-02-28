@@ -7,8 +7,8 @@ extern struct RCBCPlugins rcbc_plugins;
 
 int main(int argc, char** argv) {
 	RCBC_Init();
-	//RCBCThing* thing = RCBC_LoadFile("blender-default-cube.dae");
-	//RCBC_Render(thing);
+	RCBCThing* thing = RCBC_LoadFile("samples/blender-default-cube.dae");
+	RCBC_Render(NULL);
 
 //	rcbc_plugins.render(thing);
 

@@ -6,7 +6,8 @@
 #define RCBC_RENDER_TEXTINFO
 
 /* Set default XML library */
-#define RCBC_XML_TINYXML
+//#define RCBC_XML_TINYXML
+#define RCBC_XML_MINIXML
 
 #endif
 

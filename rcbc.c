@@ -22,12 +22,19 @@
 #define RCBC_XML_LOAD RCBC_TinyXML_Load
 #endif
 
+#ifdef RCBC_XML_MINIXML
+#include "rcbc_xml_minixml.h"
+#define RCBC_XML_INIT RCBC_MiniXML_Init
+#define RCBC_XML_LOAD RCBC_MiniXML_Load
+#endif
+
 static RCBCPlugins rcbc_plugins;
 static int rcbc_initilized = 0;
 
 int RCBC_Init() {
 	logit("RCBC initilizing...");
-	rcbc_plugins.render = (void*)RCBC_RENDER_RENDER;
+	rcbc_plugins.render_draw = (void*)RCBC_RENDER_RENDER;
+	rcbc_plugins.xml_load = (void*)RCBC_XML_LOAD;
 
 	logit("Initilizing render...");
 	if(RCBC_RENDER_INIT()) {
@@ -47,6 +54,8 @@ int RCBC_Init() {
 }
 
 RCBCThing* RCBC_LoadFile(const char* filename) {
+	logit("RCBC loading '%s'...", filename);
+
 	if(!rcbc_initilized) {
 		errorit("Attempted to use uninitilized RCBC... %s", SYMBOL_FATAL);
 		return NULL;
@@ -57,6 +66,8 @@ RCBCThing* RCBC_LoadFile(const char* filename) {
 		return NULL;
 	}
 
+	thing = rcbc_plugins.xml_load(filename);
+
 	return thing;
 }
 
@@ -66,5 +77,5 @@ int RCBC_Render(const RCBCThing* thing) {
 		return 1;
 	}
 
-	rcbc_plugins.render(thing);	
+	rcbc_plugins.render_draw(thing);	
 }
