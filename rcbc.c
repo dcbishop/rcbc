@@ -65,8 +65,9 @@ RCBCThing* RCBC_LoadFile(const char* filename) {
 	if(!thing) {
 		return NULL;
 	}
+	thing->visual_scene = NULL;
 
-	thing = rcbc_plugins.xml_load(filename);
+	rcbc_plugins.xml_load(thing, filename);
 
 	return thing;
 }
@@ -78,4 +79,38 @@ int RCBC_Render(const RCBCThing* thing) {
 	}
 
 	rcbc_plugins.render_draw(thing);	
+}
+
+RCBCNode* RCBC_NodeGenerate() {
+	RCBCNode* node = malloc(sizeof(RCBCNode));
+	if(!node) {
+		errorit("Failed to allocate memory for a node... %s", SYMBOL_WARNING);
+		return NULL;
+	}
+
+	node->translate[0] = 0.0f;
+	node->translate[1] = 0.0f;
+	node->translate[2] = 0.0f;
+
+	node->rotate = NULL;
+
+	node->scale[0] = 0.0f;
+	node->scale[1] = 0.0f;
+	node->scale[2] = 0.0f;
+
+	node->next = NULL;
+	node->child = NULL;
+
+	return node;	
+}
+
+void RCBC_NodeFree(RCBCNode **node) {
+	if(!node) {
+		return;
+	}
+
+	/* TODO: Free memory recusivly, right now it leaks... */
+	free(*node);
+	*node = NULL;
+
 }

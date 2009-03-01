@@ -4,6 +4,6 @@
 #include "rcbc.h"
 
 int RCBC_MiniXML_Init();
-RCBCThing* RCBC_MiniXML_Load(char* filename);
+int RCBC_MiniXML_Load(RCBCThing* thing, char* filename);
 
 #endif

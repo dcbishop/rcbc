@@ -88,7 +88,7 @@ void warnit(const char* format, ...) {
 
 	char* newformat = (char*)malloc(newsize);
 
-	snprintf(newformat, newsize, "%s[%s%s%s]: %s%s", 
+	snprintf(newformat, newsize, "%s[%s%s%s]: %s%s\n", 
 		COLOUR_WHITE, colour, prefix, COLOUR_WHITE, COLOUR_UNCOLOUR, format);
 
 	va_start(ap, format);

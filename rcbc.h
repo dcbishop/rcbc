@@ -3,7 +3,7 @@
 
 /* A container for a Collada file */
 typedef struct RCBCThing {
-	int yay;
+	struct RCBCNode* visual_scene;
 } RCBCThing;
 
 /* This contains the swapable components, incase you want to replace the XML
@@ -13,11 +13,33 @@ typedef struct RCBCThing {
  * not all of this might actually be replacable. */
 typedef struct RCBCPlugins {
 	int (*render_draw)(const RCBCThing* thing);
-	RCBCThing* (*xml_load)(const char* filename);
+	RCBCThing* (*xml_load)(RCBCThing* thing, const char* filename);
 } RCBCPlugins;
+
+typedef struct RCBCNode_Rotate {
+	float x;
+	float y;
+	float z;
+	float angle;
+	struct RCBCNode_Rotate* next;
+} RCBCNode_Rotate;
+
+typedef struct RCBCNode {
+	float translate[3];
+
+	struct RCBCNode_Rotate* rotate;
+
+	float scale[3];
+
+	struct RCBCNode* next;
+	struct RCBCNode* child;
+} RCBCNode;
 
 int RCBC_Init();
 RCBCThing* RCBC_LoadFile(const char* filename);
 int RCBC_Render(const RCBCThing* thing);
+
+RCBCNode* RCBC_NodeGenerate();
+void RCBC_NodeFree(RCBCNode** node);
 
 #endif

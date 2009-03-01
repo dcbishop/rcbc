@@ -4,7 +4,7 @@ LIBS = $(shell pkg-config --libs mxml)
 
 all: rcbcview
 
-rcbcview: main.c rcbc.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o 
+rcbcview: rcbcview.c rcbc.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o 
 	${CC} $< ${CFLAGS} ${LIBS} -lGL -lGLU -lglut rcbc.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o -o $@ -Wall
 
 clean:

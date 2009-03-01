@@ -8,5 +8,5 @@ int RCBC_GL_Init() {
 }
 
 int RCBC_GL_Render(RCBCThing* thing) {
-	logit("Rendering %p.", thing);
+	return 0;
 }
