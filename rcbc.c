@@ -7,7 +7,7 @@
 #ifdef RCBC_RENDER_OPENGL
 #include "rcbc_render_gl.h"
 #define RCBC_RENDER_INIT RCBC_GL_Init
-#define RCBC_RENDER_RENDER RCBC_GL_Render
+#define RCBC_RENDER_RENDER RCBC_GL_Draw
 #endif
 
 #ifdef RCBC_RENDER_TEXTINFO
@@ -30,6 +30,11 @@
 
 static RCBCPlugins rcbc_plugins;
 static int rcbc_initilized = 0;
+
+void RCBC_DebugNodeInfo(RCBCNode* node) {
+	debugit(DEBUG_ALWAYS, "Node: Scale %f %f %f", node->scale[0], node->scale[1], node->scale[2]);
+	debugit(DEBUG_ALWAYS, "      Translate %f %f %f", node->translate[0], node->translate[1], node->translate[2]);
+}
 
 int RCBC_Init() {
 	logit("RCBC initilizing...");
@@ -99,7 +104,9 @@ RCBCNode* RCBC_NodeGenerate() {
 	node->scale[2] = 0.0f;
 
 	node->next = NULL;
+	node->prev = NULL;
 	node->child = NULL;
+	node->parent = NULL;
 
 	return node;	
 }

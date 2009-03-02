@@ -32,7 +32,9 @@ typedef struct RCBCNode {
 	float scale[3];
 
 	struct RCBCNode* next;
+	struct RCBCNode* prev;
 	struct RCBCNode* child;
+	struct RCBCNode* parent;
 } RCBCNode;
 
 int RCBC_Init();

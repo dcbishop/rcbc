@@ -4,6 +4,6 @@
 #include "rcbc.h"
 
 int RCBC_GL_Init();
-int RCBC_GL_Render(RCBCThing* thing);
+int RCBC_GL_Draw(RCBCThing* thing);
 
 #endif

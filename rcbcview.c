@@ -96,7 +96,7 @@ void displayFunc() {
 	glClearDepth(10000.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glutWireCube(1.0f);
+	// glutWireCube(1.0f);
 	RCBC_Render(g.thing);
 
 	glFlush();
