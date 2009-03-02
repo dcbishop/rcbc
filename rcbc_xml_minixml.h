@@ -6,6 +6,7 @@
 #include "rcbc.h"
 
 int RCBC_MiniXML_Init();
+void DumpNodeInfo(mxml_node_t *node);
 int RCBC_MiniXML_Load(RCBCThing* thing, char* filename);
-void RCRB_MiniXML_ProcessVisualScene_Node(RCBCNode **rnode, mxml_node_t *xnode);
+
 #endif

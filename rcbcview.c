@@ -54,7 +54,7 @@ void cameraPosition() {
    g.cam_y = g.cam_zoom * (cos(phi*(PI/180)));
    g.cam_z = g.cam_zoom * (sin(theta*(PI/180))) * (sin(phi*(PI/180)));
    
-   gluLookAt( g.cam_x, g.cam_y, g.cam_z, 0.0f, 0.0f, 0.0f, 0.0f, 10.0f,0.0f );
+   gluLookAt( g.cam_x, g.cam_y, g.cam_z, 0.0f, 0.0f, 0.0f, 0.0f, 10.0f, 0.0f );
 }
 
 /* Set 3D perspective mode */
@@ -171,7 +171,7 @@ void idleFunc() {
 
 int main(int argc, char** argv) {
 	RCBC_Init();
-	g.thing = RCBC_LoadFile("samples/blender-default-cube.dae");
+	g.thing = RCBC_LoadFile("samples/cube on plane.dae");
 
 	g.height = 600;
 	g.width = 800;
