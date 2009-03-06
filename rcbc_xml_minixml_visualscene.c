@@ -1,44 +1,26 @@
+#include <assert.h>
 #include "rcbc_xml_minixml_visualscene.h"
 #include "console.h"
 
-void RCRB_MiniXML_ProcessVisualScene_Node_Scale(RCBCNode *rnode, mxml_node_t *xnode) {
-	if(!rnode) {
-		errorit("XML Passed NULL RCBC node... %s", SYMBOL_WARNING);
-		return;
-	} 
-	if(!xnode) {
-		errorit("XML Passed NULL XML node... %s", SYMBOL_WARNING);
-		return;
-	}
+void RCBC_MiniXML_ProcessVisualScene_Node_Scale(RCBCNode *rnode, mxml_node_t *xnode) {
+	assert(rnode);
+	assert(xnode);
 
 	sscanf(xnode->value.opaque, "%f %f %f", &rnode->scale[0], &rnode->scale[1], &rnode->scale[2]);
 }
 
 
-void RCRB_MiniXML_ProcessVisualScene_Node_Translate(RCBCNode *rnode, mxml_node_t *xnode) {
-	if(!rnode) {
-		errorit("XML Passed NULL RCBC node... %s", SYMBOL_WARNING);
-		return;
-	} 
-	if(!xnode) {
-		errorit("XML Passed NULL XML node... %s", SYMBOL_WARNING);
-		return;
-	}
-
+void RCBC_MiniXML_ProcessVisualScene_Node_Translate(RCBCNode *rnode, mxml_node_t *xnode) {
+	assert(rnode);
+	assert(xnode);
 	sscanf(xnode->value.opaque, "%f %f %f", &rnode->translate[0], &rnode->translate[1], &rnode->translate[2]);
 }
 
-void RCRB_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mxml_node_t *xnode) {
 	RCBCNode_Rotate *rotate;
 
-	if(!rnode) {
-		errorit("XML Passed NULL RCBC node... %s", SYMBOL_WARNING);
-		return;
-	} 
-	if(!xnode) {
-		errorit("XML Passed NULL XML node... %s", SYMBOL_WARNING);
-		return;
-	}
+	assert(rnode);
+	assert(xnode);
 
 	if(rnode->rotate == NULL) {
 		rotate = rnode->rotate = malloc(sizeof(RCBCNode_Rotate));
@@ -57,30 +39,26 @@ void RCRB_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mxml_node_t *x
 	sscanf(xnode->value.opaque, "%f %f %f %f", &rotate->x, &rotate->y, &rotate->z, &rotate->angle);
 }
 
-void RCRB_MiniXML_ProcessVisualScene_Node_Children(RCBCNode *rnode, mxml_node_t *xnode) {
-			DumpNodeInfo(xnode);
-			if(strcasecmp(xnode->value.element.name, "node") == 0) {
-				RCRB_MiniXML_ProcessVisualScene_Node(&(rnode->child), xnode);
-			} else if(strcasecmp(xnode->value.element.name, "translate") == 0) {
-				RCRB_MiniXML_ProcessVisualScene_Node_Translate(rnode, xnode->child);
-			} else if(strcasecmp(xnode->value.element.name, "rotate") == 0) {
-				RCRB_MiniXML_ProcessVisualScene_Node_Rotate(rnode, xnode);
-			} else if(strcasecmp(xnode->value.element.name, "scale") == 0) {
-				RCRB_MiniXML_ProcessVisualScene_Node_Scale(rnode, xnode->child);
-			} 
+void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBCNode *rnode, mxml_node_t *xnode) {
+	assert(rnode);
+	assert(xnode);
+	DumpNodeInfo(xnode);
+	if(strcasecmp(xnode->value.element.name, "node") == 0) {
+		RCBC_MiniXML_ProcessVisualScene_Node(&(rnode->child), xnode);
+	} else if(strcasecmp(xnode->value.element.name, "translate") == 0) {
+		RCBC_MiniXML_ProcessVisualScene_Node_Translate(rnode, xnode->child);
+	} else if(strcasecmp(xnode->value.element.name, "rotate") == 0) {
+		RCBC_MiniXML_ProcessVisualScene_Node_Rotate(rnode, xnode);
+	} else if(strcasecmp(xnode->value.element.name, "scale") == 0) {
+		RCBC_MiniXML_ProcessVisualScene_Node_Scale(rnode, xnode->child);
+	} 
 }
 
-void RCRB_MiniXML_ProcessVisualScene_Node(RCBCNode **rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node(RCBCNode **rnode, mxml_node_t *xnode) {
 	RCBCNode* last;
 
-	if(!rnode) {
-		errorit("XML Passed NULL RCBC node... %s", SYMBOL_WARNING);
-		return;
-	} 
-	if(!xnode) {
-		errorit("XML Passed NULL XML node... %s", SYMBOL_WARNING);
-		return;
-	}
+	assert(rnode);
+	assert(xnode);
 
 	warnit("Info");
 	if(!(*rnode)) {
@@ -101,24 +79,17 @@ void RCRB_MiniXML_ProcessVisualScene_Node(RCBCNode **rnode, mxml_node_t *xnode) 
 	debugit(DEBUG_LOW, "NODE ID: '%s'", id);
 	for(child = xnode->child; child != NULL; child = child->next) {
 		if(child->type == MXML_ELEMENT) {
-			RCRB_MiniXML_ProcessVisualScene_Node_Children(last, child);
+			RCBC_MiniXML_ProcessVisualScene_Node_Children(last, child);
 		}
 	}
 
 	RCBC_NodeDebugInfo(last);
 }
 
-void RCRB_MiniXML_ProcessVisualScene(RCBCThing *thing, mxml_node_t *node) {
-	const char* id;
+void RCBC_MiniXML_ProcessVisualScene(RCBCThing *thing, mxml_node_t *node) {
 
-	if(!thing) {
-		errorit("XML Passed NULL 'thing'... %s", SYMBOL_WARNING);
-		return;
-	} 
-	if(!node) {
-		errorit("XML Passed NULL xml node... %s", SYMBOL_WARNING);
-		return;
-	}
+	assert(thing);
+	assert(node);
 
 	if(thing->visual_scene) {
 		RCBC_NodeFree(&(thing->visual_scene));
@@ -129,7 +100,7 @@ void RCRB_MiniXML_ProcessVisualScene(RCBCThing *thing, mxml_node_t *node) {
 			DumpNodeInfo(node);
 
 			if(strcasecmp(node->value.element.name, "node") == 0) {				
-				RCRB_MiniXML_ProcessVisualScene_Node(&thing->visual_scene, node);			
+				RCBC_MiniXML_ProcessVisualScene_Node(&thing->visual_scene, node);			
 			}
 		}
 	}

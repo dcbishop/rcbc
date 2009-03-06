@@ -7,8 +7,11 @@
 #include "rcbc.h"
 #include "rcbc_data.h"
 
-int RCRB_MiniXML_ProcessGeometries_Geometry(RCBCThing *thing, mxml_node_t *node);
-int RCRB_MiniXML_ProcessGeometries(RCBCThing *thing, mxml_node_t *node);
-int RCRB_MiniXML_ProcessGeometries_Mesh(RCBCMesh **mesh, mxml_node_t *xnode);
+int RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(RCBCMesh *mesh, mxml_node_t *xnode);
+int RCBC_MiniXML_ProcessGeometries_Mesh_Source(RCBCMesh *mesh, mxml_node_t *xnode);
+int RCBC_MiniXML_ProcessGeometries_Mesh_Children(RCBCMesh *mesh, mxml_node_t *xnode);
+int RCBC_MiniXML_ProcessGeometries_Mesh(RCBCThing *thing, mxml_node_t *xnode);
+int RCBC_MiniXML_ProcessGeometries_Geometry(RCBCThing *thing, mxml_node_t *node);
+int RCBC_MiniXML_ProcessGeometries(RCBCThing *thing, mxml_node_t *node);
 
 #endif

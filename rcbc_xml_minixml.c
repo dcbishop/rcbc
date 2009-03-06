@@ -38,8 +38,6 @@ void DumpNodeInfo(mxml_node_t *node) {
 	}
 }
 
-
-
 int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 	logit("[MINIXML]: Opening '%s'...", filename);
 	if(!thing) {
@@ -67,12 +65,17 @@ int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 
 	mxml_node_t* node;
 
-	node = mxmlFindElement(tree, tree, "visual_scene", NULL, NULL, MXML_DESCEND);
-	RCRB_MiniXML_ProcessVisualScene(thing, node);
-
 	node = mxmlFindElement(tree, tree, "library_geometries", NULL, NULL, MXML_DESCEND);
-//	RCRB_MiniXML_ProcessGeometries(thing, node);
+	RCBC_MiniXML_ProcessGeometries(thing, node);
+
+	node = mxmlFindElement(tree, tree, "visual_scene", NULL, NULL, MXML_DESCEND);
+	//RCBC_MiniXML_ProcessVisualScene(thing, node);
+
+	/* Free memory */
+	//LLFree(hookups); /* TODO: <--- */
+	//RCBC_HookupsFree(hookups);
 
   mxmlDelete(tree);
+
 	return 0;
 }
