@@ -5,8 +5,13 @@
 #include "console.h"
 
 void RCBC_NodeDebugInfo(RCBCNode* node) {
+	LLNode* itr = node->rotations;
 	debugit(DEBUG_ALWAYS, "Node: Scale %f %f %f", node->scale[0], node->scale[1], node->scale[2]);
 	debugit(DEBUG_ALWAYS, "      Translate %f %f %f", node->translate[0], node->translate[1], node->translate[2]);
+	for(itr = node->rotations; itr; itr=itr->next) {
+		RCBCNode_Rotate* rotation = itr->data;
+		debugit(DEBUG_ALWAYS, "      Roatation %f %f %f %f", rotation->x, rotation->y, rotation->z, rotation->angle);
+	}
 }
 
 RCBCThing* RCBC_ThingGenerate() {
@@ -16,6 +21,8 @@ RCBCThing* RCBC_ThingGenerate() {
 	}
 	thing->visual_scene = NULL;
 	thing->geometries = NULL;
+	thing->sinks = NULL;
+	thing->sources = NULL;
 	return thing;
 }
 
@@ -35,12 +42,12 @@ RCBCNode* RCBC_NodeGenerate() {
 		errorit("Failed to allocate memory for a node... %s", SYMBOL_WARNING);
 		return NULL;
 	}
-
+	node->mesh = NULL;
 	node->translate[0] = 0.0f;
 	node->translate[1] = 0.0f;
 	node->translate[2] = 0.0f;
 
-	node->rotate = NULL;
+	node->rotations = NULL;
 
 	node->scale[0] = 0.0f;
 	node->scale[1] = 0.0f;
@@ -69,7 +76,9 @@ RCBCMesh* RCBC_MeshGenerate() {
 		errorit("Failed to allocate memory for mesg.");
 		return NULL;
 	}
-
+	mesh->arrays = NULL;
+	mesh->sources = NULL;
+	mesh->sinks = NULL;
 	return mesh;
 }
 
@@ -84,7 +93,13 @@ void RCBC_MeshFree(RCBCMesh **mesh) {
 }
 
 /* Allocates a hookup */
-RCBC_Hookup* RCBC_HookupGenerate(char* id, void** pointer) { 
+RCBC_Hookup* RCBC_HookupGenerate(char* id, void** pointer) {
+	debugit(DEBUG_LOW, "%s  RCBC_HookupGenerate: '%s'", COLOUR_YELLOW, id);
+	if(!id) {
+		errorit("Tried to generate NULL hookup.");
+		return;
+	}
+
 	RCBC_Hookup* hookup = malloc(sizeof(RCBC_Hookup));
 	if(!hookup) {
 		errorit("Failed to allocate space for hookup.");
@@ -117,11 +132,13 @@ RCBC_Hookup* RCBC_HookupGenerate(char* id, void** pointer) {
 
 RCBC_Hookup* RCBC_HookupFind(LLNode* roothookup, char* id) {
 	LLNode* node = roothookup;
+		debugit(DEBUG_LOW, "%sRCBC_HookupFind(%s'%s'%s)", COLOUR_LIGHT_BLUE, COLOUR_YELLOW, id, COLOUR_LIGHT_BLUE);
 	while(node) {
-
-		if(!node->data 
+		debugit(DEBUG_LOW, "\tCHECKING: '%s'", ((RCBC_Hookup*)node->data)->id);
+		if(node->data 
 			&& strcasecmp(((RCBC_Hookup*)node->data)->id, id) == 0)
 		{
+			debugit(DEBUG_LOW, "\tMATCHING!!!");
 			return node->data;
 		}
 
@@ -147,6 +164,30 @@ void RCBC_HookupFree(LLNode** roothookup) {
 	LLFree(roothookup);
 	return;
 }
+
+void RCBC_Hookup_Execute(LLNode* sources, LLNode* sinks) {
+	debugit(DEBUG_LOW, "%sRCBC_Hookup_Execute", COLOUR_LIGHT_BLUE);
+	RCBC_Hookup* source;
+	RCBC_Hookup* destination;
+	LLNode* itr;
+
+	debugit(DEBUG_LOW, "\tLoop begiing...");
+	for(itr = sources; itr; itr = itr->next) {
+		debugit(DEBUG_LOW, "\t\tLoop......");
+		source = itr->data;
+		if(!source) {
+			continue;
+		}
+		debugit(DEBUG_LOW, "\t\tsearching for '%s'...", source->id);
+		destination = RCBC_HookupFind(sinks, source->id);
+		if(!destination) {
+			errorit("Hookup failed to find sink '%s'");
+			continue;
+		}
+		debugit(DEBUG_LOW, "\t\tfound '%s'...", source->id);
+		*destination->ptr = source->ptr;
+	}
+} 
 
 /*void TemporyHookup_Hookup(TemporyHookup* roothookup) {
 	TemporyHookup* sink;
@@ -196,15 +237,75 @@ LLNode* LLGenerate(void* data) {
 	return node;
 }
 
+RCBC_Triangles* RCBC_TrianglesGenerate() {
+	RCBC_Triangles* triangles = malloc(sizeof(RCBC_Triangles));
+	if(!triangles) {
+		errorit("Falied to malloc memory for linked list node...");
+		return NULL;
+	}
+	triangles->count = -1;
+	triangles->inputs = -1;
+	triangles->index = NULL;
+	triangles->vertices = NULL;
+	triangles->normals = NULL;
+	triangles->textcords = NULL;
+	return triangles;
+}
+
+int RCBC_TrianglesAllocateIndex(RCBC_Triangles* triangles) {
+	assert(triangles);
+	free(triangles->index);
+	triangles->index = malloc(sizeof(int) * triangles->count * triangles->inputs * 3);
+	if(!triangles->index) {
+		return 1;
+	}
+	return 0;
+}
+
+void RCBC_TrianglesFree(RCBC_Triangles* triangles) {
+	assert(triangles);
+	free(triangles->index);
+	free(triangles);
+}
+
 LLNode* LLAdd(LLNode** rootnode, void* data) {
 	assert(rootnode);
 	assert(data);
 	LLNode* newnode = LLGenerate(data);
 	if(!(*rootnode)) {
 		*rootnode = newnode;
+		return newnode;
 	}
+	/* TODO: Keep track of last node to save walking... */
+	LLNode* node_ptr = *rootnode;
+	while(node_ptr->next) {
+		node_ptr = node_ptr->next;
+	}
+	node_ptr->next = newnode;
+
 	return newnode;
 }
+
+/*void LLJoin(LLNode** rootnode1, LLNode* rootnode2) {
+	assert(rootnode1);
+	assert(rootnode2);
+	debugit(DEBUG_LOW, "flag1...");
+	if(!(*rootnode1)) {
+		*rootnode1 = rootnode2;
+		return;
+	}
+	debugit(DEBUG_LOW, "flag2...");
+	// TODO: keep track of final node for quick insertion
+	LLNode* node = *rootnode1;
+	debugit(DEBUG_LOW, "flag3... %p", node);
+	debugit(DEBUG_LOW, "flag3... %p", node->next);
+	while(node->next) {
+		debugit(DEBUG_LOW, "LOOP...");
+		node = node->next;
+	}
+	debugit(DEBUG_LOW, "flagX...");
+	node->next = rootnode2;
+}*/
 
 void LLFree(LLNode** rootnode) {
 	assert(rootnode);

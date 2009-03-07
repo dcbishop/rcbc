@@ -2,17 +2,63 @@
 #ifndef _RCBC_DATA_DEF
 #define _RCBC_DATA_DEF
 
+/* A generic linked list node */
+typedef struct LLNode {
+	void* data;
+	struct LLNode* next;
+} LLNode;
+
 /* A container for a COLLADA model */
 typedef struct RCBCThing {
 	struct RCBCNode* visual_scene;
 	struct LLNode* geometries;
+	
+	LLNode* sources;
+	LLNode* sinks;
 } RCBCThing;
+
+/* Nodes can have multiple rotations */
+typedef struct RCBCNode_Rotate {
+	float x;
+	float y;
+	float z;
+	float angle;
+} RCBCNode_Rotate;
+
+typedef struct RCBC_FloatArray {
+	int count;
+	float* values;
+} RCBC_FloatArray;
+
+typedef struct RCBC_Triangles {
+	int count;
+	int inputs;
+	int* index;
+	int vertices_offset;
+	RCBC_FloatArray* vertices;
+	int normals_offset;
+	RCBC_FloatArray* normals;
+	int textcords_offset;
+	RCBC_FloatArray* textcords;
+} RCBC_Triangles;
+
+/* Contains mesh data */
+typedef struct RCBCMesh {
+	LLNode* arrays;
+
+	LLNode* sources;
+	LLNode* sinks;
+
+	RCBC_Triangles* triangles;
+} RCBCMesh;
 
 /* A basic COLLADA node */
 typedef struct RCBCNode {
+	RCBCMesh* mesh;
+
 	float translate[3];
 
-	struct RCBCNode_Rotate* rotate;
+	struct LLNode* rotations;
 
 	float scale[3];
 
@@ -21,41 +67,6 @@ typedef struct RCBCNode {
 	struct RCBCNode* child;
 	struct RCBCNode* parent;
 } RCBCNode;
-
-/* Nodes can have multiple rotations */
-typedef struct RCBCNode_Rotate {
-	float x;
-	float y;
-	float z;
-	float angle;
-	struct RCBCNode_Rotate* next;
-} RCBCNode_Rotate;
-
-/* A generic linked list node */
-typedef struct LLNode {
-	void* data;
-	struct LLNode* next;
-} LLNode;
-
-typedef struct RCBC_FloatArray {
-	int count;
-	float* values;
-} RCBC_FloatArray;
-
-/* Contains mesh data */
-typedef struct RCBCMesh {
-	RCBC_FloatArray* vertices;
-	RCBC_FloatArray* normals;
-	RCBC_FloatArray* textures;
-
-	LLNode* arrays;
-
-	LLNode* id2ptr;
-	LLNode* ptr2id;
-} RCBCMesh;
-
-#define HOOKUP_PTR2ID 0
-#define HOOKUP_ID2PTR 1
 
 /* This is used to link between XML named id's and the actual data pointers */
 typedef struct RCBC_Hookup {
@@ -83,5 +94,7 @@ RCBC_Hookup* RCBC_HookupGenerate(char* id, void** pointer);
 RCBC_Hookup* RCBC_HookupFind(LLNode* roothookup, char* id);
 //TemporyHookup* TemporyHookup_Add(RCBC_Hookup** roothookup, int type, char* id, void* pointer);
 //void TemporyHookup_Free(RCBC_Hookup* hookup);
+
+RCBC_Triangles* RCBC_TrianglesGenerate();
 
 #endif

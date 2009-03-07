@@ -171,7 +171,7 @@ void idleFunc() {
 
 int main(int argc, char** argv) {
 	RCBC_Init();
-	g.thing = RCBC_LoadFile("samples/cube on plane.dae");
+	g.thing = RCBC_LoadFile("samples/test.dae");
 
 	g.height = 600;
 	g.width = 800;
