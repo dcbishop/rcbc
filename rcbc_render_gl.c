@@ -35,9 +35,21 @@ void RCBC_GL_Draw_Node(RCBCNode* node) {
 			debugit(DEBUG_LOW, "Triangles: %p", mesh->triangles);
 			debugit(DEBUG_LOW, "Vertices: %p", mesh->triangles->vertices);
 			debugit(DEBUG_LOW, "Normal: %p", mesh->triangles->normals);*/
-glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glVertexPointer(3, GL_FLOAT, 0, triangles->vertices->values);
+			if(triangles->normals) {
+				glNormalPointer(GL_FLOAT, 0, triangles->normals->values);
+			} else {
+				warnit("No normals...");
+			}
+
+			if(triangles->texcoords) {	
+				glTexCoordPointer(2, GL_FLOAT, 0, triangles->texcoords->values);
+			} else {
+				warnit("No textcoords...");
+			}
+
 			//glDrawRangeElements(GL_TRIANGLES, 0, 4, 4, GL_UNSIGNED_INT, triangles->index);
 			//glDrawElements(GL_TRIANGLES, triangles->count, GL_INT, triangles->indices);
 			//glDrawElements(GL_POINTS, triangles->count, GL_UNSIGNED_INT, triangles->indices);

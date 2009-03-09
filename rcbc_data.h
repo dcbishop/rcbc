@@ -51,15 +51,15 @@ typedef struct RCBC_TrianglesUnsorted {
 	RCBC_FloatArray* vertices;
 	int normals_offset;
 	RCBC_FloatArray* normals;
-	int textcords_offset;
-	RCBC_FloatArray* textcords;
+	int texcoords_offset;
+	RCBC_FloatArray* texcoords;
 } RCBC_TrianglesUnsorted;
 
 typedef struct RCBC_Triangles {
 	unsigned int count;
 	RCBC_FloatArray* vertices;
 	RCBC_FloatArray* normals;
-	RCBC_FloatArray* textcords;
+	RCBC_FloatArray* texcoords;
 } RCBC_Triangles;
 
 /* Contains mesh data */

@@ -121,6 +121,9 @@ debugit(DEBUG_LOW, "%s##########################################################
 				} else if(strcasecmp(semantic, "NORMAL") == 0) {
 					ptr = &(triangles->normals);
 					triangles->normals_offset = offset;
+				} else if(strcasecmp(semantic, "TEXCOORD") == 0) {
+					ptr = &(triangles->texcoords);
+					triangles->texcoords_offset = offset;
 				}
 
 				RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)source, ptr);

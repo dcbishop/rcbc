@@ -254,7 +254,7 @@ RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate(int count) {
 	triangles->indices = NULL;
 	triangles->vertices = NULL;
 	triangles->normals = NULL;
-	triangles->textcords = NULL;
+	triangles->texcoords = NULL;
 	return triangles;
 }
 
@@ -319,32 +319,61 @@ RCBC_Triangles* RCBC_TrianglesGenerate(int count) {
 	triangles->count = count;
 	triangles->vertices = NULL;
 	triangles->normals = NULL;
-	triangles->textcords = NULL;
+	triangles->texcoords = NULL;
 	return triangles;
 }
 
 void RCBC_SortTriangles(RCBC_TrianglesUnsorted* unsorted) {
+	int i = 0xDEADC0DE;
 	RCBC_Triangles* triangles = RCBC_TrianglesGenerate(unsorted->count);
 	debugit(DEBUG_LOW, "%sRCBC_SortTriangles", COLOUR_LIGHT_BLUE);
 	*unsorted->ptr = triangles;
-	debugit(DEBUG_LOW, "flag1");
 	triangles->count = unsorted->count;
 
 	/* Process vertices */
 	if(unsorted->vertices) {
 		int v = 0;
-		int i;
+
 		//debugit(DEBUG_LOW, "loopbegins.... %d", unsorted->count);
 		triangles->vertices = RCBC_FloatArrayGenerate(unsorted->count * 3 * 3);
 		for(i = unsorted->vertices_offset; i < 3 * unsorted->count * unsorted->inputs; i+=unsorted->inputs) {
 			//debugit(DEBUG_LOW, "loop %d....", i);
-			int index = unsorted->indices[i];
+			int index = unsorted->indices[i] * 3;
 			triangles->vertices->values[v++] = unsorted->vertices->values[index];
 			triangles->vertices->values[v++] = unsorted->vertices->values[index+2];
 			triangles->vertices->values[v++] = unsorted->vertices->values[index+1];
-			debugit(DEBUG_LOW, ".... IDX:%d %d:%f %d:%f %d:%f", index, v-2, triangles->vertices->values[v-2], v-1, triangles->vertices->values[v-1], v, triangles->vertices->values[v]);
+			//debugit(DEBUG_LOW, ".... IDX:%d %d:%f %d:%f %d:%f", index, v-2, triangles->vertices->values[v-2], v-1, triangles->vertices->values[v-1], v, triangles->vertices->values[v]);
 		}
-
 	}
-	debugit(DEBUG_LOW, "flag2");
+
+	/* Process normals */
+	if(unsorted->normals) {
+		int v = 0;
+
+		//debugit(DEBUG_LOW, "loopbegins.... %d", unsorted->count);
+		triangles->normals = RCBC_FloatArrayGenerate(unsorted->count * 3 * 3);
+		for(i = unsorted->normals_offset; i < 3 * unsorted->count * unsorted->inputs; i+=unsorted->inputs) {
+			//debugit(DEBUG_LOW, "loop %d....", i);
+			int index = unsorted->indices[i] * 3;
+			triangles->normals->values[v++] = unsorted->normals->values[index];
+			triangles->normals->values[v++] = unsorted->normals->values[index+2];
+			triangles->normals->values[v++] = unsorted->normals->values[index+1];
+			//debugit(DEBUG_LOW, ".... IDX:%d %d:%f %d:%f %d:%f", index, v-2, triangles->normals->values[v-2], v-1, triangles->normals->values[v-1], v, triangles->normals->values[v]);
+		}
+	}
+
+	/* Process normals */
+	if(unsorted->texcoords) {
+		int v = 0;
+
+		//debugit(DEBUG_LOW, "loopbegins.... %d", unsorted->count);
+		triangles->texcoords = RCBC_FloatArrayGenerate(unsorted->count * 2 * 3);
+		for(i = unsorted->texcoords_offset; i < 3 * unsorted->count * unsorted->inputs; i+=unsorted->inputs) {
+			//debugit(DEBUG_LOW, "loop %d....", i);
+			int index = unsorted->indices[i] * 3;
+			triangles->texcoords->values[v++] = unsorted->texcoords->values[index];
+			triangles->texcoords->values[v++] = unsorted->texcoords->values[index+1];
+//			debugit(DEBUG_LOW, ".... IDX:%d %d:%f %d:%f %d:%f", index, v-2, triangles->texcoords->values[v-2], v-1, triangles->texcoords->values[v-1], v, triangles->texcoords->values[v]);
+		}
+	}
 }
