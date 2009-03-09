@@ -8,14 +8,26 @@ typedef struct LLNode {
 	struct LLNode* next;
 } LLNode;
 
+/* A generic linked list node */
+typedef struct LL {
+	int count;
+	struct LLNode* head;
+	struct LLNode* last;
+} LL;
+
+
 /* A container for a COLLADA model */
 typedef struct RCBCThing {
 	struct RCBCNode* visual_scene;
 	struct LLNode* geometries;
-	
+} RCBCThing;
+
+typedef struct RCBCTempory {
+	RCBCThing* thing;
 	LLNode* sources;
 	LLNode* sinks;
-} RCBCThing;
+	LLNode* unsorted;
+} RCBCTempory;
 
 /* Nodes can have multiple rotations */
 typedef struct RCBCNode_Rotate {
@@ -30,25 +42,29 @@ typedef struct RCBC_FloatArray {
 	float* values;
 } RCBC_FloatArray;
 
-typedef struct RCBC_Triangles {
-	int count;
-	int inputs;
-	int* index;
+typedef struct RCBC_TrianglesUnsorted {
+	void** ptr;
+	unsigned int count;
+	unsigned int inputs;
+	unsigned int* indices;
 	int vertices_offset;
 	RCBC_FloatArray* vertices;
 	int normals_offset;
 	RCBC_FloatArray* normals;
 	int textcords_offset;
 	RCBC_FloatArray* textcords;
+} RCBC_TrianglesUnsorted;
+
+typedef struct RCBC_Triangles {
+	unsigned int count;
+	RCBC_FloatArray* vertices;
+	RCBC_FloatArray* normals;
+	RCBC_FloatArray* textcords;
 } RCBC_Triangles;
 
 /* Contains mesh data */
 typedef struct RCBCMesh {
 	LLNode* arrays;
-
-	LLNode* sources;
-	LLNode* sinks;
-
 	RCBC_Triangles* triangles;
 } RCBCMesh;
 
@@ -95,6 +111,6 @@ RCBC_Hookup* RCBC_HookupFind(LLNode* roothookup, char* id);
 //TemporyHookup* TemporyHookup_Add(RCBC_Hookup** roothookup, int type, char* id, void* pointer);
 //void TemporyHookup_Free(RCBC_Hookup* hookup);
 
-RCBC_Triangles* RCBC_TrianglesGenerate();
-
+RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate();
+RCBCTempory* RCBC_TemporyGenerate();
 #endif

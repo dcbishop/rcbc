@@ -33,19 +33,18 @@ RCBCNode_Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mx
 	rotate->angle = 0.0f;
 
 	sscanf(xnode->value.opaque, "%f %f %f %f", &rotate->x, &rotate->y, &rotate->z, &rotate->angle);
-	debugit(DEBUG_LOW, "%sROTATE: %s", COLOUR_LIGHT_MAGENTA, xnode->value.opaque);
 	DumpNodeInfo(xnode);
-debugit(DEBUG_LOW, "%s------------- %f %f %f %f", COLOUR_LIGHT_MAGENTA, rotate->x, rotate->y, rotate->z, rotate->angle);	
+
 	LLAdd(&rnode->rotations, rotate);
 	return rotate;
 }
 
-void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBCThing *thing, RCBCNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBCTempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);
 	DumpNodeInfo(xnode);
 	if(strcasecmp(xnode->value.element.name, "node") == 0) {
-		RCBC_MiniXML_ProcessVisualScene_Node(thing, &(rnode->child), xnode);
+		RCBC_MiniXML_ProcessVisualScene_Node(tempory, &(rnode->child), xnode);
 	} else if(strcasecmp(xnode->value.element.name, "translate") == 0) {
 		RCBC_MiniXML_ProcessVisualScene_Node_Translate(rnode, xnode->child);
 	} else if(strcasecmp(xnode->value.element.name, "rotate") == 0) {
@@ -58,13 +57,14 @@ void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBCThing *thing, RCBCNode *r
 				id++;
 			}
 			RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)&rnode->mesh);
-			LLAdd(&thing->sinks, hookup);
+			LLAdd(&tempory->sinks, hookup);
 	}
 }
 
-void RCBC_MiniXML_ProcessVisualScene_Node(RCBCThing *thing, RCBCNode **rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node(RCBCTempory *tempory, RCBCNode **rnode, mxml_node_t *xnode) {
 	RCBCNode* last;
 
+	assert(tempory);
 	assert(rnode);
 	assert(xnode);
 
@@ -85,25 +85,23 @@ void RCBC_MiniXML_ProcessVisualScene_Node(RCBCThing *thing, RCBCNode **rnode, mx
 	mxml_node_t *child;
 	const char *id = mxmlElementGetAttr(xnode, "id");
 
-	RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)last);
-
 	debugit(DEBUG_LOW, "NODE ID: '%s'", id);
 	for(child = xnode->child; child != NULL; child = child->next) {
 		if(child->type == MXML_ELEMENT) {
-			RCBC_MiniXML_ProcessVisualScene_Node_Children(thing, last, child);
+			RCBC_MiniXML_ProcessVisualScene_Node_Children(tempory, last, child);
 		}
 	}
-	LLAdd(&thing->sinks, hookup);
+
 	RCBC_NodeDebugInfo(last);
 }
 
-void RCBC_MiniXML_ProcessVisualScene(RCBCThing *thing, mxml_node_t *node) {
+void RCBC_MiniXML_ProcessVisualScene(RCBCTempory *tempory, mxml_node_t *node) {
 
-	assert(thing);
+	assert(tempory);
 	assert(node);
 
-	if(thing->visual_scene) {
-		RCBC_NodeFree(&(thing->visual_scene));
+	if(tempory->thing->visual_scene) {
+		RCBC_NodeFree(&(tempory->thing->visual_scene));
 	}
 
 	for(node = node->child; node != NULL; node = node->next) {
@@ -111,7 +109,7 @@ void RCBC_MiniXML_ProcessVisualScene(RCBCThing *thing, mxml_node_t *node) {
 			DumpNodeInfo(node);
 
 			if(strcasecmp(node->value.element.name, "node") == 0) {				
-				RCBC_MiniXML_ProcessVisualScene_Node(thing, &thing->visual_scene, node);			
+				RCBC_MiniXML_ProcessVisualScene_Node(tempory, &tempory->thing->visual_scene, node);			
 			}
 		}
 	}

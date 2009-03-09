@@ -5,7 +5,7 @@
 #include "console.h"
 
 /* Reads a float array, such as verticies, normals, text cords, etc... */
-RCBC_FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(RCBCThing *thing, RCBCMesh *mesh, mxml_node_t *xnode) {
+RCBC_FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(RCBCTempory *tempory, RCBCMesh *mesh, mxml_node_t *xnode) {
 	const char* id = mxmlElementGetAttr(xnode, "id");
 	const char* count_s = mxmlElementGetAttr(xnode, "count");
 	int count = atoi(count_s);
@@ -25,16 +25,15 @@ RCBC_FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(RCBCThing *thing
 		i++;
 	}
 
-	//RCBC_Hookup* hookup; 
-	//hookup = RCBC_HookupGenerate((char*)id, (void*)newarray);
+//	RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)newarray);
 
 	LLAdd(&mesh->arrays, newarray);
-	//LLAdd(&thing->sources, hookup);
+//	LLAdd(&tempory->sources, hookup);
 
 	return newarray;
 }
 
-int RCBC_MiniXML_ProcessGeometries_Mesh_Source(RCBCThing *thing, RCBCMesh *mesh, mxml_node_t *xnode) {
+int RCBC_MiniXML_ProcessGeometries_Mesh_Source(RCBCTempory *tempory, RCBCMesh *mesh, mxml_node_t *xnode) {
 	debugit(DEBUG_LOW, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Source", COLOUR_LIGHT_BLUE);
 	const char* id = mxmlElementGetAttr(xnode, "id");
 	debugit(DEBUG_LOW, "\t\tID: %s", id);
@@ -43,9 +42,9 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Source(RCBCThing *thing, RCBCMesh *mesh,
 			DumpNodeInfo(xnode);
 
 			if(strcasecmp(xnode->value.element.name, "float_array") == 0) {
-				RCBC_FloatArray* array =  RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(thing, mesh, xnode);
+				RCBC_FloatArray* array =  RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(tempory, mesh, xnode);
 				RCBC_Hookup* arrayhookup = RCBC_HookupGenerate((char*)id, (void*)array);
-				LLAdd(&thing->sources, arrayhookup);
+				LLAdd(&tempory->sources, arrayhookup);
 			}
 		}
 	}
@@ -53,8 +52,8 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Source(RCBCThing *thing, RCBCMesh *mesh,
 	return 1;
 }
 
-int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(RCBCThing *thing, RCBCMesh *mesh, mxml_node_t *xnode) {
-	debugit(DEBUG_LOW, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Polygons: Verticies", COLOUR_LIGHT_BLUE);
+int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(RCBCTempory *tempory, RCBCMesh *mesh, mxml_node_t *xnode) {
+	debugit(DEBUG_LOW, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Verticies", COLOUR_LIGHT_BLUE);
 
 	assert(mesh); 
 	assert(xnode);
@@ -78,8 +77,9 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(RCBCThing *thing, RCBCMesh *me
 
 				RCBC_Hookup* idhookup = RCBC_HookupGenerate((char*)id, NULL);
 				RCBC_Hookup* sourcehookup = RCBC_HookupGenerate((char*)source, (void*)&idhookup->ptr);
-				LLAdd(&thing->sources, idhookup);
-				LLAdd(&thing->sinks, sourcehookup);				
+				debugit(DEBUG_LOW, "%sINFOMRATION: id:'%s' source:'%s'", COLOUR_LIGHT_RED, id, source);
+				LLAdd(&tempory->sources, idhookup);
+				LLAdd(&tempory->sinks, sourcehookup);				
 			}
 		}
 	}
@@ -87,7 +87,7 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(RCBCThing *thing, RCBCMesh *me
 	return 0;
 }
 
-RCBC_Triangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(RCBCThing *thing, RCBCMesh *mesh, mxml_node_t *xnode) {
+RCBC_TrianglesUnsorted* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(RCBCTempory *tempory, RCBCMesh *mesh, mxml_node_t *xnode) {
 	debugit(DEBUG_LOW, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Polygons", COLOUR_LIGHT_BLUE);
 
 	assert(mesh);
@@ -96,14 +96,13 @@ RCBC_Triangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(RCBCThing *thing, 
 	mxml_node_t *node;
 	const char* count_s = mxmlElementGetAttr(xnode, "count");
 	int count = atoi(count_s);
-
-	RCBC_Triangles* triangles = RCBC_TrianglesGenerate(count);
-	
+	int inputs = 0;
+debugit(DEBUG_LOW, "%s##########################################################################################%d...", COLOUR_LIGHT_MAGENTA, count);
+	RCBC_TrianglesUnsorted* triangles = RCBC_TrianglesUnsortedGenerate(count);
 	for(node = xnode->child; node != NULL; node = node->next) {
 		DumpNodeInfo(node);
 		if(node->type == MXML_ELEMENT) {
 			if(strcasecmp(node->value.element.name, "input") == 0) {
-				
 				
 				const char *semantic = mxmlElementGetAttr(node, "semantic");
 				const char *source = mxmlElementGetAttr(node, "source");
@@ -115,25 +114,28 @@ RCBC_Triangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(RCBCThing *thing, 
 				}
 
 				void* ptr = NULL;
-
-				// TODO!	
+				inputs++;
 				if(strcasecmp(semantic, "VERTEX") == 0) {
-					ptr = &triangles->vertices;
-				} else if(strcasecmp(semantic, "NORMALS") == 0) {
-					ptr = &triangles->normals;
+					ptr = &(triangles->vertices);
+					triangles->vertices_offset = offset;
+				} else if(strcasecmp(semantic, "NORMAL") == 0) {
+					ptr = &(triangles->normals);
+					triangles->normals_offset = offset;
 				}
 
 				RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)source, ptr);
-				LLAdd(&mesh->sinks, thing);
+				LLAdd(&tempory->sinks, hookup);
 
 			} else if(strcasecmp(node->value.element.name, "p") == 0) {
-				RCBC_TrianglesAllocateIndex(triangles);
+				triangles->inputs = inputs;
+				RCBC_TrianglesUnsortedAllocateIndices(triangles);
 				int value = -1;
 				int i = 0;
-				char* pch = strtok(xnode->child->value.opaque, " ");
-				while(pch && i < count) {
+				char* pch = strtok(node->child->value.opaque, " ");
+
+				while(pch && i < count * inputs * 3) {
 					sscanf(pch, "%d", &value);
-					triangles->index[i] = value;
+					triangles->indices[i] = value; /* SEGFAULT */
 					pch = strtok(NULL, " ");
 					i++;
 				}
@@ -141,10 +143,13 @@ RCBC_Triangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(RCBCThing *thing, 
 		}
 	}
 	debugit(DEBUG_LOW, "function end...");
+	triangles->inputs = inputs;
+	triangles->ptr = (void**)&mesh->triangles;
+	LLAdd(&tempory->unsorted, triangles);
 	return triangles;
 }
 
-int RCBC_MiniXML_ProcessGeometries_Mesh_Children(RCBCThing *thing, RCBCMesh *mesh, mxml_node_t *xnode) {
+int RCBC_MiniXML_ProcessGeometries_Mesh_Children(RCBCTempory *tempory, RCBCMesh *mesh, mxml_node_t *xnode) {
 	if(!mesh) {
 		errorit("XML Passed NULL RCBC mesh... %s", SYMBOL_WARNING);
 		return 1;
@@ -156,11 +161,11 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Children(RCBCThing *thing, RCBCMesh *mes
 
 	DumpNodeInfo(xnode);
 	if(strcasecmp(xnode->value.element.name, "source") == 0) {
-		return RCBC_MiniXML_ProcessGeometries_Mesh_Source(thing, mesh, xnode);
+		return RCBC_MiniXML_ProcessGeometries_Mesh_Source(tempory, mesh, xnode);
 	} else if(strcasecmp(xnode->value.element.name, "vertices") == 0) {
-		return RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(thing, mesh, xnode);
+		return RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(tempory, mesh, xnode);
 	} else if(strcasecmp(xnode->value.element.name, "triangles") == 0) {
-		if(RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(thing, mesh, xnode)) {
+		if(!RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(tempory, mesh, xnode)) {
 			return 0;
 		} else {
 			return 1;
@@ -172,30 +177,31 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Children(RCBCThing *thing, RCBCMesh *mes
 	} 
 }
 
-RCBCMesh* RCBC_MiniXML_ProcessGeometries_Mesh(RCBCThing *thing, mxml_node_t *xnode) {
+RCBCMesh* RCBC_MiniXML_ProcessGeometries_Mesh(RCBCTempory *tempory, mxml_node_t *xnode) {
 	RCBCMesh* last;
 
-	assert(thing);
+	assert(tempory);
 	assert(xnode);
 
 	debugit(DEBUG_LOW, "%sRCBC_MiniXML_ProcessGeometries_Mesh", COLOUR_LIGHT_BLUE);
 
 	RCBCMesh* mesh = RCBC_MeshGenerate();
-	LLAdd(&thing->geometries, mesh);
+	LLAdd(&tempory->thing->geometries, mesh);
 
 	mxml_node_t *child;
 	const char *id = mxmlElementGetAttr(xnode, "id");
 	debugit(DEBUG_LOW, "MESH ID: '%s'", id);
+
 	for(child = xnode->child; child != NULL; child = child->next) {
 		if(child->type == MXML_ELEMENT) {
-			RCBC_MiniXML_ProcessGeometries_Mesh_Children(thing, mesh, child);
+			RCBC_MiniXML_ProcessGeometries_Mesh_Children(tempory, mesh, child);
 		}
 	}
 
 
 	/*debugit(DEBUG_LOW, "Prejoin...");
-	LLJoin(&thing->sources, mesh->sources);
-	LLJoin(&thing->sinks, mesh->sinks);
+	LLJoin(&tempory->sources, mesh->sources);
+	LLJoin(&tempory->sinks, mesh->sinks);
 	debugit(DEBUG_LOW, "Postjoin...");*/
 
 	return mesh;
@@ -203,9 +209,9 @@ RCBCMesh* RCBC_MiniXML_ProcessGeometries_Mesh(RCBCThing *thing, mxml_node_t *xno
 
 
 /* Grabs the mesh from the geometry (COLLADA specs say there can be only one  
- * although a few nonmesh things are supported, they are usless to us and ignored) */ 
-RCBCMesh* RCBC_MiniXML_ProcessGeometries_Geometry(RCBCThing *thing, mxml_node_t *node) {
-	assert(thing);
+ * although a few nonmesh temporys are supported, they are usless to us and ignored) */ 
+RCBCMesh* RCBC_MiniXML_ProcessGeometries_Geometry(RCBCTempory *tempory, mxml_node_t *node) {
+	assert(tempory);
 	assert(node);
 
 	const char *id = mxmlElementGetAttr(node, "id");
@@ -215,23 +221,23 @@ RCBCMesh* RCBC_MiniXML_ProcessGeometries_Geometry(RCBCThing *thing, mxml_node_t 
 		errorit("No mesh node in geometry!");
 		return NULL;
 	}
-	RCBCMesh* mesh = RCBC_MiniXML_ProcessGeometries_Mesh(thing, mesh_node);
+	RCBCMesh* mesh = RCBC_MiniXML_ProcessGeometries_Mesh(tempory, mesh_node);
 	RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)mesh);
-	LLAdd(&thing->sources, mesh);
+	LLAdd(&tempory->sources, hookup);
 	return mesh;
 }
 
-int RCBC_MiniXML_ProcessGeometries(RCBCThing *thing, mxml_node_t *node) {
+int RCBC_MiniXML_ProcessGeometries(RCBCTempory *tempory, mxml_node_t *node) {
 	const char* id;
 
 	debugit(DEBUG_LOW, "RCBC_MiniXML_ProcessGeometries");
 
-	assert(thing);
+	assert(tempory);
 	assert(node);
 
 	debugit(DEBUG_LOW, "Freeing empty...");
-	if(thing->geometries) {
-		//RCBC_MeshFree(&(thing->geometries)); /* TODO: Probably not really needed but meh... */
+	if(tempory->thing->geometries) {
+		//RCBC_MeshFree(&(tempory->geometries)); /* TODO: Probably not really needed but meh... */
 	}
 
 	for(node = node->child; node != NULL; node = node->next) {
@@ -239,7 +245,7 @@ int RCBC_MiniXML_ProcessGeometries(RCBCThing *thing, mxml_node_t *node) {
 			DumpNodeInfo(node);
 
 			if(strcasecmp(node->value.element.name, "geometry") == 0) {
-				if(!RCBC_MiniXML_ProcessGeometries_Geometry(thing, node)) {
+				if(!RCBC_MiniXML_ProcessGeometries_Geometry(tempory, node)) {
 					return 1;
 				}
 			}

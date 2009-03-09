@@ -16,7 +16,7 @@
 /* Zoom settings (mouse wheel) */
 #define ZOOM_STEP 0.25f /* Amount to zoom for each wheel nodule */
 #define ZOOM_MIN 0.5f
-#define ZOOM_MAX 5.0f
+#define ZOOM_MAX 50.0f
 
 #define COLOUR_WHITE_3F 1.0f, 1.0f, 1.0f
 #define COLOUR_CUBE COLOUR_WHITE_3F
@@ -171,7 +171,9 @@ void idleFunc() {
 
 int main(int argc, char** argv) {
 	RCBC_Init();
-	g.thing = RCBC_LoadFile("samples/test.dae");
+	g.thing = RCBC_LoadFile("samples/unmaptest.dae");
+
+	debugit(DEBUG_LOW, "asdsads NDOE");
 
 	g.height = 600;
 	g.width = 800;
@@ -185,7 +187,7 @@ int main(int argc, char** argv) {
 	glutCreateWindow("RCBC Viewer");
 
 	glutDisplayFunc(&displayFunc);
-	glutIdleFunc(idleFunc);
+	glutIdleFunc(&idleFunc);
 	glutReshapeFunc(&reshapeFunc);
 	glutMouseFunc(&mouseFunc);
 	glutMotionFunc(&motionFunc);
@@ -209,6 +211,6 @@ int main(int argc, char** argv) {
 	g.cam_fov = 45.0f;
 
 	glutMainLoop();
-	
+
 	exit(EXIT_SUCCESS);
 }

@@ -63,21 +63,40 @@ int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 
 	DumpNodeInfo(tree);
 
+	RCBCTempory* tempory = RCBC_TemporyGenerate();
+	tempory->thing = thing;
 	mxml_node_t* node;
 
 	node = mxmlFindElement(tree, tree, "library_geometries", NULL, NULL, MXML_DESCEND);
-	RCBC_MiniXML_ProcessGeometries(thing, node);
+	RCBC_MiniXML_ProcessGeometries(tempory, node);
 
 	node = mxmlFindElement(tree, tree, "visual_scene", NULL, NULL, MXML_DESCEND);
-	RCBC_MiniXML_ProcessVisualScene(thing, node);
+	RCBC_MiniXML_ProcessVisualScene(tempory, node);
 
 	/* Free memory */
 	//LLFree(hookups); /* TODO: <--- */
 	//RCBC_HookupsFree(hookups);
-	RCBC_Hookup_Execute(thing->sources, thing->sinks);
-	RCBC_Hookup_Execute(thing->sources, thing->sinks);
-	RCBC_Hookup_Execute(thing->sources, thing->sinks);
-  mxmlDelete(tree);
 
+	RCBC_Hookup_Debug(tempory->sources);
+	RCBC_Hookup_Debug(tempory->sinks);
+
+	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
+	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
+	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
+
+	debugit(DEBUG_LOW, "HOOKUPDONE");
+
+	LLNode* itr = tempory->unsorted;
+	while(itr) {
+		RCBC_SortTriangles(itr->data);
+		itr = itr->next;
+	}
+
+	/* TODO: Free memory, cleanup segfaults */
+	/*RCBC_HookupFree(thing->sources);
+	RCBC_HookupFree(thing->sinks);*/
+
+  mxmlDelete(tree);
+	debugit(DEBUG_LOW, "TRIANGLES DONE");
 	return 0;
 }
