@@ -19,6 +19,11 @@
 #define USE_COLOUR
 #define USE_UNICODE
 
+#ifdef WIN32
+#undef USE_COLOUR
+#undef USE_UNICODE
+#endif
+
 #ifdef USE_COLOUR
 #define COLOUR_LIGHT_RED "\033[1;31m"
 #define COLOUR_LIGHT_GREEN "\033[1;32m"
@@ -47,7 +52,7 @@
 #define SYMBOL_WARNING "☢"
 #define SYMBOL_DEGREES "°"
 #else
-#define SYMBOL_SMILY ":)"
+#define SYMBOL_SMILEY ":)"
 #define SYMBOL_INVERTED_SMILEY "(:"
 #define SYMBOL_SADLEY ":("
 #define SYMBOL_FATAL ">_<"
