@@ -2,7 +2,6 @@
 #include "rcbc_render_gl.h"
 #include "console.h"
 #include <GL/gl.h>
-#include <GL/glx.h>
 #include <GL/glut.h>
 
 int RCBC_GL_Init() {

@@ -73,9 +73,6 @@ int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 	node = mxmlFindElement(tree, tree, "visual_scene", NULL, NULL, MXML_DESCEND);
 	RCBC_MiniXML_ProcessVisualScene(tempory, node);
 
-	/* Free memory */
-	//LLFree(hookups); /* TODO: <--- */
-	//RCBC_HookupsFree(hookups);
 
 	RCBC_Hookup_Debug(tempory->sources);
 	RCBC_Hookup_Debug(tempory->sinks);
@@ -96,7 +93,11 @@ int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 	/*RCBC_HookupFree(thing->sources);
 	RCBC_HookupFree(thing->sinks);*/
 
+	/* Free memory */
+	//RCBC_HookupsFree(hookups);
+	//LLFree(hookups);
+	//Free tempory
+
   mxmlDelete(tree);
-	debugit(DEBUG_LOW, "TRIANGLES DONE");
 	return 0;
 }

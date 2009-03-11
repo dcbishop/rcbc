@@ -8,4 +8,4 @@ rcbcview: rcbcview.c ${OBJS}
 	${CC} $< ${CFLAGS} ${LIBS} -lGL -lGLU -lglut ${OBJS} -o $@ -Wall
 
 clean:
-	rm -f rcbcview *~ *.o core
+	rm -f rcbcview rcbcview.exe *~ *.o core
