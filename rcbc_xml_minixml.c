@@ -10,31 +10,31 @@ int RCBC_MiniXML_Init() {
 }
 
 void DumpNodeInfo(mxml_node_t *node) {
-	debugit(DEBUG_LOW, "------NODE_PTR: %p------", node);
+	debugit(DEBUG_VERY_HIGH, "------NODE_PTR: %p------", node);
 	if(node == NULL) {
-		debugit(DEBUG_LOW, "Null Node!");
+		debugit(DEBUG_VERY_HIGH, "Null Node!");
 		return;
 	}
 
 	switch(node->type) {
-		case MXML_IGNORE: debugit(DEBUG_LOW, "TYPE: MXML_IGNORE"); break;
-		case MXML_ELEMENT: debugit(DEBUG_LOW, "TYPE: MXML_ELEMENT"); break;
-		case MXML_INTEGER: debugit(DEBUG_LOW, "TYPE: MXML_INTEGER"); break;
-		case MXML_OPAQUE: debugit(DEBUG_LOW, "TYPE: MXML_OPAQUE"); break;
-		case MXML_REAL: debugit(DEBUG_LOW, "TYPE: MXML_REAL"); break;
-		case MXML_TEXT: debugit(DEBUG_LOW, "TYPE: MXML_TEXT"); break;
-		case MXML_CUSTOM: debugit(DEBUG_LOW, "TYPE: MXML_CUSTOM"); break;
-		dafault: debugit(DEBUG_LOW, "TYPE: BAD TYPE!!!", SYMBOL_WARNING);
+		case MXML_IGNORE: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_IGNORE"); break;
+		case MXML_ELEMENT: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_ELEMENT"); break;
+		case MXML_INTEGER: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_INTEGER"); break;
+		case MXML_OPAQUE: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_OPAQUE"); break;
+		case MXML_REAL: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_REAL"); break;
+		case MXML_TEXT: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_TEXT"); break;
+		case MXML_CUSTOM: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_CUSTOM"); break;
+		dafault: debugit(DEBUG_VERY_HIGH, "TYPE: BAD TYPE!!!", SYMBOL_WARNING);
 	}
 
 	switch(node->type) {
-		case MXML_IGNORE: debugit(DEBUG_LOW, "NO DUMP INFO FOR THIS TYPE"); break;
-		case MXML_ELEMENT: debugit(DEBUG_LOW, "NAME: %s", node->value.element.name); break;
-		case MXML_INTEGER: debugit(DEBUG_LOW, "NO DUMP INFO FOR THIS TYPE"); break;
-		case MXML_OPAQUE: debugit(DEBUG_LOW, "DUMP: %s", node->value.opaque); break;
-		case MXML_REAL: debugit(DEBUG_LOW, "NO DUMP INFO FOR THIS TYPE"); break;
-		case MXML_TEXT: debugit(DEBUG_LOW, "TEXT: '%s' WS=%d", node->value.text.string, node->value.text.whitespace); break;
-		case MXML_CUSTOM: debugit(DEBUG_LOW, "NO DUMP INFO FOR THIS TYPE"); break;
+		case MXML_IGNORE: debugit(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
+		case MXML_ELEMENT: debugit(DEBUG_VERY_HIGH, "NAME: %s", node->value.element.name); break;
+		case MXML_INTEGER: debugit(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
+		case MXML_OPAQUE: debugit(DEBUG_VERY_HIGH, "DUMP: %s", node->value.opaque); break;
+		case MXML_REAL: debugit(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
+		case MXML_TEXT: debugit(DEBUG_VERY_HIGH, "TEXT: '%s' WS=%d", node->value.text.string, node->value.text.whitespace); break;
+		case MXML_CUSTOM: debugit(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
 	}
 }
 
@@ -81,7 +81,7 @@ int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
 	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
 
-	debugit(DEBUG_LOW, "HOOKUPDONE");
+	debugit(DEBUG_LOW, "[MINIXML]: Hookups processed");
 
 	LLNode* itr = tempory->unsorted;
 	while(itr) {

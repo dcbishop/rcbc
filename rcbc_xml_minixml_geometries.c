@@ -34,9 +34,9 @@ RCBC_FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(RCBCTempory *tem
 }
 
 int RCBC_MiniXML_ProcessGeometries_Mesh_Source(RCBCTempory *tempory, RCBCMesh *mesh, mxml_node_t *xnode) {
-	debugit(DEBUG_LOW, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Source", COLOUR_LIGHT_BLUE);
+	debugit(DEBUG_MEDIUM, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Source", COLOUR_LIGHT_BLUE);
 	const char* id = mxmlElementGetAttr(xnode, "id");
-	debugit(DEBUG_LOW, "\t\tID: %s", id);
+	debugit(DEBUG_HIGH, "\t\tID: %s", id);
 	for(xnode = xnode->child; xnode; xnode = xnode->next) {
 		if(xnode->type == MXML_ELEMENT) {
 			DumpNodeInfo(xnode);
@@ -48,12 +48,12 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Source(RCBCTempory *tempory, RCBCMesh *m
 			}
 		}
 	}
-	errorit("Failed to find float array...");
+	debugit(DEBUG_MEDIUM, "Failed to find float array..."); /* TODO: Some of these are normal, should handle these cases */
 	return 1;
 }
 
 int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(RCBCTempory *tempory, RCBCMesh *mesh, mxml_node_t *xnode) {
-	debugit(DEBUG_LOW, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Verticies", COLOUR_LIGHT_BLUE);
+	debugit(DEBUG_MEDIUM, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Verticies", COLOUR_LIGHT_BLUE);
 
 	assert(mesh); 
 	assert(xnode);
@@ -77,18 +77,18 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(RCBCTempory *tempory, RCBCMesh
 
 				RCBC_Hookup* idhookup = RCBC_HookupGenerate((char*)id, NULL);
 				RCBC_Hookup* sourcehookup = RCBC_HookupGenerate((char*)source, (void*)&idhookup->ptr);
-				debugit(DEBUG_LOW, "%sINFOMRATION: id:'%s' source:'%s'", COLOUR_LIGHT_RED, id, source);
+				debugit(DEBUG_VERY_HIGH, "%sINFOMRATION: id:'%s' source:'%s'", COLOUR_LIGHT_RED, id, source);
 				LLAdd(&tempory->sources, idhookup);
 				LLAdd(&tempory->sinks, sourcehookup);				
 			}
 		}
 	}
-	debugit(DEBUG_LOW, "%sEND", COLOUR_LIGHT_BLUE);
+
 	return 0;
 }
 
 RCBC_TrianglesUnsorted* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(RCBCTempory *tempory, RCBCMesh *mesh, mxml_node_t *xnode) {
-	debugit(DEBUG_LOW, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Polygons", COLOUR_LIGHT_BLUE);
+	debugit(DEBUG_MEDIUM, "%sRCBC_MiniXML_ProcessGeometries_Mesh_Polygons", COLOUR_LIGHT_BLUE);
 
 	assert(mesh);
 	assert(xnode);
@@ -97,7 +97,7 @@ RCBC_TrianglesUnsorted* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(RCBCTempor
 	const char* count_s = mxmlElementGetAttr(xnode, "count");
 	int count = atoi(count_s);
 	int inputs = 0;
-debugit(DEBUG_LOW, "%s##########################################################################################%d...", COLOUR_LIGHT_MAGENTA, count);
+
 	RCBC_TrianglesUnsorted* triangles = RCBC_TrianglesUnsortedGenerate(count);
 	for(node = xnode->child; node != NULL; node = node->next) {
 		DumpNodeInfo(node);
@@ -145,7 +145,7 @@ debugit(DEBUG_LOW, "%s##########################################################
 			}
 		}
 	}
-	debugit(DEBUG_LOW, "function end...");
+
 	triangles->inputs = inputs;
 	triangles->ptr = (void**)&mesh->triangles;
 	LLAdd(&tempory->unsorted, triangles);
@@ -181,31 +181,24 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Children(RCBCTempory *tempory, RCBCMesh 
 }
 
 RCBCMesh* RCBC_MiniXML_ProcessGeometries_Mesh(RCBCTempory *tempory, mxml_node_t *xnode) {
-	RCBCMesh* last;
+	debugit(DEBUG_MEDIUM, "%sRCBC_MiniXML_ProcessGeometries_Mesh", COLOUR_LIGHT_BLUE);
 
+	RCBCMesh* last;
 	assert(tempory);
 	assert(xnode);
-
-	debugit(DEBUG_LOW, "%sRCBC_MiniXML_ProcessGeometries_Mesh", COLOUR_LIGHT_BLUE);
 
 	RCBCMesh* mesh = RCBC_MeshGenerate();
 	LLAdd(&tempory->thing->geometries, mesh);
 
 	mxml_node_t *child;
 	const char *id = mxmlElementGetAttr(xnode, "id");
-	debugit(DEBUG_LOW, "MESH ID: '%s'", id);
+	debugit(DEBUG_HIGH, "MESH ID: '%s'", id);
 
 	for(child = xnode->child; child != NULL; child = child->next) {
 		if(child->type == MXML_ELEMENT) {
 			RCBC_MiniXML_ProcessGeometries_Mesh_Children(tempory, mesh, child);
 		}
 	}
-
-
-	/*debugit(DEBUG_LOW, "Prejoin...");
-	LLJoin(&tempory->sources, mesh->sources);
-	LLJoin(&tempory->sinks, mesh->sinks);
-	debugit(DEBUG_LOW, "Postjoin...");*/
 
 	return mesh;
 }
@@ -214,6 +207,7 @@ RCBCMesh* RCBC_MiniXML_ProcessGeometries_Mesh(RCBCTempory *tempory, mxml_node_t 
 /* Grabs the mesh from the geometry (COLLADA specs say there can be only one  
  * although a few nonmesh temporys are supported, they are usless to us and ignored) */ 
 RCBCMesh* RCBC_MiniXML_ProcessGeometries_Geometry(RCBCTempory *tempory, mxml_node_t *node) {
+	debugit(DEBUG_MEDIUM, "%sRCBC_MiniXML_ProcessGeometries_Geometry", COLOUR_LIGHT_BLUE);
 	assert(tempory);
 	assert(node);
 
@@ -233,13 +227,14 @@ RCBCMesh* RCBC_MiniXML_ProcessGeometries_Geometry(RCBCTempory *tempory, mxml_nod
 int RCBC_MiniXML_ProcessGeometries(RCBCTempory *tempory, mxml_node_t *node) {
 	const char* id;
 
-	debugit(DEBUG_LOW, "RCBC_MiniXML_ProcessGeometries");
+	debugit(DEBUG_MEDIUM, "RCBC_MiniXML_ProcessGeometries");
 
 	assert(tempory);
 	assert(node);
 
-	debugit(DEBUG_LOW, "Freeing empty...");
+
 	if(tempory->thing->geometries) {
+		//debugit(DEBUG_HIGH, "Freeing empty...");
 		//RCBC_MeshFree(&(tempory->geometries)); /* TODO: Probably not really needed but meh... */
 	}
 

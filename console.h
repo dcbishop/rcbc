@@ -8,7 +8,7 @@
 #include <stdarg.h>
 #include <string.h>
 
-#define DEBUG_VERYHIGH 40
+#define DEBUG_VERY_HIGH 40
 #define DEBUG_HIGH 30
 #define DEBUG_MEDIUM 20
 #define DEBUG_LOW 10

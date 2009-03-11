@@ -68,15 +68,12 @@ void RCBC_MiniXML_ProcessVisualScene_Node(RCBCTempory *tempory, RCBCNode **rnode
 	assert(rnode);
 	assert(xnode);
 
-	warnit("Info");
 	if(!(*rnode)) {
-		debugit(DEBUG_LOW, "NULL NODE");				
 		*rnode = RCBC_NodeGenerate();
 		last = *rnode;
 	} else {
 		// Loop until end node
-		debugit(DEBUG_LOW, "NON-NULL NODE");
-		for(last = *rnode; last->next; last = last->next) {	debugit(DEBUG_LOW, "\twalking..."); }
+		for(last = *rnode; last->next; last = last->next) {}
 		last->next = RCBC_NodeGenerate();
 		last->next->prev = last;
 		last = last->next;
@@ -85,7 +82,7 @@ void RCBC_MiniXML_ProcessVisualScene_Node(RCBCTempory *tempory, RCBCNode **rnode
 	mxml_node_t *child;
 	const char *id = mxmlElementGetAttr(xnode, "id");
 
-	debugit(DEBUG_LOW, "NODE ID: '%s'", id);
+	debugit(DEBUG_HIGH, "Processing NODE ID: '%s'", id);
 	for(child = xnode->child; child != NULL; child = child->next) {
 		if(child->type == MXML_ELEMENT) {
 			RCBC_MiniXML_ProcessVisualScene_Node_Children(tempory, last, child);

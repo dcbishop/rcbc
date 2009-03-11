@@ -169,10 +169,17 @@ void idleFunc() {
 }
 
 int main(int argc, char** argv) {
-	RCBC_Init();
-	g.thing = RCBC_LoadFile("samples/unmaptest.dae");
+	char* filename;
 
-	debugit(DEBUG_LOW, "asdsads NDOE");
+	if(argc < 2) {
+		filename = "samples/unmaptest.dae"; /* Default model to view */
+		warnit("No model file specified, using trying default '%s'.", filename);
+	} else {
+		filename = argv[1];
+	}
+
+	RCBC_Init();
+	g.thing = RCBC_LoadFile(filename);
 
 	g.height = 600;
 	g.width = 800;
