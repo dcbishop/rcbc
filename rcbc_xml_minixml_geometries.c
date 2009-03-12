@@ -25,10 +25,7 @@ RCBC_FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(RCBCTempory *tem
 		i++;
 	}
 
-//	RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)newarray);
-
 	LLAdd(&mesh->arrays, newarray);
-//	LLAdd(&tempory->sources, hookup);
 
 	return newarray;
 }

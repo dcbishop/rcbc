@@ -13,7 +13,8 @@ void RCBC_MiniXML_ProcessVisualScene_Node_Scale(RCBCNode *rnode, mxml_node_t *xn
 void RCBC_MiniXML_ProcessVisualScene_Node_Translate(RCBCNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);
-	sscanf(xnode->value.opaque, "%f %f %f", &rnode->translate[0], &rnode->translate[1], &rnode->translate[2]);
+	sscanf(xnode->value.opaque, "%f %f %f", &rnode->translate[0], &rnode->translate[2], &rnode->translate[1]);
+	rnode->translate[0] = -rnode->translate[0];
 }
 
 RCBCNode_Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mxml_node_t *xnode) {
@@ -32,7 +33,8 @@ RCBCNode_Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mx
 	rotate->z = 0.0f;
 	rotate->angle = 0.0f;
 
-	sscanf(xnode->value.opaque, "%f %f %f %f", &rotate->x, &rotate->y, &rotate->z, &rotate->angle);
+	sscanf(xnode->value.opaque, "%f %f %f %f", &rotate->x, &rotate->z, &rotate->y, &rotate->angle);
+	rotate->x = -rotate->x;
 	DumpNodeInfo(xnode);
 
 	LLAdd(&rnode->rotations, rotate);

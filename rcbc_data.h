@@ -62,6 +62,10 @@ typedef struct RCBC_Triangles {
 	RCBC_FloatArray* texcoords;
 } RCBC_Triangles;
 
+typedef struct Vector {
+	float x, y, z;
+} Vector;
+
 /* Contains mesh data */
 typedef struct RCBCMesh {
 	LLNode* arrays;

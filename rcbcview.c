@@ -246,8 +246,8 @@ int main(int argc, char** argv) {
 	setPolygonMode();
 
 	g.cam_zoom = 2.5f;
-	g.cam_rot_x = 25.0f;
-	g.cam_rot_y = 75.0f;
+	g.cam_rot_x = -90.0f;
+	g.cam_rot_y = 45.0f;
 	g.cam_rot_x_temp = 0.0f;
 	g.cam_rot_y_temp = 0.0f;
 

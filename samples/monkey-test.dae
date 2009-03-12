@@ -108,8 +108,8 @@
 		<visual_scene id="Scene" name="Scene">
 			<node layer="L1" id="Suzanne_001" name="Suzanne_001">
 				<translate sid="translate">0.07722 -0.09868 0.21499</translate>
-				<rotate sid="rotateZ">0 0 1 43.28463</rotate>
 				<rotate sid="rotateY">0 1 0 5.14616</rotate>
+				<rotate sid="rotateZ">0 0 1 43.28463</rotate>
 				<rotate sid="rotateX">1 0 0 51.02649</rotate>
 				<scale sid="scale">0.73250 0.73250 0.73250</scale>
 				<instance_geometry url="#Mesh"/>
