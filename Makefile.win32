@@ -1,6 +1,6 @@
 CC = i586-mingw32msvc-gcc
 CFLAGSA = $(shell pkg-config --cflags mxml)
-CFLAGS = ${CFLAGSA} -D_STDCALL_SUPPORTED -D_M_IX86
+CFLAGS = ${CFLAGSA} -D_STDCALL_SUPPORTED -D_M_IX86 -DWIN32
 #LIBSA = $(shell pkg-config --libs mxml)
 LIBS = glut32.lib -lmxml
 OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o
