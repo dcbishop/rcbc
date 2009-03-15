@@ -6,6 +6,8 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 
+#include <SOIL.h>
+
 #include "rcbc.h"
 #include "console.h"
 
@@ -250,6 +252,20 @@ int main(int argc, char** argv) {
 	g.cam_rot_y = 45.0f;
 	g.cam_rot_x_temp = 0.0f;
 	g.cam_rot_y_temp = 0.0f;
+
+	/* SOIL test */
+	GLuint tex_2d = SOIL_load_OGL_texture(
+		"textures/black.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
+	if(!tex_2d) {
+		errorit("SOIL loading error: '%s'\n", SOIL_last_result());
+	} else {
+		logit("LibSoil test file loaded successfully...");
+	}
 
 	g.cam_fov = 45.0f;
 

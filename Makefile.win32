@@ -1,12 +1,12 @@
 #CC = i586-mingw32msvc-gcc
 
 # Ubuntu
-#MINGW_PREFIX=i586-mingw32msvc
-#MINGW_LIBDIR = /usr/${MINGW_PREFIX}/lib
+MINGW_PREFIX=i586-mingw32msvc
+MINGW_LIBDIR = /usr/${MINGW_PREFIX}/lib
 
 # Fedora 10
-MINGW_PREFIX=i686-pc-mingw32
-MINGW_LIBDIR = /usr/${MINGW_PREFIX}/sys-root/mingw/lib
+#MINGW_PREFIX=i686-pc-mingw32
+#MINGW_LIBDIR = /usr/${MINGW_PREFIX}/sys-root/mingw/lib
 
 CC = ${MINGW_PREFIX}-gcc
 CFLAGSA = $(shell pkg-config --cflags mxml)
@@ -14,12 +14,14 @@ CFLAGS = ${CFLAGSA} -D_STDCALL_SUPPORTED -D_M_IX86 -DWIN32
 #LIBSA = $(shell pkg-config --libs mxml)
 LIBS = glut32.lib -lmxml -lopengl32 -lglu32 -lglut32
 OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o
+INC = -I/usr/i586-mingw32msvc/include/
 
-DIRECTLIBS = ${MINGW_LIBDIR}/libopengl32.a ${MINGW_LIBDIR}/libmxml.a ${MINGW_LIBDIR}/libglut32.a
+DIRECTLIBS = ${MINGW_LIBDIR}/libSOIL.a ${MINGW_LIBDIR}/libopengl32.a ${MINGW_LIBDIR}/libmxml.a ${MINGW_LIBDIR}/libglut32.a 
+
 all: rcbcview.exe
 
 rcbcview.exe: rcbcview.c ${OBJS} 
-	${CC} $< ${CFLAGS} ${LIBS} ${OBJS} -o $@ -Wall ${DIRECTLIBS}
+	${CC} $< ${CFLAGS} ${LIBS} ${INC} ${OBJS} -o $@ -Wall ${DIRECTLIBS} -L /usr/i586-mingw32msvc/lib/
 
 clean:
 	rm -f rcbcview.exe *~ *.o core
