@@ -37,6 +37,7 @@ RCBC_Tempory* RCBC_TemporyGenerate() {
 	tempory->sinks = NULL;
 	tempory->sources = NULL;
 	tempory->unsorted = NULL;
+	tempory->images = NULL;
 	return tempory;
 }
 
@@ -111,8 +112,8 @@ void RCBC_MeshFree(RCBCMesh **mesh) {
 }
 
 /* Allocates a hookup */
-RCBC_Hookup* RCBC_HookupGenerate(char* id, void** pointer) {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_HookupGenerate", COLOUR_LIGHT_BLUE);
+RCBC_Hookup* RCBC_HookupGenerate(char* id, void* pointer) {
+	DEBUG(DEBUG_MEDIUM, "Entering function...");
 	if(!id) {
 		WARNING("Tried to generate NULL hookup.");
 		return;
@@ -124,8 +125,11 @@ RCBC_Hookup* RCBC_HookupGenerate(char* id, void** pointer) {
 		return NULL;
 	}
 
+	DEBUG_H("Values: ID:'%s', pointer:%p", id, pointer);
+
 	hookup->id = id;
 	hookup->ptr = pointer;
+	DEBUG_H("exiting function...");
 
 	return hookup;
 }
@@ -179,7 +183,7 @@ void RCBC_Hookup_Debug(LLNode* rootnode) {
 	}
 }
 void RCBC_Hookup_Execute(LLNode* sources, LLNode* sinks) {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_Hookup_Execute", COLOUR_LIGHT_BLUE);
+	DEBUG_M("Entering function...");
 	if(sources == NULL) {
 		return;
 	}
@@ -190,20 +194,21 @@ void RCBC_Hookup_Execute(LLNode* sources, LLNode* sinks) {
 	RCBC_Hookup* destination;
 	LLNode* itr;
 
-	DEBUG(DEBUG_VERY_HIGH, "\tLoop begiing...");
+	DEBUG_V("\tLoop begiing...");
 	for(itr = sources; itr; itr = itr->next) {
 		DEBUG(DEBUG_VERY_HIGH, "\t\tLoop......");
 		source = itr->data;
 		if(!source) {
 			continue;
 		}
-		DEBUG(DEBUG_VERY_HIGH, "\t\tsearching for '%s'...", source->id);
+		DEBUG_V("\t\tsearching for '%s'...", source->id);
 		destination = RCBC_HookupFind(sinks, source->id);
 		if(!destination) {
-			ERROR("Hookup failed to find sink '%s'");
+			#warning TODO: Change error to a warning...
+			ERROR("Hookup failed to find sink '%s'", source->id);
 			continue;
 		}
-		DEBUG(DEBUG_HIGH, "\t\tfound '%s'...", source->id);
+		DEBUG_H("\t\tfound '%s'...", source->id);
 		if(!destination->ptr) {
 			DEBUG(DEBUG_HIGH, "No sink in hookup...");
 			continue;
@@ -264,19 +269,21 @@ RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate(int count) {
 	triangles->vertices = NULL;
 	triangles->normals = NULL;
 	triangles->texcoords = NULL;
-	triangles->material = NULL;
+	triangles->image = NULL;
 	return triangles;
 }
 
-RCBC_Material* RCBC_MeterialGenerate(char* filename) {
-	RCBC_Material* material = malloc(sizeof(RCBC_Material));
-	if(!material) {
+RCBC_Image* RCBC_ImageGenerate(char* filename) {
+	RCBC_Image* image = malloc(sizeof(RCBC_Image));
+	if(!image) {
 		ERROR("RCBC_MeterialGenerate: Failed to allocate space for material.");
 		return NULL;
 	}
 
-	material->filename = filename;
-	material->id = 0;	
+	image->filename = filename;
+	image->id = 0;	
+
+	return image;
 }
 
 int RCBC_TrianglesUnsortedAllocateIndices(RCBC_TrianglesUnsorted* triangles) {
@@ -342,18 +349,19 @@ RCBC_Triangles* RCBC_TrianglesGenerate(int count) {
 	triangles->vertices = NULL;
 	triangles->normals = NULL;
 	triangles->texcoords = NULL;
-	triangles->material = NULL;
+	triangles->image = NULL;
 
 	return triangles;
 }
 
+/* This takes a COLLADA interlaced-indexed model and turns it into vertex arrays */
 void RCBC_SortTriangles(RCBC_TrianglesUnsorted* unsorted) {
 	int i = 0xDEADC0DE;
 	RCBC_Triangles* triangles = RCBC_TrianglesGenerate(unsorted->count);
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_SortTriangles", COLOUR_LIGHT_BLUE);
 	*unsorted->ptr = triangles;
 	triangles->count = unsorted->count;
-	triangles->material = unsorted->material;
+	triangles->image = unsorted->image;
 	/* Process vertices */
 	if(unsorted->vertices) {
 		int v = 0;

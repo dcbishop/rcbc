@@ -12,7 +12,6 @@ int RCBC_MiniXML_Init() {
 	return 0;
 }
 
-#warning TODO: Remove this function
 /* For debugging puroses, dump XML node information */
 void DumpNodeInfo(mxml_node_t *node) {
 	DEBUG(DEBUG_VERY_HIGH, "------NODE_PTR: %p------", node);
@@ -79,14 +78,14 @@ int RCBC_MiniXML_Load(RCBC_Model* thing, char* filename) {
 	node = mxmlFindElement(tree, tree, "visual_scene", NULL, NULL, MXML_DESCEND);
 	RCBC_MiniXML_ProcessVisualScene(tempory, node);
 
-	node = mxmlFindElement(tree, tree, "library_effects", NULL, NULL, MXML_DESCEND);
-	RCBC_MiniXML_ProcessTextureEffects(tempory, node);
-
 	node = mxmlFindElement(tree, tree, "library_images", NULL, NULL, MXML_DESCEND);
 	RCBC_MiniXML_ProcessTextureImages(tempory, node);
 
 	node = mxmlFindElement(tree, tree, "library_materials", NULL, NULL, MXML_DESCEND);
 	RCBC_MiniXML_ProcessTextureMaterial(tempory, node);
+
+	node = mxmlFindElement(tree, tree, "library_effects", NULL, NULL, MXML_DESCEND);
+	RCBC_MiniXML_ProcessTextureEffects(tempory, node);
 
 	RCBC_Hookup_Debug(tempory->sources);
 	RCBC_Hookup_Debug(tempory->sinks);

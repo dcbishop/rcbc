@@ -11,5 +11,8 @@ all: rcbcview
 rcbcview: rcbcview.c ${OBJS} 
 	${CC} $< ${CFLAGS} ${INC} ${LIBS} ${OBJS} -o $@ -Wall
 
+rcbc_render_gl.o: rcbc_render_gl.c rcbc_render_gl.h
+	${CC} ${CFLAGS} ${INC} -c $<
+	
 clean:
 	rm -f rcbcview rcbcview.exe *~ *.o core

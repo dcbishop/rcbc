@@ -27,6 +27,7 @@ typedef struct RCBC_Tempory {
 	LLNode* sources;
 	LLNode* sinks;
 	LLNode* unsorted;
+	LLNode* images;
 } RCBC_Tempory;
 
 /* Nodes can have multiple rotations */
@@ -42,10 +43,10 @@ typedef struct RCBC_FloatArray {
 	float* values;
 } RCBC_FloatArray;
 
-typedef struct RCBC_Material {
+typedef struct RCBC_Image {
 	int id;
 	char* filename;
-} RCBC_Material;
+} RCBC_Image;
 
 typedef struct RCBC_TrianglesUnsorted {
 	void** ptr;
@@ -58,7 +59,7 @@ typedef struct RCBC_TrianglesUnsorted {
 	RCBC_FloatArray* normals;
 	int texcoords_offset;
 	RCBC_FloatArray* texcoords;
-	RCBC_Material* material;
+	RCBC_Image* image;
 } RCBC_TrianglesUnsorted;
 
 typedef struct RCBC_Triangles {
@@ -66,7 +67,7 @@ typedef struct RCBC_Triangles {
 	RCBC_FloatArray* vertices;
 	RCBC_FloatArray* normals;
 	RCBC_FloatArray* texcoords;
-	RCBC_Material* material;
+	RCBC_Image* image;
 } RCBC_Triangles;
 
 typedef struct Vector {
@@ -117,9 +118,11 @@ void RCBC_MeshFree(RCBCMesh **mesh);
 
 RCBC_FloatArray* RCBC_FloatArrayGenerate(int count);
 
-RCBC_Hookup* RCBC_HookupGenerate(char* id, void** pointer);
+RCBC_Hookup* RCBC_HookupGenerate(char* id, void* pointer);
 RCBC_Hookup* RCBC_HookupFind(LLNode* roothookup, char* id);
 
 RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate();
 RCBC_Tempory* RCBC_TemporyGenerate();
+
+RCBC_Image* RCBC_ImageGenerate(char* filename);
 #endif

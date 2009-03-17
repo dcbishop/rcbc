@@ -1,6 +1,8 @@
 #include "rcbc_xml_minixml_textures.h"
 #include "console.h"
 #include "rcbc.h"
+#include "rcbc_xml_minixml.h"
+
 
 /* Process the <library_images> section of COLLADA */
 void RCBC_MiniXML_ProcessTextureImages(RCBC_Tempory *tempory, mxml_node_t *node) {
@@ -43,9 +45,11 @@ void RCBC_MiniXML_ProcessTextureImages(RCBC_Tempory *tempory, mxml_node_t *node)
 						snprintf(rname, rname_len, "%s%s", DIRECTORY_TEXTURES, filename);
 					}
 
-					#warning TODO: Make a HOOKUP, image->filename
-					DEBUG_H("Found image filename '%s'", rname);
-					
+					RCBC_Image* image = RCBC_ImageGenerate(rname);
+					LLAdd(&tempory->images, image);
+
+					RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)image);
+					LLAdd(&tempory->sources, hookup);
 				}
 			}
 
@@ -59,7 +63,7 @@ void RCBC_MiniXML_ProcessTextureMaterial(RCBC_Tempory *tempory, mxml_node_t *nod
 	mxml_node_t* child;
 	const char* id;
 	const char* url;
-
+#warning TODO: Remove debug crap...
 	/* Loop through all the material nodes */
 	for(node = node->child; node != NULL; node = node->next) {
 		if(node->type == MXML_ELEMENT
@@ -71,8 +75,15 @@ void RCBC_MiniXML_ProcessTextureMaterial(RCBC_Tempory *tempory, mxml_node_t *nod
 				if(child->type == MXML_ELEMENT
 				&& strcasecmp(child->value.element.name, "instance_effect") == 0) {
 			
-					url = mxmlElementGetAttr(node, "url");
-					#warning TODO: Make a hookup sink, fx->material				
+					url = mxmlElementGetAttr(child, "url");
+				
+					DEHASH(url);
+
+					RCBC_Hookup* material_hookup = RCBC_HookupGenerate((char*)id, NULL);
+					LLAdd(&tempory->sources, material_hookup);
+				
+					RCBC_Hookup* fx_hookup = RCBC_HookupGenerate((char*)url, &material_hookup->ptr);
+					LLAdd(&tempory->sinks, fx_hookup);	
 				}
 			}
 		
@@ -96,7 +107,11 @@ void RCBC_MiniXML_ProcessTextureEffects(RCBC_Tempory *tempory, mxml_node_t *node
 			for(child = node->child; child != NULL; child = child->next) {
 				if(child->type == MXML_ELEMENT
 					&& strcasecmp(child->value.element.name, "profile_COMMON") == 0) {
-					RCBC_MiniXML_ProcessTextureEffects_Profile(tempory, child);
+					
+					RCBC_Hookup* fx_hookup =  RCBC_HookupGenerate((char*)id, NULL);
+					LLAdd(&tempory->sources, fx_hookup);
+					
+					RCBC_MiniXML_ProcessTextureEffects_Profile(tempory, child, fx_hookup);
 				}
 			}
 
@@ -105,48 +120,49 @@ void RCBC_MiniXML_ProcessTextureEffects(RCBC_Tempory *tempory, mxml_node_t *node
 }
 
 /* Process the <library_effects><effect><profile_COMMON> section of COLLADA */
-void RCBC_MiniXML_ProcessTextureEffects_Profile(RCBC_Tempory *tempory, mxml_node_t *node) {
+void RCBC_MiniXML_ProcessTextureEffects_Profile(RCBC_Tempory *tempory, mxml_node_t *node, RCBC_Hookup* fx_hookup) {
 	DEBUG_M("Entering function...");
 	mxml_node_t* child;
 
 	/* Loop through all the newparam nodes */
 	for(node = node->child; node != NULL; node = node->next) {
 		if(node->type == MXML_ELEMENT
-			&& strcasecmp(node->value.element.name, "newparam") == 0) {
+		&& strcasecmp(node->value.element.name, "newparam") == 0) {
 
-			for(child = node->child; child != NULL; child = child->next) {
-				if(child->type == MXML_ELEMENT
-					&& strcasecmp(child->value.element.name, "surface") == 0) {
-	
-					RCBC_MiniXML_ProcessTextureEffects_Newparam(tempory, child);
-
-				}
-			}
+			RCBC_MiniXML_ProcessTextureEffects_Newparam(tempory, node, fx_hookup);
 
 		}
 	}
 }
 
+#warning TODO: Remove unused, commeneted out code
 /* Process the <library_effects><effect><profile_COMMON><newparam> section of COLLADA */
-void RCBC_MiniXML_ProcessTextureEffects_Newparam(RCBC_Tempory *tempory, mxml_node_t *node) {
+void RCBC_MiniXML_ProcessTextureEffects_Newparam(RCBC_Tempory *tempory, mxml_node_t *node, RCBC_Hookup* fx_hookup) {
 	DEBUG_M("Entering function...");
 	mxml_node_t* child;
-	const char* newparam_sid = mxmlElementGetAttr(node, "id");;
-	const char* surface_sid;
+	//const char* newparam_sid = mxmlElementGetAttr(node, "id");
+	//const char* surface_type;
+	const char* init_from;
 	
+	DumpNodeInfo(node);
+
 	for(node = node->child; node != NULL; node = node->next) {
+		DumpNodeInfo(node);
 		if(node->type == MXML_ELEMENT
 		&& strcasecmp(node->value.element.name, "surface") == 0) {
-
+			
 			for(child = node->child; child != NULL; child = child->next) {
 				if(child->type == MXML_ELEMENT
 				&& strcasecmp(child->value.element.name, "init_from") == 0) {
-						
-					surface_sid = mxmlElementGetAttr(child, "id");
-					
+
+					//surface_type = mxmlElementGetAttr(child, "type");
+					init_from = child->child->value.opaque;
+					RCBC_Hookup* img_hookup = RCBC_HookupGenerate((char*)init_from, &fx_hookup->ptr);
+					LLAdd(&tempory->sinks, img_hookup);
 				}
 			}
 				
 		}
 	}
 }
+#warning TODO: Look at generating mipmaps...

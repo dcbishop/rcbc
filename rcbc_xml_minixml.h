@@ -5,6 +5,8 @@
 
 #include "rcbc.h"
 
+#define DEHASH(x) if(x[0] == '#'); x++
+
 int RCBC_MiniXML_Init();
 void DumpNodeInfo(mxml_node_t *node);
 int RCBC_MiniXML_Load(RCBC_Model* thing, char* filename);

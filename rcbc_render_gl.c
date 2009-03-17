@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <GL/gl.h>
 #include <GL/glut.h>
+#include <SOIL.h>
 
 #include "rcbc_render_gl.h"
 #include "console.h"
@@ -10,6 +11,7 @@
 /* Initilize the GL render... (nothing is required for this) */
 int RCBC_GL_Init() {
 	LOG("Initilizing GL render...");
+
 	return 0;
 }
 
@@ -33,7 +35,7 @@ void RCBC_GL_Draw_Node(RCBCNode* node) {
 	RCBCMesh* mesh = node->mesh;
 	RCBC_Triangles* triangles;
 	if(!mesh || !(triangles = mesh->triangles)) { /* If there is node mesh data*/
-		#warning TODO: Don't draw a red sphere...
+		#warning TODO: Dont draw a red sphere...
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glutWireSphere(1.0f, 5, 5); /* Draw a red sphere */
 	} else {
@@ -50,6 +52,33 @@ void RCBC_GL_Draw_Node(RCBCNode* node) {
 			glTexCoordPointer(2, GL_FLOAT, 0, triangles->texcoords->values);
 		} else {
 			#warning TODO: Clear texcoord pointer so no texcoords are used...
+		}
+		
+		#warning TODO: Find out what these do exactly...
+		//glActiveTextureARB(GL_TEXTURE0_ARB);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		//glClientActiveTextureARB(GL_TEXTURE0_ARB);
+
+		/* Check for a image for this mesh */
+		if(triangles->image) {
+			if(triangles->image->id == 0) { /* If the image hasn't been loaded, we do it now */
+				triangles->image->id = SOIL_load_OGL_texture(
+					triangles->image->filename,
+					SOIL_LOAD_AUTO,
+					SOIL_CREATE_NEW_ID,
+					SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+				);
+				
+				/* If the image failed to load, we throw an error and set it to -1 so it won't load again */
+				if(triangles->image->id == 0) {
+					triangles->image->id = -1;
+					ERROR("Failed to load texture: '%s', %s", triangles->image->filename, SOIL_last_result());
+				}
+			}
+		}
+
+		if(triangles->image->id != 0) {
+			glBindTexture(GL_TEXTURE_2D, triangles->image->id);
 		}
 
 		/* Draw it, yay! */

@@ -21,5 +21,8 @@ all: rcbcview.exe
 rcbcview.exe: rcbcview.c ${OBJS} 
 	${CC} $< ${CFLAGS} ${LIBS} ${INC} ${OBJS} -o $@ -Wall ${DIRECTLIBS} -L /usr/i586-mingw32msvc/lib/
 
+rcbc_render_gl.o: rcbc_render_gl.c rcbc_render_gl.h
+	${CC} ${CFLAGS} ${INC} -c $<
+	
 clean:
 	rm -f rcbcview.exe *~ *.o core

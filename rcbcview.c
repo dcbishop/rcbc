@@ -6,8 +6,6 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 
-#include <SOIL.h>
-
 #include "rcbc.h"
 #include "console.h"
 
@@ -207,7 +205,7 @@ int main(int argc, char** argv) {
 	char* filename;
 
 	if(argc < 2) {
-		filename = "samples/unmaptest.dae"; /* Default model to view */
+		filename = "data/models/unmaptest.dae"; /* Default model to view */
 		WARNING("No model file specified, using trying default '%s'.", filename);
 	} else {
 		filename = argv[1];
@@ -232,7 +230,7 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(&reshapeFunc);
 	glutMouseFunc(&mouseFunc);
 	glutMotionFunc(&motionFunc);
-  glutKeyboardFunc(&keyboardFunc);
+	glutKeyboardFunc(&keyboardFunc);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClearDepth(10000.0f);
@@ -240,7 +238,8 @@ int main(int argc, char** argv) {
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);
-
+	glEnable(GL_TEXTURE_2D);
+	
 	g.mouse_x = 0;
 	g.mouse_y = 0;
 
@@ -252,20 +251,6 @@ int main(int argc, char** argv) {
 	g.cam_rot_y = 45.0f;
 	g.cam_rot_x_temp = 0.0f;
 	g.cam_rot_y_temp = 0.0f;
-
-	/* SOIL test */
-	GLuint tex_2d = SOIL_load_OGL_texture(
-		"textures/black.png",
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-	);
-
-	if(!tex_2d) {
-		ERROR("SOIL loading error: '%s'\n", SOIL_last_result());
-	} else {
-		LOG("LibSoil test file loaded successfully...");
-	}
 
 	g.cam_fov = 45.0f;
 
