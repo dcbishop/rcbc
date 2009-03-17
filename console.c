@@ -18,14 +18,14 @@ void logit(const char* format, ...) {
 	char* colour = COLOUR_LIGHT_GREEN;
 
 	int newsize = strlen(COLOUR_WHITE)*2 + strlen(colour) + 
-		strlen(prefix) + strlen(COLOUR_UNCOLOUR) + strlen(format) + 6;
+		strlen(prefix) + strlen(COLOUR_NONE) + strlen(format) + 6;
 
 	va_list ap;
 
 	char* newformat = (char*)malloc(newsize);
 
 	snprintf(newformat, newsize, "%s[%s%s%s]: %s%s\n", 
-		COLOUR_WHITE, colour, prefix, COLOUR_WHITE, COLOUR_UNCOLOUR, format);
+		COLOUR_WHITE, colour, prefix, COLOUR_WHITE, COLOUR_NONE, format);
 
 	va_start(ap, format);
 	vprintf(newformat, ap);
@@ -38,14 +38,14 @@ void errorit(const char* format, ...) {
 	char* colour = COLOUR_LIGHT_RED;
 
 	int newsize = strlen(COLOUR_WHITE)*2 + strlen(colour) + 
-		strlen(prefix) + strlen(COLOUR_UNCOLOUR) + strlen(format) + 6;
+		strlen(prefix) + strlen(COLOUR_NONE) + strlen(format) + 6;
 
 	va_list ap;
 
 	char* newformat = (char*)malloc(newsize);
 
 	snprintf(newformat, newsize, "%s[%s%s%s]: %s%s\n", 
-		COLOUR_WHITE, colour, prefix, COLOUR_WHITE, COLOUR_UNCOLOUR, format);
+		COLOUR_WHITE, colour, prefix, COLOUR_WHITE, COLOUR_NONE, format);
 
 	va_start(ap, format);
 	vfprintf(stderr, newformat, ap);
@@ -62,14 +62,14 @@ void debugit(int level, const char* format, ...) {
 	char* colour = COLOUR_YELLOW;
 
 	int newsize = strlen(COLOUR_WHITE)*2 + strlen(colour) + 
-		strlen(prefix) + strlen(COLOUR_UNCOLOUR) + strlen(format) + 6;
+		strlen(prefix) + strlen(COLOUR_NONE) + strlen(format) + 6;
 
 	va_list ap;
 
 	char* newformat = (char*)malloc(newsize);
 
 	snprintf(newformat, newsize, "%s[%s%s%s]: %s%s\n", 
-		COLOUR_WHITE, colour, prefix, COLOUR_WHITE, COLOUR_UNCOLOUR, format);
+		COLOUR_WHITE, colour, prefix, COLOUR_WHITE, COLOUR_NONE, format);
 
 	va_start(ap, format);
 	vprintf(newformat, ap);
@@ -82,14 +82,14 @@ void warnit(const char* format, ...) {
 	char* colour = COLOUR_LIGHT_MAGENTA;
 
 	int newsize = strlen(COLOUR_WHITE)*2 + strlen(colour) + 
-		strlen(prefix) + strlen(COLOUR_UNCOLOUR) + strlen(format) + 6;
+		strlen(prefix) + strlen(COLOUR_NONE) + strlen(format) + 6;
 
 	va_list ap;
 
 	char* newformat = (char*)malloc(newsize);
 
 	snprintf(newformat, newsize, "%s[%s%s%s]: %s%s\n", 
-		COLOUR_WHITE, colour, prefix, COLOUR_WHITE, COLOUR_UNCOLOUR, format);
+		COLOUR_WHITE, colour, prefix, COLOUR_WHITE, COLOUR_NONE, format);
 
 	va_start(ap, format);
 	vprintf(newformat, ap);
