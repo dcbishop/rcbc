@@ -8,18 +8,18 @@
 #include <stdarg.h>
 #include <string.h>
 
+#define DEBUG_LEVEL DEBUG_VERY_HIGH
+
 #define DEBUG_VERY_HIGH 40
 #define DEBUG_HIGH 30
 #define DEBUG_MEDIUM 20
 #define DEBUG_LOW 10
 #define DEBUG_ALWAYS -10
 
-#define DEBUG_LEVEL DEBUG_LOW
-
 #define USE_COLOUR
 #define USE_UNICODE
 
-#ifdef WIN32
+#ifdef _WIN32
 #undef USE_COLOUR
 #undef USE_UNICODE
 #endif
@@ -32,7 +32,7 @@
 #define COLOUR_LIGHT_MAGENTA "\033[1;35m"
 #define COLOUR_LIGHT_CYAN "\033[1;36m"
 #define COLOUR_WHITE "\033[1;37m"
-#define COLOUR_UNCOLOUR "\033[0m"
+#define COLOUR_NONE "\033[0m"
 #else
 #define COLOUR_LIGHT_RED ""
 #define COLOUR_LIGHT_GREEN ""
@@ -41,7 +41,7 @@
 #define COLOUR_LIGHT_MAGENTA ""
 #define COLOUR_LIGHT_CYAN ""
 #define COLOUR_WHITE ""
-#define COLOUR_UNCOLOUR ""
+#define COLOUR_NONE ""
 #endif
 
 #ifdef USE_UNICODE
@@ -59,6 +59,20 @@
 #define SYMBOL_WARNING "(!)"
 #define SYMBOL_DEGREES "deg"
 #endif
+
+#define DEBUG(level, fmt, ...) debugit(level, "%s[%s%s:%u%s]: [%s%s%s] %s" fmt, COLOUR_WHITE, COLOUR_LIGHT_CYAN, __FILE__, __LINE__, COLOUR_WHITE, COLOUR_LIGHT_BLUE, __FUNCTION__, COLOUR_WHITE, COLOUR_NONE, ## __VA_ARGS__)
+
+#define DEBUG_A(fmt, ...) DEBUG(DEBUG_ALWAYS, fmt, ## __VA_ARGS__)
+#define DEBUG_L(fmt, ...) DEBUG(DEBUG_LOW, fmt, ## __VA_ARGS__)
+#define DEBUG_M(fmt, ...) DEBUG(DEBUG_MEDIUM, fmt, ## __VA_ARGS__)
+#define DEBUG_H(fmt, ...) DEBUG(DEBUG_HIGH, fmt, ## __VA_ARGS__)
+#define DEBUG_V(fmt, ...) DEBUG(DEBUG_VERY_HIGH, fmt, ## __VA_ARGS__)
+
+#define LOG(fmt, ...) logit("%s[%s%s%s:%s%s%s]:%s " fmt, COLOUR_WHITE, COLOUR_LIGHT_CYAN, __DATE__, COLOUR_WHITE, COLOUR_LIGHT_CYAN, __TIME__, COLOUR_WHITE, COLOUR_NONE, ## __VA_ARGS__)
+
+#define WARNING(fmt, ...) warnit("%s[%s%s:%u%s]: [%s%s%s] %s" fmt, COLOUR_WHITE, COLOUR_LIGHT_CYAN, __FILE__, __LINE__, COLOUR_WHITE, COLOUR_LIGHT_BLUE, __FUNCTION__, COLOUR_WHITE, COLOUR_NONE, ## __VA_ARGS__)
+
+#define ERROR(fmt, ...) errorit("%s[%s%s:%u%s]: [%s%s%s] %s" fmt, COLOUR_WHITE, COLOUR_LIGHT_CYAN, __FILE__, __LINE__, COLOUR_WHITE, COLOUR_LIGHT_BLUE, __FUNCTION__, COLOUR_WHITE, COLOUR_NONE, ## __VA_ARGS__)
 
 void logit(const char* format, ...);
 void errorit(const char* format, ...);
