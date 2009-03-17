@@ -8,7 +8,7 @@
 #define PI 3.14152f
 
 int RCBC_GL_Init() {
-	logit("Initilizing GL render...");
+	LOG("Initilizing GL render...");
 	return 0;
 }
 

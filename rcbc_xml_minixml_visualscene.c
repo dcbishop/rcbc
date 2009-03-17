@@ -41,6 +41,54 @@ RCBCNode_Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mx
 	return rotate;
 }
 
+void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(RCBCTempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
+	mxml_node_t *child1, *child2, *child3, *child4;
+	const char *semantic, *input_semantic;
+	const char *id = mxmlElementGetAttr(xnode, "url");
+	if(id[0] == '#') {
+		id++;
+	}
+
+	RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)&rnode->mesh);
+	LLAdd(&tempory->sinks, hookup);
+
+	/* TODO: Too many loops (although most only fire once... ) */
+	/* TODO: This is probably not even needed here... */
+	/*for(child1 = xnode->child; child1 != NULL; child1 = child1->next) {
+		if(child1->type == MXML_ELEMENT &&
+			(strcasecmp(child1->value.element.name, "bind_material") == 0)) {
+
+			for(child2 = child1->child; child2 != NULL; child2 = child2->next) {
+				if(child2->type == MXML_ELEMENT &&
+					(strcasecmp(child2->value.element.name, "technique_common") == 0)) {
+	
+					for(child3 = child2->child; child3 != NULL; child3 = child3->next) {
+						if(child3->type == MXML_ELEMENT &&
+						(strcasecmp(child3->value.element.name, "instance_material") == 0)) {
+
+							for(child4 = child3->child; child4 != NULL; child4 = child4->next) {
+								if(child4->type == MXML_ELEMENT &&
+								(strcasecmp(child4->value.element.name, "bind_vertex_input") == 0)) {
+									input_semantic = mxmlElementGetAttr(xnode, "input_semantic");									
+									semantic = mxmlElementGetAttr(xnode, "semantic");
+									hookup = RCBC_HookupGenerate((char*)semantic, (void*)&rnode->mesh);
+								}
+							}
+
+
+						}
+					}
+
+
+				}
+			}
+
+
+		}
+	}*/
+			
+}
+
 void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBCTempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);
@@ -54,12 +102,7 @@ void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBCTempory *tempory, RCBCNod
 	} else if(strcasecmp(xnode->value.element.name, "scale") == 0) {
 		RCBC_MiniXML_ProcessVisualScene_Node_Scale(rnode, xnode->child);
 	} else if(strcasecmp(xnode->value.element.name, "instance_geometry") == 0) {
-			const char *id = mxmlElementGetAttr(xnode, "url");
-			if(id[0] == '#') {
-				id++;
-			}
-			RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)&rnode->mesh);
-			LLAdd(&tempory->sinks, hookup);
+		RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(tempory, rnode, xnode);
 	}
 }
 
@@ -84,7 +127,7 @@ void RCBC_MiniXML_ProcessVisualScene_Node(RCBCTempory *tempory, RCBCNode **rnode
 	mxml_node_t *child;
 	const char *id = mxmlElementGetAttr(xnode, "id");
 
-	debugit(DEBUG_HIGH, "Processing NODE ID: '%s'", id);
+	DEBUG(DEBUG_HIGH, "Processing NODE ID: '%s'", id);
 	for(child = xnode->child; child != NULL; child = child->next) {
 		if(child->type == MXML_ELEMENT) {
 			RCBC_MiniXML_ProcessVisualScene_Node_Children(tempory, last, child);

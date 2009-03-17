@@ -92,7 +92,7 @@ void displayFunc() {
 		fps = frame*1000.0f/(current_time-last_fps_time);
 		last_fps_time = current_time;
 		frame = 0;
-		logit("FPS: %d", fps);
+		LOG("FPS: %d", fps);
 	}
 
 	last_render_time = current_time;
@@ -113,7 +113,7 @@ void displayFunc() {
 
 	int error;
 	if ((error = glGetError()))
-		errorit("GLUT: %s", gluErrorString(error));
+		ERROR("GLUT: %s", gluErrorString(error));
 }
 
 void setPolygonMode() {
@@ -172,13 +172,13 @@ void mouseFunc(int button, int state, int x, int y) {
 			g.cam_zoom+=ZOOM_STEP;
 			if(g.cam_zoom>ZOOM_MAX)
 				g.cam_zoom=ZOOM_MAX;
-			logit("Zoom at %f.", g.cam_zoom);
+			LOG("Zoom at %f.", g.cam_zoom);
 			break;
 		case(3): /* Zoom in with mouse wheel */
 			g.cam_zoom-=ZOOM_STEP;
 			if(g.cam_zoom<ZOOM_MIN)
 				g.cam_zoom=ZOOM_MIN;
-			logit("Zoom at %f.", g.cam_zoom);
+			LOG("Zoom at %f.", g.cam_zoom);
 			break;
 	}
 }
@@ -198,7 +198,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
 			setPolygonMode();
 			break;
 		default:
-			debugit(DEBUG_LOW, "Pressed unknown key: %d\n", key);
+			DEBUG(DEBUG_LOW, "Pressed unknown key: %d\n", key);
 			break;
 	}
 }
@@ -208,18 +208,18 @@ int main(int argc, char** argv) {
 
 	if(argc < 2) {
 		filename = "samples/unmaptest.dae"; /* Default model to view */
-		warnit("No model file specified, using trying default '%s'.", filename);
+		WARNING("No model file specified, using trying default '%s'.", filename);
 	} else {
 		filename = argv[1];
 	}
-
+	ERROR("Oh gnoes!!!!");
 	RCBC_Init();
 	g.thing = RCBC_LoadFile(filename);
 
 	g.height = 600;
 	g.width = 800;
 
-	logit("Initilizing RCRB GLUT Viewer...");
+	LOG("Initilizing RCRB GLUT Viewer...");
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
@@ -262,9 +262,9 @@ int main(int argc, char** argv) {
 	);
 
 	if(!tex_2d) {
-		errorit("SOIL loading error: '%s'\n", SOIL_last_result());
+		ERROR("SOIL loading error: '%s'\n", SOIL_last_result());
 	} else {
-		logit("LibSoil test file loaded successfully...");
+		LOG("LibSoil test file loaded successfully...");
 	}
 
 	g.cam_fov = 45.0f;

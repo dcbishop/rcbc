@@ -1,7 +1,13 @@
 #ifndef _RCBC_DEF
 #define _RCBC_DEF
 
+/* Default paths */
+#define DIRECTORY_TEXTURES "./data/textures/"
+#define DIRECTORY_MODELS "./data/models/"
+
 #include "rcbc_data.h"
+
+#define SAFE_MALLOC (ptr, size) ptr = malloc(size);
 
 /* This contains the swapable components, incase you want to replace the XML
  * library or whatever, you could also do things like replace the render with 

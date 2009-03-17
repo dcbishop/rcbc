@@ -1,5 +1,3 @@
-#CC = i586-mingw32msvc-gcc
-
 # Ubuntu
 MINGW_PREFIX=i586-mingw32msvc
 MINGW_LIBDIR = /usr/${MINGW_PREFIX}/lib
@@ -13,7 +11,7 @@ CFLAGSA = $(shell pkg-config --cflags mxml)
 CFLAGS = ${CFLAGSA} -D_STDCALL_SUPPORTED -D_M_IX86 -DWIN32
 #LIBSA = $(shell pkg-config --libs mxml)
 LIBS = glut32.lib -lmxml -lopengl32 -lglu32 -lglut32
-OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o
+OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o rcbc_xml_minixml_textures.o
 INC = -I/usr/i586-mingw32msvc/include/
 
 DIRECTLIBS = ${MINGW_LIBDIR}/libSOIL.a ${MINGW_LIBDIR}/libopengl32.a ${MINGW_LIBDIR}/libmxml.a ${MINGW_LIBDIR}/libglut32.a 

@@ -33,32 +33,32 @@ static RCBCPlugins rcbc_plugins;
 static int rcbc_initilized = 0;
 
 int RCBC_Init() {
-	logit("RCBC initilizing...");
+	LOG("RCBC initilizing...");
 	rcbc_plugins.render_draw = (void*)RCBC_RENDER_RENDER;
 	rcbc_plugins.xml_load = (void*)RCBC_XML_LOAD;
 
-	logit("Initilizing render...");
+	LOG("Initilizing render...");
 	if(RCBC_RENDER_INIT()) {
-		errorit("Failed to initilize XML parser... %s", SYMBOL_FATAL);
+		ERROR("Failed to initilize XML parser... %s", SYMBOL_FATAL);
 		return 1;
 	}
 
-	logit("Initilizing XML parser...");
+	LOG("Initilizing XML parser...");
 	if(RCBC_XML_INIT()) {
-		errorit("Failed to initilize XML parser... %s", SYMBOL_FATAL);
+		ERROR("Failed to initilize XML parser... %s", SYMBOL_FATAL);
 		return 1;
 	}
 
 	rcbc_initilized = 1;
-	logit("RCBC initilzed successfuly %s", SYMBOL_SMILEY);
+	LOG("RCBC initilzed successfuly %s", SYMBOL_SMILEY);
 	return 0;
 }
 
 RCBCThing* RCBC_LoadFile(const char* filename) {
-	logit("RCBC loading '%s'...", filename);
+	LOG("RCBC loading '%s'...", filename);
 
 	if(!rcbc_initilized) {
-		errorit("Attempted to use uninitilized RCBC... %s", SYMBOL_FATAL);
+		ERROR("Attempted to use uninitilized RCBC... %s", SYMBOL_FATAL);
 		return NULL;
 	}
 
@@ -71,7 +71,7 @@ RCBCThing* RCBC_LoadFile(const char* filename) {
 
 int RCBC_Render(const RCBCThing* thing) {
 	if(!rcbc_initilized) {
-		errorit("Attempted to use uninitilized RCBC... %s", SYMBOL_FATAL);
+		ERROR("Attempted to use uninitilized RCBC... %s", SYMBOL_FATAL);
 		return 1;
 	}
 

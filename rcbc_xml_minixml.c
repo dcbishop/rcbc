@@ -1,65 +1,67 @@
 #include <stdio.h>
 
 #include "rcbc_xml_minixml_visualscene.h"
+#include "rcbc_xml_minixml_textures.h"
+#include "rcbc_xml_minixml_geometries.h"
 #include "rcbc_xml_minixml.h"
 #include "console.h"
 
 int RCBC_MiniXML_Init() {
-	logit("Initilizing MiniXML...");
+	LOG("Initilizing MiniXML...");
 	return 0;
 }
 
 void DumpNodeInfo(mxml_node_t *node) {
-	debugit(DEBUG_VERY_HIGH, "------NODE_PTR: %p------", node);
+	DEBUG(DEBUG_VERY_HIGH, "------NODE_PTR: %p------", node);
 	if(node == NULL) {
-		debugit(DEBUG_VERY_HIGH, "Null Node!");
+		DEBUG(DEBUG_VERY_HIGH, "Null Node!");
 		return;
 	}
 
 	switch(node->type) {
-		case MXML_IGNORE: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_IGNORE"); break;
-		case MXML_ELEMENT: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_ELEMENT"); break;
-		case MXML_INTEGER: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_INTEGER"); break;
-		case MXML_OPAQUE: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_OPAQUE"); break;
-		case MXML_REAL: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_REAL"); break;
-		case MXML_TEXT: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_TEXT"); break;
-		case MXML_CUSTOM: debugit(DEBUG_VERY_HIGH, "TYPE: MXML_CUSTOM"); break;
-		dafault: debugit(DEBUG_VERY_HIGH, "TYPE: BAD TYPE!!!", SYMBOL_WARNING);
+		case MXML_IGNORE: DEBUG(DEBUG_VERY_HIGH, "TYPE: MXML_IGNORE"); break;
+		case MXML_ELEMENT: DEBUG(DEBUG_VERY_HIGH, "TYPE: MXML_ELEMENT"); break;
+		case MXML_INTEGER: DEBUG(DEBUG_VERY_HIGH, "TYPE: MXML_INTEGER"); break;
+		case MXML_OPAQUE: DEBUG(DEBUG_VERY_HIGH, "TYPE: MXML_OPAQUE"); break;
+		case MXML_REAL: DEBUG(DEBUG_VERY_HIGH, "TYPE: MXML_REAL"); break;
+		case MXML_TEXT: DEBUG(DEBUG_VERY_HIGH, "TYPE: MXML_TEXT"); break;
+		case MXML_CUSTOM: DEBUG(DEBUG_VERY_HIGH, "TYPE: MXML_CUSTOM"); break;
+		dafault: DEBUG(DEBUG_VERY_HIGH, "TYPE: BAD TYPE!!!", SYMBOL_WARNING);
 	}
 
 	switch(node->type) {
-		case MXML_IGNORE: debugit(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
-		case MXML_ELEMENT: debugit(DEBUG_VERY_HIGH, "NAME: %s", node->value.element.name); break;
-		case MXML_INTEGER: debugit(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
-		case MXML_OPAQUE: debugit(DEBUG_VERY_HIGH, "DUMP: %s", node->value.opaque); break;
-		case MXML_REAL: debugit(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
-		case MXML_TEXT: debugit(DEBUG_VERY_HIGH, "TEXT: '%s' WS=%d", node->value.text.string, node->value.text.whitespace); break;
-		case MXML_CUSTOM: debugit(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
+		case MXML_IGNORE: DEBUG(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
+		case MXML_ELEMENT: DEBUG(DEBUG_VERY_HIGH, "NAME: %s", node->value.element.name); break;
+		case MXML_INTEGER: DEBUG(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
+		case MXML_OPAQUE: DEBUG(DEBUG_VERY_HIGH, "DUMP: %s", node->value.opaque); break;
+		case MXML_REAL: DEBUG(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
+		case MXML_TEXT: DEBUG(DEBUG_VERY_HIGH, "TEXT: '%s' WS=%d", node->value.text.string, node->value.text.whitespace); break;
+		case MXML_CUSTOM: DEBUG(DEBUG_VERY_HIGH, "NO DUMP INFO FOR THIS TYPE"); break;
 	}
 }
 
 int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
-	logit("[MINIXML]: Opening '%s'...", filename);
+	LOG("[MINIXML]: Opening '%s'...", filename);
 	if(!thing) {
-		errorit("[MINIXML]: Passed NULL 'thing'...");
+		ERROR("[MINIXML]: Passed NULL 'thing'...");
 	}
 
 	FILE *fp;
 	mxml_node_t *tree;
 	fp = fopen(filename, "r");
 	if(!fp) {
-		errorit("[MINIXML]: Error opening %s... %s", filename, SYMBOL_FATAL);
+		ERROR("[MINIXML]: Error opening %s... %s", filename, SYMBOL_FATAL);
 		return 1;
 	}
-	logit("[MINIXML]: Parsing '%s'...", filename);
+	LOG("[MINIXML]: Parsing '%s'...", filename);
 	tree = mxmlLoadFile(NULL, fp, MXML_OPAQUE_CALLBACK);
 	fclose(fp);
 	
 	if(!tree) {
-		errorit("[MINIXML]: Error parsing %s... %s", filename, SYMBOL_FATAL);
+		ERROR("[MINIXML]: Error parsing %s... %s", filename, SYMBOL_FATAL);
 		return 1;
 	}
-	logit("[MINIXML]: Successfuly loaded... %s", SYMBOL_SMILEY);
+	LOG("[MINIXML]: Successfuly loaded... %s", SYMBOL_SMILEY);
 
 	DumpNodeInfo(tree);
 
@@ -73,6 +75,14 @@ int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 	node = mxmlFindElement(tree, tree, "visual_scene", NULL, NULL, MXML_DESCEND);
 	RCBC_MiniXML_ProcessVisualScene(tempory, node);
 
+	node = mxmlFindElement(tree, tree, "library_effects", NULL, NULL, MXML_DESCEND);
+	RCBC_MiniXML_ProcessTextureEffects(tempory, node);
+
+	node = mxmlFindElement(tree, tree, "library_images", NULL, NULL, MXML_DESCEND);
+	RCBC_MiniXML_ProcessTextureImages(tempory, node);
+
+	node = mxmlFindElement(tree, tree, "library_materials", NULL, NULL, MXML_DESCEND);
+	RCBC_MiniXML_ProcessTextureMaterial(tempory, node);
 
 	RCBC_Hookup_Debug(tempory->sources);
 	RCBC_Hookup_Debug(tempory->sinks);
@@ -81,7 +91,7 @@ int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
 	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
 
-	debugit(DEBUG_LOW, "[MINIXML]: Hookups processed");
+	DEBUG(DEBUG_LOW, "[MINIXML]: Hookups processed");
 
 	LLNode* itr = tempory->unsorted;
 	while(itr) {
@@ -89,11 +99,12 @@ int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 		itr = itr->next;
 	}
 
-	/* TODO: Free memory, cleanup segfaults */
+	#warning TODO: Consider removing nodes with no geometry or children (camera/light nodes.)
+
+	#warning TODO: Free memory, cleanup segfaults
+	/* Free memory */
 	/*RCBC_HookupFree(thing->sources);
 	RCBC_HookupFree(thing->sinks);*/
-
-	/* Free memory */
 	//RCBC_HookupsFree(hookups);
 	//LLFree(hookups);
 	//Free tempory
