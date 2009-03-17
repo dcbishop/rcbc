@@ -7,6 +7,6 @@
 
 int RCBC_MiniXML_Init();
 void DumpNodeInfo(mxml_node_t *node);
-int RCBC_MiniXML_Load(RCBCThing* thing, char* filename);
+int RCBC_MiniXML_Load(RCBC_Model* thing, char* filename);
 
 #endif

@@ -17,17 +17,17 @@ typedef struct LL {
 
 
 /* A container for a COLLADA model */
-typedef struct RCBCThing {
+typedef struct RCBC_Model {
 	struct RCBCNode* visual_scene;
 	struct LLNode* geometries;
-} RCBCThing;
+} RCBC_Model;
 
-typedef struct RCBCTempory {
-	RCBCThing* thing;
+typedef struct RCBC_Tempory {
+	RCBC_Model* thing;
 	LLNode* sources;
 	LLNode* sinks;
 	LLNode* unsorted;
-} RCBCTempory;
+} RCBC_Tempory;
 
 /* Nodes can have multiple rotations */
 typedef struct RCBCNode_Rotate {
@@ -106,7 +106,7 @@ LLNode* LLGenerate(void* data);
 LLNode* LLAdd(LLNode** rootnode, void* data);
 void LLFree(LLNode** rootnode);
 
-RCBCThing* RCBC_ThingGenerate();
+RCBC_Model* RCBC_ThingGenerate();
 
 void RCBC_NodeDebugInfo(RCBCNode* node);
 RCBCNode* RCBC_NodeGenerate();
@@ -121,5 +121,5 @@ RCBC_Hookup* RCBC_HookupGenerate(char* id, void** pointer);
 RCBC_Hookup* RCBC_HookupFind(LLNode* roothookup, char* id);
 
 RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate();
-RCBCTempory* RCBC_TemporyGenerate();
+RCBC_Tempory* RCBC_TemporyGenerate();
 #endif

@@ -15,14 +15,14 @@
  * that draws a cube around the model or whatever. In theory anyway, for now
  * not all of this might actually be replacable. */
 typedef struct RCBCPlugins {
-	int (*render_draw)(const RCBCThing* thing);
-	RCBCThing* (*xml_load)(RCBCThing* thing, const char* filename);
+	int (*render_draw)(const RCBC_Model* thing);
+	RCBC_Model* (*xml_load)(RCBC_Model* thing, const char* filename);
 } RCBCPlugins;
 
 
 int RCBC_Init();
-RCBCThing* RCBC_LoadFile(const char* filename);
-int RCBC_Render(const RCBCThing* thing);
+RCBC_Model* RCBC_LoadFile(const char* filename);
+int RCBC_Render(const RCBC_Model* thing);
 
 RCBCNode* RCBC_NodeGenerate();
 void RCBC_NodeFree(RCBCNode** node);

@@ -6,11 +6,14 @@
 #include "rcbc_xml_minixml.h"
 #include "console.h"
 
+/* Initilize the MiniXML library (nothing is actually required) */
 int RCBC_MiniXML_Init() {
 	LOG("Initilizing MiniXML...");
 	return 0;
 }
 
+#warning TODO: Remove this function
+/* For debugging puroses, dump XML node information */
 void DumpNodeInfo(mxml_node_t *node) {
 	DEBUG(DEBUG_VERY_HIGH, "------NODE_PTR: %p------", node);
 	if(node == NULL) {
@@ -40,7 +43,8 @@ void DumpNodeInfo(mxml_node_t *node) {
 	}
 }
 
-int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
+/* Load a model from a COLLADA file */
+int RCBC_MiniXML_Load(RCBC_Model* thing, char* filename) {
 	LOG("[MINIXML]: Opening '%s'...", filename);
 	if(!thing) {
 		ERROR("[MINIXML]: Passed NULL 'thing'...");
@@ -65,7 +69,7 @@ int RCBC_MiniXML_Load(RCBCThing* thing, char* filename) {
 
 	DumpNodeInfo(tree);
 
-	RCBCTempory* tempory = RCBC_TemporyGenerate();
+	RCBC_Tempory* tempory = RCBC_TemporyGenerate();
 	tempory->thing = thing;
 	mxml_node_t* node;
 

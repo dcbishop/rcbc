@@ -7,6 +7,6 @@ int RCBC_TextInfo_Init() {
 	return 0;
 }
 
-int RCBC_TextInfo_Render(RCBCThing* thing) {
+int RCBC_TextInfo_Render(RCBC_Model* thing) {
 	LOG("Rendering %p.", thing);
 }

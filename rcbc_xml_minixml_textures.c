@@ -2,8 +2,8 @@
 #include "console.h"
 #include "rcbc.h"
 
-/* Process the 	<library_images> section of COLLADA */
-void RCBC_MiniXML_ProcessTextureImages(RCBCTempory *tempory, mxml_node_t *node) {
+/* Process the <library_images> section of COLLADA */
+void RCBC_MiniXML_ProcessTextureImages(RCBC_Tempory *tempory, mxml_node_t *node) {
 	DEBUG_M("Entering function...");
 	if(!node) {
 		return;
@@ -54,7 +54,7 @@ void RCBC_MiniXML_ProcessTextureImages(RCBCTempory *tempory, mxml_node_t *node) 
 }
 
 /* Process the <library_materials> section of COLLADA */
-void RCBC_MiniXML_ProcessTextureMaterial(RCBCTempory *tempory, mxml_node_t *node) {
+void RCBC_MiniXML_ProcessTextureMaterial(RCBC_Tempory *tempory, mxml_node_t *node) {
 	DEBUG_M("Entering function...");
 	mxml_node_t* child;
 	const char* id;
@@ -81,7 +81,7 @@ void RCBC_MiniXML_ProcessTextureMaterial(RCBCTempory *tempory, mxml_node_t *node
 }
 
 /* Process the <library_effects> section of COLLADA */
-void RCBC_MiniXML_ProcessTextureEffects(RCBCTempory *tempory, mxml_node_t *node) {
+void RCBC_MiniXML_ProcessTextureEffects(RCBC_Tempory *tempory, mxml_node_t *node) {
 	DEBUG_M("Entering function...");
 	const char* id;
 	mxml_node_t* child;
@@ -105,7 +105,7 @@ void RCBC_MiniXML_ProcessTextureEffects(RCBCTempory *tempory, mxml_node_t *node)
 }
 
 /* Process the <library_effects><effect><profile_COMMON> section of COLLADA */
-void RCBC_MiniXML_ProcessTextureEffects_Profile(RCBCTempory *tempory, mxml_node_t *node) {
+void RCBC_MiniXML_ProcessTextureEffects_Profile(RCBC_Tempory *tempory, mxml_node_t *node) {
 	DEBUG_M("Entering function...");
 	mxml_node_t* child;
 
@@ -115,11 +115,9 @@ void RCBC_MiniXML_ProcessTextureEffects_Profile(RCBCTempory *tempory, mxml_node_
 			&& strcasecmp(node->value.element.name, "newparam") == 0) {
 
 			for(child = node->child; child != NULL; child = child->next) {
-
 				if(child->type == MXML_ELEMENT
 					&& strcasecmp(child->value.element.name, "surface") == 0) {
 	
-					#warning TODO: Code goes here...
 					RCBC_MiniXML_ProcessTextureEffects_Newparam(tempory, child);
 
 				}
@@ -130,7 +128,25 @@ void RCBC_MiniXML_ProcessTextureEffects_Profile(RCBCTempory *tempory, mxml_node_
 }
 
 /* Process the <library_effects><effect><profile_COMMON><newparam> section of COLLADA */
-void RCBC_MiniXML_ProcessTextureEffects_Newparam(RCBCTempory *tempory, mxml_node_t *node) {
+void RCBC_MiniXML_ProcessTextureEffects_Newparam(RCBC_Tempory *tempory, mxml_node_t *node) {
 	DEBUG_M("Entering function...");
-	#warning TODO: Code goes here...
+	mxml_node_t* child;
+	const char* newparam_sid = mxmlElementGetAttr(node, "id");;
+	const char* surface_sid;
+	
+	for(node = node->child; node != NULL; node = node->next) {
+		if(node->type == MXML_ELEMENT
+		&& strcasecmp(node->value.element.name, "surface") == 0) {
+
+			for(child = node->child; child != NULL; child = child->next) {
+				if(child->type == MXML_ELEMENT
+				&& strcasecmp(child->value.element.name, "init_from") == 0) {
+						
+					surface_sid = mxmlElementGetAttr(child, "id");
+					
+				}
+			}
+				
+		}
+	}
 }

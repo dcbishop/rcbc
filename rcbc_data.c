@@ -4,6 +4,7 @@
 #include "rcbc_data.h"
 #include "console.h"
 
+/* Dump some visual scene node info for debugging */
 void RCBC_NodeDebugInfo(RCBCNode* node) {
 	DEBUG(DEBUG_VERY_HIGH, "%sRCBC_NodeDebugInfo", COLOUR_LIGHT_BLUE);
 	LLNode* itr = node->rotations;
@@ -15,9 +16,9 @@ void RCBC_NodeDebugInfo(RCBCNode* node) {
 	}
 }
 
-RCBCThing* RCBC_ThingGenerate() {
+RCBC_Model* RCBC_ThingGenerate() {
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_ThingGenerate", COLOUR_LIGHT_BLUE);
-	RCBCThing *thing = malloc(sizeof(RCBCThing));
+	RCBC_Model *thing = malloc(sizeof(RCBC_Model));
 	if(!thing) {
 		return NULL;
 	}
@@ -26,9 +27,9 @@ RCBCThing* RCBC_ThingGenerate() {
 	return thing;
 }
 
-RCBCTempory* RCBC_TemporyGenerate() {
+RCBC_Tempory* RCBC_TemporyGenerate() {
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_TemporyGenerate", COLOUR_LIGHT_BLUE);
-	RCBCTempory* tempory = malloc(sizeof(RCBCTempory));
+	RCBC_Tempory* tempory = malloc(sizeof(RCBC_Tempory));
 	if(!tempory) {
 		return NULL;
 	}
@@ -39,7 +40,7 @@ RCBCTempory* RCBC_TemporyGenerate() {
 	return tempory;
 }
 
-void RCBC_ThingFree(RCBCThing **thing) {
+void RCBC_ThingFree(RCBC_Model **thing) {
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_ThingFree", COLOUR_LIGHT_BLUE);
 	if(!thing) {
 		return;

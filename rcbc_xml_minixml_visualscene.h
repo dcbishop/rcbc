@@ -9,8 +9,8 @@
 void RCBC_MiniXML_ProcessVisualScene_Node_Scale(RCBCNode *rnode, mxml_node_t *xnode);
 void RCBC_MiniXML_ProcessVisualScene_Node_Translate(RCBCNode *rnode, mxml_node_t *xnode);
 RCBCNode_Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mxml_node_t *xnode);
-void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBCTempory *tempory, RCBCNode *rnode, mxml_node_t *xnode);
-void RCBC_MiniXML_ProcessVisualScene_Node(RCBCTempory *tempory, RCBCNode **rnode, mxml_node_t *xnode);
-void RCBC_MiniXML_ProcessVisualScene(RCBCTempory *tempory, mxml_node_t *node);
+void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBC_Tempory *tempory, RCBCNode *rnode, mxml_node_t *xnode);
+void RCBC_MiniXML_ProcessVisualScene_Node(RCBC_Tempory *tempory, RCBCNode **rnode, mxml_node_t *xnode);
+void RCBC_MiniXML_ProcessVisualScene(RCBC_Tempory *tempory, mxml_node_t *node);
 
 #endif

@@ -32,7 +32,7 @@
 struct globals {
 	unsigned int height;
 	unsigned int width;
-	RCBCThing* thing;
+	RCBC_Model* thing;
 
 	int mouse_x;
 	int mouse_y;
@@ -212,7 +212,7 @@ int main(int argc, char** argv) {
 	} else {
 		filename = argv[1];
 	}
-	ERROR("Oh gnoes!!!!");
+
 	RCBC_Init();
 	g.thing = RCBC_LoadFile(filename);
 

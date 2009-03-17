@@ -41,7 +41,7 @@ RCBCNode_Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mx
 	return rotate;
 }
 
-void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(RCBCTempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(RCBC_Tempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
 	mxml_node_t *child1, *child2, *child3, *child4;
 	const char *semantic, *input_semantic;
 	const char *id = mxmlElementGetAttr(xnode, "url");
@@ -89,7 +89,7 @@ void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(RCBCTempory *tempory,
 			
 }
 
-void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBCTempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBC_Tempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);
 	DumpNodeInfo(xnode);
@@ -106,7 +106,7 @@ void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBCTempory *tempory, RCBCNod
 	}
 }
 
-void RCBC_MiniXML_ProcessVisualScene_Node(RCBCTempory *tempory, RCBCNode **rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node(RCBC_Tempory *tempory, RCBCNode **rnode, mxml_node_t *xnode) {
 	RCBCNode* last;
 
 	assert(tempory);
@@ -137,7 +137,7 @@ void RCBC_MiniXML_ProcessVisualScene_Node(RCBCTempory *tempory, RCBCNode **rnode
 	RCBC_NodeDebugInfo(last);
 }
 
-void RCBC_MiniXML_ProcessVisualScene(RCBCTempory *tempory, mxml_node_t *node) {
+void RCBC_MiniXML_ProcessVisualScene(RCBC_Tempory *tempory, mxml_node_t *node) {
 
 	assert(tempory);
 	assert(node);
