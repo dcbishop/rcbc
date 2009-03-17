@@ -31,9 +31,9 @@ void RCBC_MiniXML_ProcessTextureImages(RCBCTempory *tempory, mxml_node_t *node) 
 
 					fullname = child->child->value.opaque;
 					/* Find the final path element since we want only the filename */
-					filename = rindex(fullname, '/')+1; /* Sane OSes path seperator */
+					filename = strrchr(fullname, '/')+1; /* Sane OSes path seperator */
 					if(!filename) {
-						filename = rindex(fullname, '\\')+1; /* Or try for a windows style path seperator */
+						filename = strrchr(fullname, '\\')+1; /* Or try for a windows style path seperator */
 					}
 					if(!filename) { /* If we didn't find a path seperator, assume filename only */
 						rname = fullname;
@@ -44,7 +44,8 @@ void RCBC_MiniXML_ProcessTextureImages(RCBCTempory *tempory, mxml_node_t *node) 
 					}
 
 					#warning TODO: Make a HOOKUP, image->filename
-
+					DEBUG_H("Found image filename '%s'", rname);
+					
 				}
 			}
 
@@ -105,6 +106,7 @@ void RCBC_MiniXML_ProcessTextureEffects(RCBCTempory *tempory, mxml_node_t *node)
 
 /* Process the <library_effects><effect><profile_COMMON> section of COLLADA */
 void RCBC_MiniXML_ProcessTextureEffects_Profile(RCBCTempory *tempory, mxml_node_t *node) {
+	DEBUG_M("Entering function...");
 	mxml_node_t* child;
 
 	/* Loop through all the newparam nodes */
