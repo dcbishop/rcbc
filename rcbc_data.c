@@ -394,7 +394,7 @@ void RCBC_SortTriangles(RCBC_TrianglesUnsorted* unsorted) {
 
 		triangles->texcoords = RCBC_FloatArrayGenerate(unsorted->count * 2 * 3);
 		for(i = unsorted->texcoords_offset; i < 3 * unsorted->count * unsorted->inputs; i+=unsorted->inputs) {
-			int index = unsorted->indices[i] * 3;
+			int index = unsorted->indices[i] * 2;
 			triangles->texcoords->values[v++] = unsorted->texcoords->values[index];
 			triangles->texcoords->values[v++] = unsorted->texcoords->values[index+1];
 		}

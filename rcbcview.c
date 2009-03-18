@@ -217,7 +217,7 @@ int main(int argc, char** argv) {
 	g.height = 600;
 	g.width = 800;
 
-	LOG("Initilizing RCRB GLUT Viewer...");
+	LOG("Initilizing RCBC GLUT Viewer...");
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
@@ -243,7 +243,7 @@ int main(int argc, char** argv) {
 	g.mouse_x = 0;
 	g.mouse_y = 0;
 
-	g.wireframe = 1;
+	g.wireframe = 0;
 	setPolygonMode();
 
 	g.cam_zoom = 2.5f;
@@ -254,6 +254,7 @@ int main(int argc, char** argv) {
 
 	g.cam_fov = 45.0f;
 
+	LOG("Starting GLUT main loop...");
 	glutMainLoop();
 
 	exit(EXIT_SUCCESS);
