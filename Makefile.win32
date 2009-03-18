@@ -9,20 +9,31 @@ MINGW_LIBDIR = /usr/${MINGW_PREFIX}/lib
 CC = ${MINGW_PREFIX}-gcc
 CFLAGSA = $(shell pkg-config --cflags mxml)
 CFLAGS = ${CFLAGSA} -D_STDCALL_SUPPORTED -D_M_IX86 -DWIN32
-#LIBSA = $(shell pkg-config --libs mxml)
 LIBS = glut32.lib -lmxml -lopengl32 -lglu32 -lglut32
 OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o rcbc_xml_minixml_textures.o
-INC = -I/usr/i586-mingw32msvc/include/
+INC = /usr/${MINGW_PREFIX}/include
+AR = ${MINGW_PREFIX}-ar
 
 DIRECTLIBS = ${MINGW_LIBDIR}/libSOIL.a ${MINGW_LIBDIR}/libopengl32.a ${MINGW_LIBDIR}/libmxml.a ${MINGW_LIBDIR}/libglut32.a 
 
-all: rcbcview.exe
+all: rcbcview.exe librcbc.a
 
 rcbcview.exe: rcbcview.c ${OBJS} 
-	${CC} $< ${CFLAGS} ${LIBS} ${INC} ${OBJS} -o $@ -Wall ${DIRECTLIBS} -L /usr/i586-mingw32msvc/lib/
+	${CC} $< ${CFLAGS} ${LIBS} -I${INC} ${OBJS} -o $@ -Wall ${DIRECTLIBS} -L /usr/i586-mingw32msvc/lib/
+
+librcbc.a: rcbc.o
+	${AR} rcs $@ $<
 
 rcbc_render_gl.o: rcbc_render_gl.c rcbc_render_gl.h
 	${CC} ${CFLAGS} ${INC} -c $<
-	
+
+install: librcbc.a
+	cp librcbc.a ${MINGW_LIBDIR}/
+	cp rcbc.h ${INC}/
+
+uninstall:
+	rm -f ${MINGW_LIBDIR}/librcbc.a
+	rm -f ${INC}/rcbc.h
+
 clean:
 	rm -f rcbcview.exe *~ *.o core
