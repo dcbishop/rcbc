@@ -210,13 +210,12 @@ int main(int argc, char** argv) {
 	char* filename;
 
 	if(argc < 2) {
-		filename = "data/models/unmaptest.dae"; /* Default model to view */
+		filename = "data/models/monkey-test.dae"; /* Default model to view */
 		WARNING("No model file specified, using trying default '%s'.", filename);
 	} else {
 		filename = argv[1];
 	}
 
-	DEBUG_A("Listcheck");
 	LL* images = LLGenerate();
 	
 	RCBC_Init();
