@@ -1,5 +1,5 @@
 /* This is a simple file for dumping text to a console, including pretty
- * colours and some things like unicode smiley faces. */
+ * colours and some models like unicode smiley faces. */
 #ifndef CONSOLE_H
 #define CONSOLE_H
 

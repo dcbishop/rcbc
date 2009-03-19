@@ -2,35 +2,46 @@
 #ifndef _RCBC_DATA_DEF
 #define _RCBC_DATA_DEF
 
-/* A generic linked list node */
+/**
+ * A generic linked list node
+ */
 typedef struct LLNode {
 	void* data;
 	struct LLNode* next;
+	struct LLNode* prev;
 } LLNode;
 
-/* A generic linked list node */
+/**
+ * A generic linked list node
+ */
 typedef struct LL {
 	int count;
-	struct LLNode* head;
+	struct LLNode* first;
 	struct LLNode* last;
 } LL;
 
-
-/* A container for a COLLADA model */
+/**
+ * A container for a COLLADA model.
+ */
 typedef struct RCBC_Model {
 	struct RCBCNode* visual_scene;
-	struct LLNode* geometries;
+	struct LL* geometries;
 } RCBC_Model;
 
+/**
+ * A throwaway struct for holding tempory values while loading a model.
+ */
 typedef struct RCBC_Tempory {
-	RCBC_Model* thing;
-	LLNode* sources;
-	LLNode* sinks;
-	LLNode* unsorted;
-	LLNode* images;
+	RCBC_Model* model;
+	LL* sources;
+	LL* sinks;
+	LL* unsorted;
+	LL* images;
 } RCBC_Tempory;
 
-/* Nodes can have multiple rotations */
+/**
+ *  Contains rotation information for a COLLADA scene node.
+ **/
 typedef struct RCBCNode_Rotate {
 	float x;
 	float y;
@@ -43,11 +54,20 @@ typedef struct RCBC_FloatArray {
 	float* values;
 } RCBC_FloatArray;
 
+/** 
+ * Contains a filename for a image, an id for opengl texture binding 
+ * and the number of refrences to this image.
+ */
 typedef struct RCBC_Image {
 	int id;
 	char* filename;
+	int refs;
 } RCBC_Image;
 
+/**
+ * Contains unprocessed triangle data as it is read from the COLLADA
+ * file.
+ */
 typedef struct RCBC_TrianglesUnsorted {
 	void** ptr;
 	unsigned int count;
@@ -74,19 +94,23 @@ typedef struct Vector {
 	float x, y, z;
 } Vector;
 
-/* Contains mesh data */
+/** 
+ * Contains mesh data
+ **/
 typedef struct RCBCMesh {
-	LLNode* arrays;
+	LL* arrays;
 	RCBC_Triangles* triangles;
 } RCBCMesh;
 
-/* A basic COLLADA node */
+/**
+ * A basic COLLADA scene node
+ */
 typedef struct RCBCNode {
 	RCBCMesh* mesh;
 
 	float translate[3];
 
-	struct LLNode* rotations;
+	struct LL* rotations;
 
 	float scale[3];
 
@@ -96,18 +120,24 @@ typedef struct RCBCNode {
 	struct RCBCNode* parent;
 } RCBCNode;
 
-/* This is used to link between XML named id's and the actual data pointers */
+/**
+ * This is used to link between XML named id's and the actual data 
+ * pointers.
+ */
 typedef struct RCBC_Hookup {
-	int type; /* Is this an id looking for a pointer, or a pointer looking for an id */
-	char* id; /* The XML id string */
+	char* id; /**< The XML id string. */
+	
+	/** Either pointer to the data or a pointer to the pointer where 
+	 * the data is intened to be linked to
+	 */
 	void** ptr;
 } RCBC_Hookup;
 
-LLNode* LLGenerate(void* data);
-LLNode* LLAdd(LLNode** rootnode, void* data);
-void LLFree(LLNode** rootnode);
+LL* LLGenerate();
+LLNode* LLAdd(LL* rootnode, void* data);
+void LLFree(LL* rootnode);
 
-RCBC_Model* RCBC_ThingGenerate();
+RCBC_Model* RCBC_modelGenerate();
 
 void RCBC_NodeDebugInfo(RCBCNode* node);
 RCBCNode* RCBC_NodeGenerate();
@@ -119,10 +149,11 @@ void RCBC_MeshFree(RCBCMesh **mesh);
 RCBC_FloatArray* RCBC_FloatArrayGenerate(int count);
 
 RCBC_Hookup* RCBC_HookupGenerate(char* id, void* pointer);
-RCBC_Hookup* RCBC_HookupFind(LLNode* roothookup, char* id);
+RCBC_Hookup* RCBC_HookupFind(LL* roothookup, char* id);
 
 RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate();
 RCBC_Tempory* RCBC_TemporyGenerate();
 
 RCBC_Image* RCBC_ImageGenerate(char* filename);
+
 #endif

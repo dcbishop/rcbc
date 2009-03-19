@@ -7,24 +7,25 @@
 /* Dump some visual scene node info for debugging */
 void RCBC_NodeDebugInfo(RCBCNode* node) {
 	DEBUG(DEBUG_VERY_HIGH, "%sRCBC_NodeDebugInfo", COLOUR_LIGHT_BLUE);
-	LLNode* itr = node->rotations;
+	//LLNode* itr = node->rotations->first;
 	DEBUG(DEBUG_VERY_HIGH, "Node: Scale %f %f %f", node->scale[0], node->scale[1], node->scale[2]);
 	DEBUG(DEBUG_VERY_HIGH, "      Translate %f %f %f", node->translate[0], node->translate[1], node->translate[2]);
-	for(itr = node->rotations; itr; itr=itr->next) {
+	/*for(itr; itr; itr=itr->next) {
 		RCBCNode_Rotate* rotation = itr->data;
 		DEBUG(DEBUG_VERY_HIGH, "      Rotation %f %f %f %f", rotation->x, rotation->y, rotation->z, rotation->angle);
-	}
+	}*/
+	#warning TODO: Fix this...
 }
 
-RCBC_Model* RCBC_ThingGenerate() {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_ThingGenerate", COLOUR_LIGHT_BLUE);
-	RCBC_Model *thing = malloc(sizeof(RCBC_Model));
-	if(!thing) {
+RCBC_Model* RCBC_ModelGenerate() {
+	DEBUG(DEBUG_MEDIUM, "%sRCBC_modelGenerate", COLOUR_LIGHT_BLUE);
+	RCBC_Model *model = malloc(sizeof(RCBC_Model));
+	if(!model) {
 		return NULL;
 	}
-	thing->visual_scene = NULL;
-	thing->geometries = NULL;
-	return thing;
+	model->visual_scene = NULL;
+	model->geometries = LLGenerate();
+	return model;
 }
 
 RCBC_Tempory* RCBC_TemporyGenerate() {
@@ -33,38 +34,40 @@ RCBC_Tempory* RCBC_TemporyGenerate() {
 	if(!tempory) {
 		return NULL;
 	}
-	tempory->thing = NULL;
-	tempory->sinks = NULL;
-	tempory->sources = NULL;
-	tempory->unsorted = NULL;
+	tempory->model = NULL;
+	tempory->sinks = LLGenerate();
+	tempory->sources = LLGenerate();
+	tempory->unsorted = LLGenerate();
 	tempory->images = NULL;
 	return tempory;
 }
 
-void RCBC_ThingFree(RCBC_Model **thing) {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_ThingFree", COLOUR_LIGHT_BLUE);
-	if(!thing) {
+void RCBC_modelFree(RCBC_Model **model) {
+	DEBUG(DEBUG_MEDIUM, "%sRCBC_modelFree", COLOUR_LIGHT_BLUE);
+	if(!model) {
 		return;
 	}
 
 	#warning TODO: Free memory recusivly, right now it leaks...
-	free(*thing);
-	*thing = NULL;
+	free(*model);
+	*model = NULL;
 }
 
 RCBCNode* RCBC_NodeGenerate() {
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_NodeGenerate", COLOUR_LIGHT_BLUE);
 	RCBCNode* node = malloc(sizeof(RCBCNode));
+
 	if(!node) {
 		ERROR("Failed to allocate memory for a node... %s", SYMBOL_WARNING);
 		return NULL;
 	}
+
 	node->mesh = NULL;
 	node->translate[0] = 0.0f;
 	node->translate[1] = 0.0f;
 	node->translate[2] = 0.0f;
 
-	node->rotations = NULL;
+	node->rotations = LLGenerate();
 
 	node->scale[0] = 0.0f;
 	node->scale[1] = 0.0f;
@@ -74,6 +77,8 @@ RCBCNode* RCBC_NodeGenerate() {
 	node->prev = NULL;
 	node->child = NULL;
 	node->parent = NULL;
+	
+	DEBUG(DEBUG_MEDIUM, "end of function");
 
 	return node;	
 }
@@ -95,7 +100,7 @@ RCBCMesh* RCBC_MeshGenerate() {
 		ERROR("Failed to allocate memory for mesg.");
 		return NULL;
 	}
-	mesh->arrays = NULL;
+	mesh->arrays = LLGenerate();
 	mesh->triangles = NULL;
 	return mesh;
 }
@@ -134,8 +139,8 @@ RCBC_Hookup* RCBC_HookupGenerate(char* id, void* pointer) {
 	return hookup;
 }
 
-RCBC_Hookup* RCBC_HookupFind(LLNode* roothookup, char* id) {
-	LLNode* node = roothookup;
+RCBC_Hookup* RCBC_HookupFind(LL* roothookup, char* id) {
+	LLNode* node = roothookup->first;
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_HookupFind(%s'%s'%s)", COLOUR_LIGHT_BLUE, COLOUR_YELLOW, id, COLOUR_LIGHT_BLUE);
 	while(node) {
 		DEBUG(DEBUG_VERY_HIGH, "\tCHECKING: '%s'", ((RCBC_Hookup*)node->data)->id);
@@ -153,14 +158,15 @@ RCBC_Hookup* RCBC_HookupFind(LLNode* roothookup, char* id) {
 }
 
 /* Recursivly frees all the hookups */
-void RCBC_HookupFree(LLNode** roothookup) {
+void RCBC_HookupFree(LL* roothookup) {
+	#warning TODO: Free memory here...
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_HookupFree", COLOUR_LIGHT_BLUE);
-	LLNode* node_ptr = *roothookup;
+	LLNode* node_ptr = roothookup->first;
 	DEBUG(DEBUG_HIGH, "\tLooping through each hookup...");
 	while(node_ptr) {
 		DEBUG(DEBUG_VERY_HIGH, "\t\tloop...");
 		if(node_ptr->data) {
-			//free(((RCBC_Hookup*)node_ptr->data)->id); #warning TODO:s free hookups
+			//free(((RCBC_Hookup*)node_ptr->data)->id); #warning TODO: free hookups
 			//free(node_ptr->data);
 			DEBUG(DEBUG_VERY_HIGH, "\t\tNode has data...");
 			node_ptr->data = NULL;
@@ -173,16 +179,16 @@ void RCBC_HookupFree(LLNode** roothookup) {
 	return;
 }
 
-void RCBC_Hookup_Debug(LLNode* rootnode) {
+void RCBC_Hookup_Debug(LL* rootnode) {
 	LLNode* itr;
 	RCBC_Hookup* hookup;
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_Hookup_Debug", COLOUR_YELLOW);
-	for(itr = rootnode; itr; itr = itr->next) {
+	for(itr = rootnode->first; itr; itr = itr->next) {
 		hookup = itr->data;
 		DEBUG(DEBUG_VERY_HIGH, "ptr: %p, ID: '%s', pointer:%p", hookup, hookup->id, hookup->ptr);
 	}
 }
-void RCBC_Hookup_Execute(LLNode* sources, LLNode* sinks) {
+void RCBC_Hookup_Execute(LL* sources, LL* sinks) {
 	DEBUG_M("Entering function...");
 	if(sources == NULL) {
 		return;
@@ -195,7 +201,7 @@ void RCBC_Hookup_Execute(LLNode* sources, LLNode* sinks) {
 	LLNode* itr;
 
 	DEBUG_V("\tLoop begiing...");
-	for(itr = sources; itr; itr = itr->next) {
+	for(itr = sources->first; itr; itr = itr->next) {
 		DEBUG(DEBUG_VERY_HIGH, "\t\tLoop......");
 		source = itr->data;
 		if(!source) {
@@ -243,17 +249,6 @@ void RCBC_FloatArrayFree(RCBC_FloatArray* array) {
 	free(array);
 }
 
-LLNode* LLGenerate(void* data) {
-	LLNode* node = malloc(sizeof(LLNode));
-	if(!node) {
-		ERROR("Failed to allocate memory for linked list node...");
-		return NULL;
-	}
-	node->next = NULL;
-	node->data = data;
-	return node;
-}
-
 RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate(int count) {
 	RCBC_TrianglesUnsorted* triangles = malloc(sizeof(RCBC_TrianglesUnsorted));
 
@@ -273,6 +268,7 @@ RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate(int count) {
 	return triangles;
 }
 
+/* Generates an image */
 RCBC_Image* RCBC_ImageGenerate(char* filename) {
 	RCBC_Image* image = malloc(sizeof(RCBC_Image));
 	if(!image) {
@@ -280,12 +276,14 @@ RCBC_Image* RCBC_ImageGenerate(char* filename) {
 		return NULL;
 	}
 
+	image->id = 0;
 	image->filename = filename;
-	image->id = 0;	
+	image->refs = 0;
 
 	return image;
 }
 
+/* Allocates space for triangles */
 int RCBC_TrianglesUnsortedAllocateIndices(RCBC_TrianglesUnsorted* triangles) {
 	assert(triangles);
 	free(triangles->indices);
@@ -297,37 +295,88 @@ int RCBC_TrianglesUnsortedAllocateIndices(RCBC_TrianglesUnsorted* triangles) {
 	return 0;
 }
 
+/**
+ * Frees unsorted triangle data.
+ */
 void RCBC_TrianglesUnsortedFree(RCBC_TrianglesUnsorted* triangles) {
 	assert(triangles);
 	free(triangles->indices);
 	free(triangles);
 }
 
-LLNode* LLAdd(LLNode** rootnode, void* data) {
-	assert(rootnode);
+/**
+ * Generates a linked list head node.
+ */
+LL* LLGenerate() {
+	LL* ll = malloc(sizeof(LL));
+	if(!ll) {
+		ERROR("Failed to allocate memory for linked list head node...");
+	}
+	
+	ll->first = NULL;
+	ll->last = NULL;
+	ll->count = 0;
+	
+	return ll;
+}
+	
+
+/**
+ * Generates a linked list node.
+ */
+LLNode* LLNodeGenerate(void* data) {
+	LLNode* node = malloc(sizeof(LLNode));
+	if(!node) {
+		ERROR("Failed to allocate memory for linked list node...");
+		return NULL;
+	}
+	node->next = NULL;
+	node->prev = NULL;
+	node->data = data;
+	return node;
+}
+
+/**
+ * Adds a new node to the linked list
+ */
+LLNode* LLAdd(LL* head, void* data) {
+	assert(head);
 	assert(data);
-	LLNode* newnode = LLGenerate(data);
-	if(!(*rootnode)) {
-		*rootnode = newnode;
+	
+	LLNode* newnode = LLNodeGenerate(data);
+	if(!newnode) {
+		ERROR("Failed to allocate space for node... %s", SYMBOL_WARNING);
+	}
+	
+	if(!head->first) {
+		head->first = newnode;
+		head->last = newnode;
 		return newnode;
 	}
 
-	#warning TODO: Keep track of last node to save walking...
-	LLNode* node_ptr = *rootnode;
-	while(node_ptr->next) {
-		node_ptr = node_ptr->next;
-	}
-	node_ptr->next = newnode;
+	newnode->prev = head->last;
+	head->last->next = newnode;
+	head->last = newnode;
+	head->count++;
 
 	return newnode;
 }
 
-void LLFree(LLNode** rootnode) {
-	if(!rootnode || !*rootnode) {
+/* Deletes a node from the linked list */
+LLNode* LLDelete(LLNode* node) {
+	node->prev->next = node->next;
+	node->prev = NULL;
+	node->next = NULL;
+	free(node);
+}
+
+/* Recursivly free a linked list */
+void LLFree(LL* rootnode) {
+	if(!rootnode) {
 		return;
 	}
 
-	LLNode* node_ptr;
+	LLNode* node_ptr = rootnode->first;
 	LLNode* node_ptr_tmp;
 	while(node_ptr) {
 		node_ptr_tmp = node_ptr->next;
@@ -338,6 +387,7 @@ void LLFree(LLNode** rootnode) {
 	}
 }
 
+/* Contains vertex data in arrays */
 RCBC_Triangles* RCBC_TrianglesGenerate(int count) {
 	RCBC_Triangles* triangles = malloc(sizeof(RCBC_Triangles));
 	if(!triangles) {

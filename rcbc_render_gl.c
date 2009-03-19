@@ -8,7 +8,7 @@
 
 #define PI 3.14152f
 
-/* Initilize the GL render... (nothing is required for this) */
+/* Initilize the GL render... (nomodel is required for this) */
 int RCBC_GL_Init() {
 	LOG("Initilizing GL render...");
 
@@ -24,7 +24,7 @@ void RCBC_GL_Draw_Node(RCBCNode* node) {
 	glPushMatrix();
 
 	/* Apply rotations... */
-	for(itr = node->rotations; itr; itr=itr->next) {
+	for(itr = node->rotations->first; itr; itr=itr->next) {
 		RCBCNode_Rotate* rotation = itr->data;
 		glRotatef(rotation->angle, rotation->x, rotation->y, rotation->z);
 	}
@@ -52,6 +52,8 @@ void RCBC_GL_Draw_Node(RCBCNode* node) {
 			glTexCoordPointer(2, GL_FLOAT, 0, triangles->texcoords->values);
 		} else {
 			#warning TODO: Clear texcoord pointer so no texcoords are used...
+			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
 		
 		#warning TODO: Find out what these do exactly...
@@ -84,7 +86,9 @@ void RCBC_GL_Draw_Node(RCBCNode* node) {
 		/* Draw it, yay! */
 		glDrawArrays(GL_TRIANGLES, 0, triangles->count * 3);
 
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
+		
 	}
 
 	glPopMatrix();
@@ -106,8 +110,8 @@ void RCBC_GL_Draw_Nodes(RCBCNode* node) {
 }
 
 /* Draws a model */
-int RCBC_GL_Draw(RCBC_Model* thing) {
-	RCBCNode* head = thing->visual_scene;
+int RCBC_GL_Draw(RCBC_Model* model) {
+	RCBCNode* head = model->visual_scene;
 
 	/* Draw axis */
 	/*glBegin(GL_LINES);

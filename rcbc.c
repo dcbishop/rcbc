@@ -54,7 +54,7 @@ int RCBC_Init() {
 	return 0;
 }
 
-RCBC_Model* RCBC_LoadFile(const char* filename) {
+RCBC_Model* RCBC_LoadFile(const char* filename, LL* images) {
 	LOG("RCBC loading '%s'...", filename);
 
 	if(!rcbc_initilized) {
@@ -62,18 +62,17 @@ RCBC_Model* RCBC_LoadFile(const char* filename) {
 		return NULL;
 	}
 
-	RCBC_Model* thing = RCBC_ThingGenerate();
+	RCBC_Model* model = RCBC_ModelGenerate();
+	rcbc_plugins.xml_load(model, images, filename);
 
-	rcbc_plugins.xml_load(thing, filename);
-
-	return thing;
+	return model;
 }
 
-int RCBC_Render(const RCBC_Model* thing) {
+int RCBC_Render(const RCBC_Model* model) {
 	if(!rcbc_initilized) {
 		ERROR("Attempted to use uninitilized RCBC... %s", SYMBOL_FATAL);
 		return 1;
 	}
 
-	rcbc_plugins.render_draw(thing);	
+	rcbc_plugins.render_draw(model);	
 }

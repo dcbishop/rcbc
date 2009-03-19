@@ -1,5 +1,6 @@
 *~
 *.o
 *.s
+*.a
 rcbcview
 *.exe

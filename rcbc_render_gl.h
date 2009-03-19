@@ -5,6 +5,6 @@
 
 int RCBC_GL_Init();
 void RCBC_GL_Draw_Node(RCBCNode* node);
-int RCBC_GL_Draw(RCBC_Model* thing);
+int RCBC_GL_Draw(RCBC_Model* model);
 
 #endif

@@ -30,7 +30,9 @@
 struct globals {
 	unsigned int height;
 	unsigned int width;
-	RCBC_Model* thing;
+	RCBC_Model* model;
+	
+	int limitfps;
 
 	int mouse_x;
 	int mouse_y;
@@ -77,10 +79,11 @@ void displayFunc() {
 	static int last_fps_time = 0;
 	static int frame = 0;
 	int fps;
+	static int mpf;
 	int current_time = glutGet(GLUT_ELAPSED_TIME);
 
 	/* Limit framerate */
-	if( !( (current_time - last_render_time) >= 1000/60) ) {
+	if(g.limitfps && !( (current_time - last_render_time) >= 1000/60) ) {
 		return;
 	}
 
@@ -90,7 +93,7 @@ void displayFunc() {
 		fps = frame*1000.0f/(current_time-last_fps_time);
 		last_fps_time = current_time;
 		frame = 0;
-		LOG("FPS: %d", fps);
+		LOG("FPS: %d,\tMPF: %d", fps, mpf);
 	}
 
 	last_render_time = current_time;
@@ -103,12 +106,14 @@ void displayFunc() {
 	glClearDepth(10000.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// glutWireCube(1.0f);
-	RCBC_Render(g.thing);
+	//glutWireCube(1.0f);
+	RCBC_Render(g.model);
 
 	glFlush();
 	glutSwapBuffers();
-
+	
+	mpf = glutGet(GLUT_ELAPSED_TIME) - current_time;
+	
 	int error;
 	if ((error = glGetError()))
 		ERROR("GLUT: %s", gluErrorString(error));
@@ -211,8 +216,11 @@ int main(int argc, char** argv) {
 		filename = argv[1];
 	}
 
+	DEBUG_A("Listcheck");
+	LL* images = LLGenerate();
+	
 	RCBC_Init();
-	g.thing = RCBC_LoadFile(filename);
+	g.model = RCBC_LoadFile(filename, images);
 
 	g.height = 600;
 	g.width = 800;
@@ -245,6 +253,8 @@ int main(int argc, char** argv) {
 
 	g.wireframe = 0;
 	setPolygonMode();
+
+	g.limitfps = 1;
 
 	g.cam_zoom = 2.5f;
 	g.cam_rot_x = -90.0f;

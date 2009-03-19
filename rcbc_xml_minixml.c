@@ -6,13 +6,17 @@
 #include "rcbc_xml_minixml.h"
 #include "console.h"
 
-/* Initilize the MiniXML library (nothing is actually required) */
+/** 
+ * Initilize the MiniXML library (not actually required...)
+ */
 int RCBC_MiniXML_Init() {
 	LOG("Initilizing MiniXML...");
 	return 0;
 }
 
-/* For debugging puroses, dump XML node information */
+/**
+ * For debugging puroses, dump XML node information
+ */
 void DumpNodeInfo(mxml_node_t *node) {
 	DEBUG(DEBUG_VERY_HIGH, "------NODE_PTR: %p------", node);
 	if(node == NULL) {
@@ -42,11 +46,13 @@ void DumpNodeInfo(mxml_node_t *node) {
 	}
 }
 
-/* Load a model from a COLLADA file */
-int RCBC_MiniXML_Load(RCBC_Model* thing, char* filename) {
+/**
+ * Load a model from a COLLADA file
+ */
+int RCBC_MiniXML_Load(RCBC_Model* model, LL* images, char* filename) {
 	LOG("[MINIXML]: Opening '%s'...", filename);
-	if(!thing) {
-		ERROR("[MINIXML]: Passed NULL 'thing'...");
+	if(!model) {
+		ERROR("[MINIXML]: Passed NULL 'model'...");
 	}
 
 	FILE *fp;
@@ -69,7 +75,8 @@ int RCBC_MiniXML_Load(RCBC_Model* thing, char* filename) {
 	DumpNodeInfo(tree);
 
 	RCBC_Tempory* tempory = RCBC_TemporyGenerate();
-	tempory->thing = thing;
+	tempory->model = model;
+	tempory->images = images;
 	mxml_node_t* node;
 
 	node = mxmlFindElement(tree, tree, "library_geometries", NULL, NULL, MXML_DESCEND);
@@ -96,7 +103,7 @@ int RCBC_MiniXML_Load(RCBC_Model* thing, char* filename) {
 
 	DEBUG(DEBUG_LOW, "[MINIXML]: Hookups processed");
 
-	LLNode* itr = tempory->unsorted;
+	LLNode* itr = tempory->unsorted->first;
 	while(itr) {
 		RCBC_SortTriangles(itr->data);
 		itr = itr->next;
@@ -106,8 +113,8 @@ int RCBC_MiniXML_Load(RCBC_Model* thing, char* filename) {
 
 	#warning TODO: Free memory, cleanup segfaults
 	/* Free memory */
-	/*RCBC_HookupFree(thing->sources);
-	RCBC_HookupFree(thing->sinks);*/
+	/*RCBC_HookupFree(model->sources);
+	RCBC_HookupFree(model->sinks);*/
 	//RCBC_HookupsFree(hookups);
 	//LLFree(hookups);
 	//Free tempory

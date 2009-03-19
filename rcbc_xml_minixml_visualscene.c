@@ -37,7 +37,7 @@ RCBCNode_Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mx
 	rotate->x = -rotate->x;
 	DumpNodeInfo(xnode);
 
-	LLAdd(&rnode->rotations, rotate);
+	LLAdd(rnode->rotations, rotate);
 	return rotate;
 }
 
@@ -50,43 +50,7 @@ void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(RCBC_Tempory *tempory
 	}
 
 	RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)&rnode->mesh);
-	LLAdd(&tempory->sinks, hookup);
-
-	/* TODO: Too many loops (although most only fire once... ) */
-	/* TODO: This is probably not even needed here... */
-	/*for(child1 = xnode->child; child1 != NULL; child1 = child1->next) {
-		if(child1->type == MXML_ELEMENT &&
-			(strcasecmp(child1->value.element.name, "bind_material") == 0)) {
-
-			for(child2 = child1->child; child2 != NULL; child2 = child2->next) {
-				if(child2->type == MXML_ELEMENT &&
-					(strcasecmp(child2->value.element.name, "technique_common") == 0)) {
-	
-					for(child3 = child2->child; child3 != NULL; child3 = child3->next) {
-						if(child3->type == MXML_ELEMENT &&
-						(strcasecmp(child3->value.element.name, "instance_material") == 0)) {
-
-							for(child4 = child3->child; child4 != NULL; child4 = child4->next) {
-								if(child4->type == MXML_ELEMENT &&
-								(strcasecmp(child4->value.element.name, "bind_vertex_input") == 0)) {
-									input_semantic = mxmlElementGetAttr(xnode, "input_semantic");									
-									semantic = mxmlElementGetAttr(xnode, "semantic");
-									hookup = RCBC_HookupGenerate((char*)semantic, (void*)&rnode->mesh);
-								}
-							}
-
-
-						}
-					}
-
-
-				}
-			}
-
-
-		}
-	}*/
-			
+	LLAdd(tempory->sinks, hookup);		
 }
 
 void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBC_Tempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
@@ -142,8 +106,8 @@ void RCBC_MiniXML_ProcessVisualScene(RCBC_Tempory *tempory, mxml_node_t *node) {
 	assert(tempory);
 	assert(node);
 
-	if(tempory->thing->visual_scene) {
-		RCBC_NodeFree(&(tempory->thing->visual_scene));
+	if(tempory->model->visual_scene) {
+		RCBC_NodeFree(&(tempory->model->visual_scene));
 	}
 
 	for(node = node->child; node != NULL; node = node->next) {
@@ -151,7 +115,7 @@ void RCBC_MiniXML_ProcessVisualScene(RCBC_Tempory *tempory, mxml_node_t *node) {
 			DumpNodeInfo(node);
 
 			if(strcasecmp(node->value.element.name, "node") == 0) {				
-				RCBC_MiniXML_ProcessVisualScene_Node(tempory, &tempory->thing->visual_scene, node);			
+				RCBC_MiniXML_ProcessVisualScene_Node(tempory, &tempory->model->visual_scene, node);			
 			}
 		}
 	}

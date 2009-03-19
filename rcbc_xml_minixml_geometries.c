@@ -27,8 +27,9 @@ RCBC_FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(RCBC_Tempory *te
 		i++;
 	}
 
-	LLAdd(&mesh->arrays, newarray);
-
+	LLAdd(mesh->arrays, newarray);
+	
+	DEBUG_M("exiting function");
 	return newarray;
 }
 
@@ -43,7 +44,7 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Source(RCBC_Tempory *tempory, RCBCMesh *
 			if(strcasecmp(xnode->value.element.name, "float_array") == 0) {
 				RCBC_FloatArray* array =  RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(tempory, mesh, xnode);
 				RCBC_Hookup* arrayhookup = RCBC_HookupGenerate((char*)id, (void*)array);
-				LLAdd(&tempory->sources, arrayhookup);
+				LLAdd(tempory->sources, arrayhookup);
 			}
 		}
 	}
@@ -75,8 +76,8 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(RCBC_Tempory *tempory, RCBCMes
 
 				RCBC_Hookup* idhookup = RCBC_HookupGenerate((char*)id, NULL);
 				RCBC_Hookup* sourcehookup = RCBC_HookupGenerate((char*)source, (void*)&idhookup->ptr);
-				LLAdd(&tempory->sources, idhookup);
-				LLAdd(&tempory->sinks, sourcehookup);				
+				LLAdd(tempory->sources, idhookup);
+				LLAdd(tempory->sinks, sourcehookup);				
 			}
 		}
 	}
@@ -126,7 +127,7 @@ RCBC_TrianglesUnsorted* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(RCBC_Tempo
 				}
 
 				RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)source, ptr);
-				LLAdd(&tempory->sinks, hookup);
+				LLAdd(tempory->sinks, hookup);
 
 			} else if(strcasecmp(node->value.element.name, "p") == 0) {
 				triangles->inputs = inputs;
@@ -147,11 +148,11 @@ RCBC_TrianglesUnsorted* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(RCBC_Tempo
 
 	triangles->inputs = inputs;
 	triangles->ptr = (void**)&mesh->triangles;
-	LLAdd(&tempory->unsorted, triangles);
+	LLAdd(tempory->unsorted, triangles);
 
 	if(material != NULL && material[0] != '\0') {
 		RCBC_Hookup* material_hookup = RCBC_HookupGenerate((char*)material, (void*)&triangles->image);
-		LLAdd(&tempory->sinks, material_hookup);
+		LLAdd(tempory->sinks, material_hookup);
 	}
 
 	return triangles;
@@ -195,7 +196,7 @@ RCBCMesh* RCBC_MiniXML_ProcessGeometries_Mesh(RCBC_Tempory *tempory, mxml_node_t
 	assert(xnode);
 
 	RCBCMesh* mesh = RCBC_MeshGenerate();
-	LLAdd(&tempory->thing->geometries, mesh);
+	LLAdd(tempory->model->geometries, mesh);
 
 	mxml_node_t *child;
 	const char *id = mxmlElementGetAttr(xnode, "id");
@@ -210,8 +211,10 @@ RCBCMesh* RCBC_MiniXML_ProcessGeometries_Mesh(RCBC_Tempory *tempory, mxml_node_t
 }
 
 
-/* Grabs the mesh from the geometry (COLLADA specs say there can be only one  
- * although a few nonmesh temporys are supported, they are usless to us and ignored) */ 
+/**
+ * Grabs the mesh from the geometry (COLLADA specs say there can be only one  
+ * although a few nonmesh temporys are supported, they are usless to us and ignored)
+ */ 
 RCBCMesh* RCBC_MiniXML_ProcessGeometries_Geometry(RCBC_Tempory *tempory, mxml_node_t *node) {
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_MiniXML_ProcessGeometries_Geometry", COLOUR_LIGHT_BLUE);
 	assert(tempory);
@@ -226,7 +229,7 @@ RCBCMesh* RCBC_MiniXML_ProcessGeometries_Geometry(RCBC_Tempory *tempory, mxml_no
 	}
 	RCBCMesh* mesh = RCBC_MiniXML_ProcessGeometries_Mesh(tempory, mesh_node);
 	RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)mesh);
-	LLAdd(&tempory->sources, hookup);
+	LLAdd(tempory->sources, hookup);
 	return mesh;
 }
 
@@ -239,7 +242,7 @@ int RCBC_MiniXML_ProcessGeometries(RCBC_Tempory *tempory, mxml_node_t *node) {
 	assert(node);
 
 	#warning TODO: Free the mesh if it already exists for safety
-	if(tempory->thing->geometries) {
+	if(tempory->model->geometries) {
 		//DEBUG(DEBUG_HIGH, "Freeing empty...");
 		//RCBC_MeshFree(&(tempory->geometries));
 	}
