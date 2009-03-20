@@ -246,13 +246,47 @@ static const ClassFunctions Image_c = {
 };
 	
 /**
- * Generates an image
+ * Image Constructor.
  */
 Image* Image_Image(char* filename) {
 
 	ALLOCATE(Image, image);
 	image->class = &Image_c;
 	image->filename = filename;
+	
+	return image;
+}
+
+/**
+ * Finds an Images based on its filename
+ */
+Image* Image_FindByName(List* images, char* filename) {
+	assert(images);
+	assert(filename);
+	ListNode* node = images->first;
+	while(node) {
+		if(strcasecmp( ((Image*)node->data)->filename, filename) == 0 ) {
+			return node->data;
+		}
+		node = node->next;
+	}
+	return NULL;
+}
+
+/**
+ * Adds a image to the list of images or returns one already there.
+ * Sets or increases the ref count of the image.
+ */
+Image* Image_Add(List* images, char* filename, int refs) {
+	Image* image = Image_FindByName(images, filename);
+	
+	if(image) {
+		image->refs += refs;
+	} else {
+		image = NEW(Image, filename);
+		image->refs = refs;
+		ListAdd(images, image);
+	}
 	
 	return image;
 }

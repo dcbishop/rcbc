@@ -136,6 +136,8 @@ int UnsortedTriangleDataAllocateIndices(UnsortedTriangleData* triangles);
 
 void Image_0Image(Image* image);
 Image* Image_Image(char* filename);
+Image* Image_FindByName(List* images, char* filename);
+Image* Image_Add(List* images, char* filename, int refs);
 
 void Triangles_0Triangles(Triangles* triangles);
 Triangles* Triangles_Triangles(int count);
