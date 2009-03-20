@@ -6,11 +6,11 @@
 #include "rcbc.h"
 #include "rcbc_data.h"
 
-void RCBC_MiniXML_ProcessVisualScene_Node_Scale(RCBCNode *rnode, mxml_node_t *xnode);
-void RCBC_MiniXML_ProcessVisualScene_Node_Translate(RCBCNode *rnode, mxml_node_t *xnode);
-RCBCNode_Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mxml_node_t *xnode);
-void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBC_Tempory *tempory, RCBCNode *rnode, mxml_node_t *xnode);
-void RCBC_MiniXML_ProcessVisualScene_Node(RCBC_Tempory *tempory, RCBCNode **rnode, mxml_node_t *xnode);
-void RCBC_MiniXML_ProcessVisualScene(RCBC_Tempory *tempory, mxml_node_t *node);
+void RCBC_MiniXML_ProcessVisualScene_Node_Scale(SceneNode *rnode, mxml_node_t *xnode);
+void RCBC_MiniXML_ProcessVisualScene_Node_Translate(SceneNode *rnode, mxml_node_t *xnode);
+Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(SceneNode *rnode, mxml_node_t *xnode);
+void RCBC_MiniXML_ProcessVisualScene_Node_Children(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode);
+void RCBC_MiniXML_ProcessVisualScene_Node(ModelTempory *tempory, SceneNode **rnode, mxml_node_t *xnode);
+void RCBC_MiniXML_ProcessVisualScene(ModelTempory *tempory, mxml_node_t *node);
 
 #endif

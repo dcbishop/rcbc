@@ -4,7 +4,7 @@
 #include "rcbc.h"
 
 int RCBC_GL_Init();
-void RCBC_GL_Draw_Node(RCBCNode* node);
-int RCBC_GL_Draw(RCBC_Model* model);
+void RCBC_GL_Draw_Node(SceneNode* node);
+int RCBC_GL_Draw(Model* model);
 
 #endif

@@ -10,7 +10,7 @@ CC = ${MINGW_PREFIX}-gcc
 CFLAGSA = $(shell pkg-config --cflags mxml)
 CFLAGS = ${CFLAGSA} -D_STDCALL_SUPPORTED -D_M_IX86 -DWIN32
 LIBS = glut32.lib -lmxml -lopengl32 -lglu32 -lglut32
-OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o rcbc_xml_minixml_textures.o rcbc_data_hookup.o ll.o
+OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o rcbc_xml_minixml_textures.o rcbc_data_hookup.o List.o
 INC = /usr/${MINGW_PREFIX}/include
 AR = ${MINGW_PREFIX}-ar
 

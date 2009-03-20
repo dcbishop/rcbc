@@ -16,8 +16,8 @@ int RCBC_GL_Init() {
 }
 
 /* Draws a node */
-void RCBC_GL_Draw_Node(RCBCNode* node) {
-	LLNode* itr;
+void RCBC_GL_Draw_Node(SceneNode* node) {
+	ListNode* itr;
 
 	/* Translate node */
 	glTranslatef(node->translate[0], node->translate[1], node->translate[2]);
@@ -25,15 +25,15 @@ void RCBC_GL_Draw_Node(RCBCNode* node) {
 
 	/* Apply rotations... */
 	for(itr = node->rotations->first; itr; itr=itr->next) {
-		RCBCNode_Rotate* rotation = itr->data;
+		Rotate* rotation = itr->data;
 		glRotatef(rotation->angle, rotation->x, rotation->y, rotation->z);
 	}
 
 	/* Scale */
 	glScalef(node->scale[0], node->scale[1], node->scale[2]);
 	
-	RCBCMesh* mesh = node->mesh;
-	RCBC_Triangles* triangles;
+	Mesh* mesh = node->mesh;
+	Triangles* triangles;
 	if(!mesh || !(triangles = mesh->triangles)) { /* If there is node mesh data*/
 		#warning TODO: Dont draw a red sphere...
 		glColor3f(1.0f, 0.0f, 0.0f);
@@ -94,8 +94,8 @@ void RCBC_GL_Draw_Node(RCBCNode* node) {
 	glPopMatrix();
 }
 
-/* Draws all the nodes and their children... */
-void RCBC_GL_Draw_Nodes(RCBCNode* node) {
+/* Draws aList the nodes and their children... */
+void RCBC_GL_Draw_Nodes(SceneNode* node) {
 
 	while(node) {
 		glPushMatrix();
@@ -110,8 +110,8 @@ void RCBC_GL_Draw_Nodes(RCBCNode* node) {
 }
 
 /* Draws a model */
-int RCBC_GL_Draw(RCBC_Model* model) {
-	RCBCNode* head = model->visual_scene;
+int RCBC_GL_Draw(Model* model) {
+	SceneNode* head = model->visual_scene;
 
 	/* Draw axis */
 	/*glBegin(GL_LINES);

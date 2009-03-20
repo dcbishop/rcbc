@@ -7,7 +7,7 @@
 #include "console.h"
 
 /** 
- * Initilize the MiniXML library (not actually required...)
+ * Initilize the MiniXML library (not actuaListy required...)
  */
 int RCBC_MiniXML_Init() {
 	LOG("Initilizing MiniXML...");
@@ -20,7 +20,7 @@ int RCBC_MiniXML_Init() {
 void DumpNodeInfo(mxml_node_t *node) {
 	DEBUG(DEBUG_VERY_HIGH, "------NODE_PTR: %p------", node);
 	if(node == NULL) {
-		DEBUG(DEBUG_VERY_HIGH, "Null Node!");
+		DEBUG(DEBUG_VERY_HIGH, "NuList Node!");
 		return;
 	}
 
@@ -49,7 +49,7 @@ void DumpNodeInfo(mxml_node_t *node) {
 /**
  * Load a model from a COLLADA file
  */
-int RCBC_MiniXML_Load(RCBC_Model* model, LL* images, char* filename) {
+int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 	LOG("[MINIXML]: Opening '%s'...", filename);
 	if(!model) {
 		ERROR("[MINIXML]: Passed NULL 'model'...");
@@ -74,7 +74,7 @@ int RCBC_MiniXML_Load(RCBC_Model* model, LL* images, char* filename) {
 
 	DumpNodeInfo(tree);
 
-	RCBC_Tempory* tempory = RCBC_TemporyGenerate();
+	ModelTempory* tempory = NEW(ModelTempory);
 	tempory->model = model;
 	tempory->images = images;
 	mxml_node_t* node;
@@ -94,16 +94,16 @@ int RCBC_MiniXML_Load(RCBC_Model* model, LL* images, char* filename) {
 	node = mxmlFindElement(tree, tree, "library_effects", NULL, NULL, MXML_DESCEND);
 	RCBC_MiniXML_ProcessTextureEffects(tempory, node);
 
-	RCBC_Hookup_Debug(tempory->sources);
-	RCBC_Hookup_Debug(tempory->sinks);
+	Hookup_Debug(tempory->sources);
+	Hookup_Debug(tempory->sinks);
 
-	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
-	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
-	RCBC_Hookup_Execute(tempory->sources, tempory->sinks);
+	Hookup_Execute(tempory->sources, tempory->sinks);
+	Hookup_Execute(tempory->sources, tempory->sinks);
+	Hookup_Execute(tempory->sources, tempory->sinks);
 
 	DEBUG(DEBUG_LOW, "[MINIXML]: Hookups processed");
 
-	LLNode* itr = tempory->unsorted->first;
+	ListNode* itr = tempory->unsorted->first;
 	while(itr) {
 		RCBC_SortTriangles(itr->data);
 		itr = itr->next;
@@ -113,10 +113,10 @@ int RCBC_MiniXML_Load(RCBC_Model* model, LL* images, char* filename) {
 
 	#warning TODO: Free memory, cleanup segfaults
 	/* Free memory */
-	/*RCBC_HookupFree(model->sources);
-	RCBC_HookupFree(model->sinks);*/
-	//RCBC_HookupsFree(hookups);
-	//LLFree(hookups);
+	/*HookupFree(model->sources);
+	HookupFree(model->sinks);*/
+	//HookupsFree(hookups);
+	//ListFree(hookups);
 	//Free tempory
 
   mxmlDelete(tree);

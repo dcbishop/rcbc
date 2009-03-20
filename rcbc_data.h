@@ -2,127 +2,143 @@
 #ifndef _RCBC_DATA_DEF
 #define _RCBC_DATA_DEF
 
-#include "ll.h"
+#include "List.h"
 #include "rcbc_data_hookup.h"
 
 /**
  * A container for a COLLADA model.
  */
-typedef struct RCBC_Model {
-	struct RCBCNode* visual_scene;
-	struct LL* geometries;
-} RCBC_Model;
+typedef struct Model {
+	const ClassFunctions* class;
+	struct SceneNode* visual_scene;
+	struct List* geometries;
+} Model;
 
 /**
  * A throwaway struct for holding tempory values while loading a model.
  */
-typedef struct RCBC_Tempory {
-	RCBC_Model* model;
-	LL* sources;
-	LL* sinks;
-	LL* unsorted;
-	LL* images;
-} RCBC_Tempory;
+typedef struct ModelTempory {
+	const ClassFunctions* class;
+	Model* model;
+	List* sources;
+	List* sinks;
+	List* unsorted;
+	List* images;
+} ModelTempory;
 
 /**
  *  Contains rotation information for a COLLADA scene node.
  **/
-typedef struct RCBCNode_Rotate {
+typedef struct Rotate {
+	const ClassFunctions* class;
 	float x;
 	float y;
 	float z;
 	float angle;
-} RCBCNode_Rotate;
+} Rotate;
 
-typedef struct RCBC_FloatArray {
+typedef struct FloatArray {
+	const ClassFunctions* class;
 	int count;
 	float* values;
-} RCBC_FloatArray;
+} FloatArray;
 
 /** 
  * Contains a filename for a image, an id for opengl texture binding 
  * and the number of refrences to this image.
  */
-typedef struct RCBC_Image {
+typedef struct Image {
+	const ClassFunctions* class;
 	int id;
 	char* filename;
 	int refs;
-} RCBC_Image;
+} Image;
 
 /**
  * Contains unprocessed triangle data as it is read from the COLLADA
  * file.
  */
-typedef struct RCBC_TrianglesUnsorted {
+typedef struct UnsortedTriangleData {
+	const ClassFunctions* class;
 	void** ptr;
 	unsigned int count;
 	unsigned int inputs;
 	unsigned int* indices;
 	int vertices_offset;
-	RCBC_FloatArray* vertices;
+	FloatArray* vertices;
 	int normals_offset;
-	RCBC_FloatArray* normals;
+	FloatArray* normals;
 	int texcoords_offset;
-	RCBC_FloatArray* texcoords;
-	RCBC_Image* image;
-} RCBC_TrianglesUnsorted;
+	FloatArray* texcoords;
+	Image* image;
+} UnsortedTriangleData;
 
-typedef struct RCBC_Triangles {
+typedef struct Triangles {
+	const ClassFunctions* class;
 	unsigned int count;
-	RCBC_FloatArray* vertices;
-	RCBC_FloatArray* normals;
-	RCBC_FloatArray* texcoords;
-	RCBC_Image* image;
-} RCBC_Triangles;
-
-typedef struct Vector {
-	float x, y, z;
-} Vector;
+	FloatArray* vertices;
+	FloatArray* normals;
+	FloatArray* texcoords;
+	Image* image;
+} Triangles;
 
 /** 
  * Contains mesh data
  **/
-typedef struct RCBCMesh {
-	LL* arrays;
-	RCBC_Triangles* triangles;
-} RCBCMesh;
+typedef struct Mesh {
+	const ClassFunctions* class;
+	List* arrays;
+	Triangles* triangles;
+} Mesh;
 
 /**
  * A basic COLLADA scene node
  */
-typedef struct RCBCNode {
-	RCBCMesh* mesh;
+typedef struct SceneNode {
+	const ClassFunctions* class;
+	
+	Mesh* mesh;
 
 	float translate[3];
-
-	struct LL* rotations;
-
 	float scale[3];
 
-	struct RCBCNode* next;
-	struct RCBCNode* prev;
-	struct RCBCNode* child;
-	struct RCBCNode* parent;
-} RCBCNode;
+	struct List* rotations;
 
-LL* LLGenerate();
-LLNode* LLAdd(LL* rootnode, void* data);
-void LLFree(LL* rootnode);
+	struct SceneNode* next;
+	struct SceneNode* prev;
+	struct SceneNode* child;
+	struct SceneNode* parent;
+} SceneNode;
 
-RCBC_Model* RCBC_modelGenerate();
 
-void RCBC_NodeDebugInfo(RCBCNode* node);
-RCBCNode* RCBC_NodeGenerate();
-void RCBC_NodeFree(RCBCNode **node);
+void *Model_0Model(Model* model);
+Model* Model_Model();
 
-RCBCMesh* RCBC_MeshGenerate();
-void RCBC_MeshFree(RCBCMesh **mesh);
+void* ModelTempory_0ModelTempory(ModelTempory* tempory);
+ModelTempory* ModelTempory_ModelTempory();
 
-RCBC_FloatArray* RCBC_FloatArrayGenerate(int count);
+void Rotate_0Rotate(Rotate* rotate);
+Rotate* Rotate_Rotate();
 
-RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate();
-RCBC_Tempory* RCBC_TemporyGenerate();
+void SceneNode_0SceneNode(SceneNode *node);
+SceneNode* SceneNode_SceneNode();
+void SceneNodeDebugInfo(SceneNode* node);
 
-RCBC_Image* RCBC_ImageGenerate(char* filename);
+void Mesh_0Mesh(Mesh *mesh);
+Mesh* Mesh_Mesh();
+
+void FloatArray_0FloatArray(FloatArray* array);
+FloatArray* FloatArray_FloatArray(int count);
+
+void UnsortedTriangleData_0UnsortedTriangleData(UnsortedTriangleData* triangles);
+UnsortedTriangleData* UnsortedTriangleData_UnsortedTriangleData(int count);
+int UnsortedTriangleDataAllocateIndices(UnsortedTriangleData* triangles);
+
+void Image_0Image(Image* image);
+Image* Image_Image(char* filename);
+
+void Triangles_0Triangles(Triangles* triangles);
+Triangles* Triangles_Triangles(int count);
+
 
 #endif

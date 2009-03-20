@@ -2,46 +2,36 @@
 #include "rcbc_xml_minixml_visualscene.h"
 #include "console.h"
 
-void RCBC_MiniXML_ProcessVisualScene_Node_Scale(RCBCNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_Scale(SceneNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);
 
 	sscanf(xnode->value.opaque, "%f %f %f", &rnode->scale[0], &rnode->scale[1], &rnode->scale[2]);
 }
 
-
-void RCBC_MiniXML_ProcessVisualScene_Node_Translate(RCBCNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_Translate(SceneNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);
 	sscanf(xnode->value.opaque, "%f %f %f", &rnode->translate[0], &rnode->translate[2], &rnode->translate[1]);
 	rnode->translate[0] = -rnode->translate[0];
 }
 
-RCBCNode_Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(RCBCNode *rnode, mxml_node_t *xnode) {
-	RCBCNode_Rotate *rotate;
+Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(SceneNode *rnode, mxml_node_t *xnode) {
+	Rotate *rotate = NEW(Rotate);
 
 	assert(rnode);
 	assert(xnode);
-
-	rotate = malloc(sizeof(RCBCNode_Rotate));
-	if(!rotate) {
-		return NULL;
-	}
-
-	rotate->x = 0.0f;
-	rotate->y = 0.0f;
-	rotate->z = 0.0f;
-	rotate->angle = 0.0f;
+	assert(rotate);
 
 	sscanf(xnode->value.opaque, "%f %f %f %f", &rotate->x, &rotate->z, &rotate->y, &rotate->angle);
 	rotate->x = -rotate->x;
 	DumpNodeInfo(xnode);
 
-	LLAdd(rnode->rotations, rotate);
+	ListAdd(rnode->rotations, rotate);
 	return rotate;
 }
 
-void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(RCBC_Tempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode) {
 	mxml_node_t *child1, *child2, *child3, *child4;
 	const char *semantic, *input_semantic;
 	const char *id = mxmlElementGetAttr(xnode, "url");
@@ -49,11 +39,11 @@ void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(RCBC_Tempory *tempory
 		id++;
 	}
 
-	RCBC_Hookup* hookup = RCBC_HookupGenerate((char*)id, (void*)&rnode->mesh);
-	LLAdd(tempory->sinks, hookup);		
+	Hookup* hookup = NEW(Hookup, (char*)id, (void*)&rnode->mesh);
+	ListAdd(tempory->sinks, hookup);		
 }
 
-void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBC_Tempory *tempory, RCBCNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_Children(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);
 	DumpNodeInfo(xnode);
@@ -70,20 +60,22 @@ void RCBC_MiniXML_ProcessVisualScene_Node_Children(RCBC_Tempory *tempory, RCBCNo
 	}
 }
 
-void RCBC_MiniXML_ProcessVisualScene_Node(RCBC_Tempory *tempory, RCBCNode **rnode, mxml_node_t *xnode) {
-	RCBCNode* last;
+void RCBC_MiniXML_ProcessVisualScene_Node(ModelTempory *tempory, SceneNode **rnode, mxml_node_t *xnode) {
+	SceneNode* last;
 
 	assert(tempory);
 	assert(rnode);
 	assert(xnode);
 
+	#warning TODO: This loops through the nodes, keep a last node refrence.
+	
 	if(!(*rnode)) {
-		*rnode = RCBC_NodeGenerate();
+		*rnode = NEW(SceneNode);
 		last = *rnode;
 	} else {
 		// Loop until end node
 		for(last = *rnode; last->next; last = last->next) {}
-		last->next = RCBC_NodeGenerate();
+		last->next = NEW(SceneNode);
 		last->next->prev = last;
 		last = last->next;
 	}
@@ -98,16 +90,16 @@ void RCBC_MiniXML_ProcessVisualScene_Node(RCBC_Tempory *tempory, RCBCNode **rnod
 		}
 	}
 
-	RCBC_NodeDebugInfo(last);
+	SceneNodeDebugInfo(last);
 }
 
-void RCBC_MiniXML_ProcessVisualScene(RCBC_Tempory *tempory, mxml_node_t *node) {
+void RCBC_MiniXML_ProcessVisualScene(ModelTempory *tempory, mxml_node_t *node) {
 
 	assert(tempory);
 	assert(node);
 
 	if(tempory->model->visual_scene) {
-		RCBC_NodeFree(&(tempory->model->visual_scene));
+		DELETE(&(tempory->model->visual_scene));
 	}
 
 	for(node = node->child; node != NULL; node = node->next) {

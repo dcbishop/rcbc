@@ -30,7 +30,7 @@
 struct globals {
 	unsigned int height;
 	unsigned int width;
-	RCBC_Model* model;
+	Model* model;
 	
 	int limitfps;
 
@@ -216,7 +216,7 @@ int main(int argc, char** argv) {
 		filename = argv[1];
 	}
 
-	LL* images = LLGenerate();
+	List* images = NEW(List);
 	
 	RCBC_Init();
 	g.model = RCBC_LoadFile(filename, images);

@@ -4,70 +4,118 @@
 #include "rcbc_data.h"
 #include "console.h"
 
-/* Dump some visual scene node info for debugging */
-void RCBC_NodeDebugInfo(RCBCNode* node) {
-	DEBUG(DEBUG_VERY_HIGH, "%sRCBC_NodeDebugInfo", COLOUR_LIGHT_BLUE);
-	//LLNode* itr = node->rotations->first;
-	DEBUG(DEBUG_VERY_HIGH, "Node: Scale %f %f %f", node->scale[0], node->scale[1], node->scale[2]);
-	DEBUG(DEBUG_VERY_HIGH, "      Translate %f %f %f", node->translate[0], node->translate[1], node->translate[2]);
-	/*for(itr; itr; itr=itr->next) {
-		RCBCNode_Rotate* rotation = itr->data;
-		DEBUG(DEBUG_VERY_HIGH, "      Rotation %f %f %f %f", rotation->x, rotation->y, rotation->z, rotation->angle);
-	}*/
-	#warning TODO: Fix this...
+/**
+ * Model Deconstructor.
+ */
+void *Model_0Model(Model* model) {
+	DELETE(model->geometries);
+	free(model);
 }
 
-RCBC_Model* RCBC_ModelGenerate() {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_modelGenerate", COLOUR_LIGHT_BLUE);
-	RCBC_Model *model = malloc(sizeof(RCBC_Model));
-	if(!model) {
-		return NULL;
-	}
+/**
+ * Model class function binds.
+ */
+static const ClassFunctions Model_c = {
+	(void*)Model_0Model
+};
+
+/**
+ * Model Constructor.
+ */
+Model* Model_Model() {
+	DEBUG(DEBUG_MEDIUM, "%sModelGenerate", COLOUR_LIGHT_BLUE);
+	
+	ALLOCATE(Model, model);
+	
+	model->class = &Model_c;
+	
 	model->visual_scene = NULL;
-	model->geometries = LLGenerate();
+	model->geometries = NEW(List);
+	
 	return model;
 }
 
-RCBC_Tempory* RCBC_TemporyGenerate() {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_TemporyGenerate", COLOUR_LIGHT_BLUE);
-	RCBC_Tempory* tempory = malloc(sizeof(RCBC_Tempory));
-	if(!tempory) {
-		return NULL;
-	}
+void* ModelTempory_0ModelTempory(ModelTempory* tempory) {
+	DELETE(tempory->sinks);
+	DELETE(tempory->sources);
+	DELETE(tempory->unsorted);
+	free(tempory);
+}
+
+static const ClassFunctions ModelTempory_c = {
+	(void*)ModelTempory_0ModelTempory
+};
+
+ModelTempory* ModelTempory_ModelTempory() {
+	DEBUG_M("Entering function...");
+	
+	ALLOCATE(ModelTempory, tempory);
+	
+	tempory->class = &ModelTempory_c;
+	
 	tempory->model = NULL;
-	tempory->sinks = LLGenerate();
-	tempory->sources = LLGenerate();
-	tempory->unsorted = LLGenerate();
+	tempory->sinks = NEW(List);
+	tempory->sources = NEW(List);
+	tempory->unsorted = NEW(List);
 	tempory->images = NULL;
+
+	DEBUG_M("Exiting function...", COLOUR_LIGHT_BLUE);
 	return tempory;
 }
 
-void RCBC_ModelFree(RCBC_Model **model) {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_modelFree", COLOUR_LIGHT_BLUE);
-	if(!model) {
-		return;
-	}
-
-	#warning TODO: Free memory recusivly, right now it leaks...
-	free(*model);
-	*model = NULL;
+/**
+ * Rotate deconstructor.
+ */
+void Rotate_0Rotate(Rotate* rotate) {
+	free(rotate);
 }
 
-RCBCNode* RCBC_NodeGenerate() {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_NodeGenerate", COLOUR_LIGHT_BLUE);
-	RCBCNode* node = malloc(sizeof(RCBCNode));
+static const ClassFunctions Rotate_c = {
+	(void*)Rotate_0Rotate
+};
 
-	if(!node) {
-		ERROR("Failed to allocate memory for a node... %s", SYMBOL_WARNING);
-		return NULL;
-	}
+/**
+ * Rotate constructor.
+ */
+Rotate* Rotate_Rotate() {
+	ALLOCATE(Rotate, rotate);
+	rotate->class = &Rotate_c;
+	rotate->x = 0.0f;
+	rotate->y = 0.0f;
+	rotate->z = 0.0f;
+	rotate->angle = 0.0f;
+	return rotate;
+}
+
+void SceneNode_0SceneNode(SceneNode *node) {
+	DEBUG(DEBUG_MEDIUM, "%sRCBC_NodeFree", COLOUR_LIGHT_BLUE);
+	assert(node);
+
+	#warning TODO: Free SceneNode memory recusivly, right now it leaks...
+	
+	DELETE(node->mesh);
+	
+	List_DeleteData(node->rotations);
+	DELETE(node->rotations);
+	
+	free(node);
+}
+
+static const ClassFunctions SceneNode_c = {
+	(void*)SceneNode_0SceneNode
+};
+
+SceneNode* SceneNode_SceneNode() {
+	DEBUG_M("Entering function...");
+	
+	ALLOCATE(SceneNode, node);
 
 	node->mesh = NULL;
 	node->translate[0] = 0.0f;
 	node->translate[1] = 0.0f;
 	node->translate[2] = 0.0f;
 
-	node->rotations = LLGenerate();
+	node->rotations = NEW(List);
 
 	node->scale[0] = 0.0f;
 	node->scale[1] = 0.0f;
@@ -83,101 +131,97 @@ RCBCNode* RCBC_NodeGenerate() {
 	return node;	
 }
 
-void RCBC_NodeFree(RCBCNode **node) {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_NodeFree", COLOUR_LIGHT_BLUE);
-	assert(node);
-
-	#warning TODO: Free memory recusivly, right now it leaks...
-	free(*node);
-	*node = NULL;
-
+/**
+ * Dump some visual scene node info for debugging.
+ */
+void SceneNodeDebugInfo(SceneNode* node) {
+	DEBUG(DEBUG_VERY_HIGH, "%sSceneNodeDebugInfo", COLOUR_LIGHT_BLUE);
+	//ListNode* itr = node->rotations->first;
+	DEBUG(DEBUG_VERY_HIGH, "Node: Scale %f %f %f", node->scale[0], node->scale[1], node->scale[2]);
+	DEBUG(DEBUG_VERY_HIGH, "      Translate %f %f %f", node->translate[0], node->translate[1], node->translate[2]);
+	/*for(itr; itr; itr=itr->next) {
+		Rotate* rotation = itr->data;
+		DEBUG(DEBUG_VERY_HIGH, "      Rotation %f %f %f %f", rotation->x, rotation->y, rotation->z, rotation->angle);
+	}*/
+	#warning TODO: Fix this?...
 }
 
-RCBCMesh* RCBC_MeshGenerate() {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_MeshGenerate", COLOUR_LIGHT_BLUE);
-	RCBCMesh* mesh = malloc(sizeof(RCBCMesh));
-	if(!mesh) {
-		ERROR("Failed to allocate memory for mesg.");
-		return NULL;
-	}
-	mesh->arrays = LLGenerate();
-	mesh->triangles = NULL;
-	return mesh;
-}
-
-void RCBC_MeshFree(RCBCMesh **mesh) {
+void Mesh_0Mesh(Mesh *mesh) {
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_MeshFree", COLOUR_LIGHT_BLUE);
 	if(!mesh) {
 		return;
 	}
 
 	#warning TODO: Free memory recusivly, right now it leaks...
-	free(*mesh);
-	*mesh = NULL;
+	
+	List_DeleteData(mesh->arrays);
+	DELETE(mesh->arrays);
+	DELETE(mesh->triangles);
+	
+	free(mesh);
 }
 
-RCBC_FloatArray* RCBC_FloatArrayGenerate(int count) {
-	RCBC_FloatArray* array = malloc(sizeof(RCBC_FloatArray));
-	if(!array) {
-		ERROR("Failed to allocate float array...");
-		return NULL;
-	}
-	array->values = malloc(count * sizeof(float));
-	if(!array->values) {
-		free(array);
-		ERROR("Failed to allocate float array values...");
-		return NULL;
-	}
-	int i;
-	for(i = 0; i < count; i++) {
-		array->values[i] = 0.0f;
-	}
+static const ClassFunctions Mesh_c = {
+	(void*)Mesh_0Mesh
+};
 
-	return array;
+Mesh* Mesh_Mesh() {
+	DEBUG(DEBUG_MEDIUM, "%sRCBC_MeshGenerate", COLOUR_LIGHT_BLUE);
+	
+	ALLOCATE(Mesh, mesh);
+	mesh->class = &Mesh_c;
+	
+	mesh->arrays = NEW(List);
+	mesh->triangles = NULL;
+	return mesh;
 }
 
-void RCBC_FloatArrayFree(RCBC_FloatArray* array) {
-	assert(array);
+void FloatArray_0FloatArray(FloatArray* array) {
 	free(array->values);
 	free(array);
 }
 
-RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate(int count) {
-	RCBC_TrianglesUnsorted* triangles = malloc(sizeof(RCBC_TrianglesUnsorted));
+static const ClassFunctions FloatArray_c = {
+	(void*)FloatArray_0FloatArray
+};
 
-	if(!triangles) {
-		ERROR("Falied to malloc memory for linked list node...");
+FloatArray* FloatArray_FloatArray(int count) {
+	
+	ALLOCATE(FloatArray, array);
+	
+	array->values = calloc(1, count * sizeof(float));
+	if(!array->values) {
+		DELETE(array);
+		ERROR("Failed to allocate float array values...");
 		return NULL;
 	}
+	array->class = &FloatArray_c;
+	
+	return array;
+}
+void UnsortedTriangleData_0UnsortedTriangleData(UnsortedTriangleData* triangles) {
+	free(triangles->indices);
+	free(triangles);
+}
 
-	triangles->ptr = NULL;
+static const ClassFunctions UnsortedTriangleData_c = {
+	(void*)UnsortedTriangleData_0UnsortedTriangleData
+};
+
+UnsortedTriangleData* UnsortedTriangleData_UnsortedTriangleData(int count) {
+	
+	ALLOCATE(UnsortedTriangleData, triangles);
+	
 	triangles->count = count;
-	triangles->inputs = -1;
-	triangles->indices = NULL;
-	triangles->vertices = NULL;
-	triangles->normals = NULL;
-	triangles->texcoords = NULL;
-	triangles->image = NULL;
+	triangles->class = &UnsortedTriangleData_c;
+	
 	return triangles;
 }
 
-/* Generates an image */
-RCBC_Image* RCBC_ImageGenerate(char* filename) {
-	RCBC_Image* image = malloc(sizeof(RCBC_Image));
-	if(!image) {
-		ERROR("RCBC_MeterialGenerate: Failed to allocate space for material.");
-		return NULL;
-	}
-
-	image->id = 0;
-	image->filename = filename;
-	image->refs = 0;
-
-	return image;
-}
-
-/* Allocates space for triangles */
-int RCBC_TrianglesUnsortedAllocateIndices(RCBC_TrianglesUnsorted* triangles) {
+/**
+ * Allocates space for raw COLLADA triangle indices.
+ */
+int UnsortedTriangleDataAllocateIndices(UnsortedTriangleData* triangles) {
 	assert(triangles);
 	free(triangles->indices);
 	triangles->indices = malloc(sizeof(int) * triangles->count * triangles->inputs * 3);
@@ -188,37 +232,65 @@ int RCBC_TrianglesUnsortedAllocateIndices(RCBC_TrianglesUnsorted* triangles) {
 	return 0;
 }
 
+void Image_0Image(Image* image) {
+	#warning TODO: Unload texture data if it exists, should we do this here?...
+	image->refs--;
+	if(image->refs <= 0) {
+		//FREE ME
+		//free(image);
+	}	
+};	
+
+static const ClassFunctions Image_c = {
+	(void*)Image_0Image
+};
+	
 /**
- * Frees unsorted triangle data.
+ * Generates an image
  */
-void RCBC_TrianglesUnsortedFree(RCBC_TrianglesUnsorted* triangles) {
-	assert(triangles);
-	free(triangles->indices);
+Image* Image_Image(char* filename) {
+
+	ALLOCATE(Image, image);
+	image->class = &Image_c;
+	image->filename = filename;
+	
+	return image;
+}
+
+void Triangles_0Triangles(Triangles* triangles) {
+	if(!triangles) {return;}
+	
+	DELETE(triangles->vertices);
+	DELETE(triangles->normals);
+	DELETE(triangles->texcoords);
+	DELETE(triangles->image);
+	
 	free(triangles);
 }
 
-/* Contains vertex data in arrays */
-RCBC_Triangles* RCBC_TrianglesGenerate(int count) {
-	RCBC_Triangles* triangles = malloc(sizeof(RCBC_Triangles));
-	if(!triangles) {
-		ERROR("Falied to malloc memory for linked list node...");
-		return NULL;
-	}
+static const ClassFunctions Triangles_c = {
+	(void*)Triangles_0Triangles
+};
 
+/* Contains vertex data in arrays */
+Triangles* Triangles_Triangles(int count) {
+
+	ALLOCATE(Triangles, triangles);
+	triangles->class = &Triangles_c;
 	triangles->count = count;
-	triangles->vertices = NULL;
-	triangles->normals = NULL;
-	triangles->texcoords = NULL;
-	triangles->image = NULL;
 
 	return triangles;
 }
 
-/* This takes a COLLADA interlaced-indexed model and turns it into vertex arrays */
-void RCBC_SortTriangles(RCBC_TrianglesUnsorted* unsorted) {
-	int i = 0xDEADC0DE;
-	RCBC_Triangles* triangles = RCBC_TrianglesGenerate(unsorted->count);
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_SortTriangles", COLOUR_LIGHT_BLUE);
+/**
+ * This takes a COLLADA interlaced-indexed model and turns it into vertex arrays.
+ */
+void RCBC_SortTriangles(UnsortedTriangleData* unsorted) {
+	DEBUG(DEBUG_MEDIUM, "Entering function...", COLOUR_LIGHT_BLUE);
+	int i;
+	
+	Triangles* triangles = NEW(Triangles, unsorted->count);
+	
 	*unsorted->ptr = triangles;
 	triangles->count = unsorted->count;
 	triangles->image = unsorted->image;
@@ -226,7 +298,7 @@ void RCBC_SortTriangles(RCBC_TrianglesUnsorted* unsorted) {
 	if(unsorted->vertices) {
 		int v = 0;
 
-		triangles->vertices = RCBC_FloatArrayGenerate(unsorted->count * 3 * 3);
+		triangles->vertices = NEW(FloatArray, unsorted->count * 3 * 3);
 		for(i = unsorted->vertices_offset; i < 3 * unsorted->count * unsorted->inputs; i+=unsorted->inputs) {
 			int index = unsorted->indices[i] * 3;
 			triangles->vertices->values[v++] = -unsorted->vertices->values[index];
@@ -239,7 +311,7 @@ void RCBC_SortTriangles(RCBC_TrianglesUnsorted* unsorted) {
 	if(unsorted->normals) {
 		int v = 0;
 
-		triangles->normals = RCBC_FloatArrayGenerate(unsorted->count * 3 * 3);
+		triangles->normals = NEW(FloatArray, unsorted->count * 3 * 3);
 		for(i = unsorted->normals_offset; i < 3 * unsorted->count * unsorted->inputs; i+=unsorted->inputs) {
 			int index = unsorted->indices[i] * 3;
 			triangles->normals->values[v++] = -unsorted->normals->values[index];
@@ -252,7 +324,7 @@ void RCBC_SortTriangles(RCBC_TrianglesUnsorted* unsorted) {
 	if(unsorted->texcoords) {
 		int v = 0;
 
-		triangles->texcoords = RCBC_FloatArrayGenerate(unsorted->count * 2 * 3);
+		triangles->texcoords = NEW(FloatArray, unsorted->count * 2 * 3);
 		for(i = unsorted->texcoords_offset; i < 3 * unsorted->count * unsorted->inputs; i+=unsorted->inputs) {
 			int index = unsorted->indices[i] * 2;
 			triangles->texcoords->values[v++] = unsorted->texcoords->values[index];

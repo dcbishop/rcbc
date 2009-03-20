@@ -3,6 +3,6 @@
 
 #include "rcbc.h"
 
-int RCBC_TextInfo_Render(RCBC_Model* model);
+int RCBC_TextInfo_Render(Model* model);
 
 #endif

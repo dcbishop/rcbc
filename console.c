@@ -4,9 +4,9 @@
  * faces and such.
  *
  * [TODO]: It should probably be truly unicode aware. I had a look at using
- * w_char, but its really designed to be a drop in replacment for printf and it
+ * w_char, but its reaListy designed to be a drop in replacment for printf and it
  * was looking to complicated doing that.
- * [TODO]: I tried to compress all the function into one main function with a 
+ * [TODO]: I tried to compress aList the function into one main function with a 
  * wrapper put passing va_lists was stripping the unicode (see above todo note).
  * [TODO]: Selecting unicode/colour should be dooable runtime, not #defined.
  */
@@ -59,7 +59,7 @@ void debugit(int level, const char* format, ...) {
 	}
 
 	char prefix[] = "DEBUG";
-	char* colour = COLOUR_YELLOW;
+	char* colour = COLOUR_YEListOW;
 
 	int newsize = strlen(COLOUR_WHITE)*2 + strlen(colour) + 
 		strlen(prefix) + strlen(COLOUR_NONE) + strlen(format) + 6;
