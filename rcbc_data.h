@@ -2,23 +2,8 @@
 #ifndef _RCBC_DATA_DEF
 #define _RCBC_DATA_DEF
 
-/**
- * A generic linked list node
- */
-typedef struct LLNode {
-	void* data;
-	struct LLNode* next;
-	struct LLNode* prev;
-} LLNode;
-
-/**
- * A generic linked list node
- */
-typedef struct LL {
-	int count;
-	struct LLNode* first;
-	struct LLNode* last;
-} LL;
+#include "ll.h"
+#include "rcbc_data_hookup.h"
 
 /**
  * A container for a COLLADA model.
@@ -120,19 +105,6 @@ typedef struct RCBCNode {
 	struct RCBCNode* parent;
 } RCBCNode;
 
-/**
- * This is used to link between XML named id's and the actual data 
- * pointers.
- */
-typedef struct RCBC_Hookup {
-	char* id; /**< The XML id string. */
-	
-	/** Either pointer to the data or a pointer to the pointer where 
-	 * the data is intened to be linked to
-	 */
-	void** ptr;
-} RCBC_Hookup;
-
 LL* LLGenerate();
 LLNode* LLAdd(LL* rootnode, void* data);
 void LLFree(LL* rootnode);
@@ -147,9 +119,6 @@ RCBCMesh* RCBC_MeshGenerate();
 void RCBC_MeshFree(RCBCMesh **mesh);
 
 RCBC_FloatArray* RCBC_FloatArrayGenerate(int count);
-
-RCBC_Hookup* RCBC_HookupGenerate(char* id, void* pointer);
-RCBC_Hookup* RCBC_HookupFind(LL* roothookup, char* id);
 
 RCBC_TrianglesUnsorted* RCBC_TrianglesUnsortedGenerate();
 RCBC_Tempory* RCBC_TemporyGenerate();

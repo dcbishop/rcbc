@@ -42,7 +42,7 @@ RCBC_Tempory* RCBC_TemporyGenerate() {
 	return tempory;
 }
 
-void RCBC_modelFree(RCBC_Model **model) {
+void RCBC_ModelFree(RCBC_Model **model) {
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_modelFree", COLOUR_LIGHT_BLUE);
 	if(!model) {
 		return;
@@ -115,113 +115,6 @@ void RCBC_MeshFree(RCBCMesh **mesh) {
 	free(*mesh);
 	*mesh = NULL;
 }
-
-/* Allocates a hookup */
-RCBC_Hookup* RCBC_HookupGenerate(char* id, void* pointer) {
-	DEBUG(DEBUG_MEDIUM, "Entering function...");
-	if(!id) {
-		WARNING("Tried to generate NULL hookup.");
-		return;
-	}
-
-	RCBC_Hookup* hookup = malloc(sizeof(RCBC_Hookup));
-	if(!hookup) {
-		ERROR("Failed to allocate space for hookup.");
-		return NULL;
-	}
-
-	DEBUG_H("Values: ID:'%s', pointer:%p", id, pointer);
-
-	hookup->id = id;
-	hookup->ptr = pointer;
-	DEBUG_H("exiting function...");
-
-	return hookup;
-}
-
-RCBC_Hookup* RCBC_HookupFind(LL* roothookup, char* id) {
-	LLNode* node = roothookup->first;
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_HookupFind(%s'%s'%s)", COLOUR_LIGHT_BLUE, COLOUR_YELLOW, id, COLOUR_LIGHT_BLUE);
-	while(node) {
-		DEBUG(DEBUG_VERY_HIGH, "\tCHECKING: '%s'", ((RCBC_Hookup*)node->data)->id);
-		if(node->data 
-			&& strcasecmp(((RCBC_Hookup*)node->data)->id, id) == 0)
-		{
-			DEBUG(DEBUG_HIGH, "\tFound matching node %s", SYMBOL_SMILEY);
-			return node->data;
-		}
-
-		node = node->next;
-	}
-
-	return NULL;
-}
-
-/* Recursivly frees all the hookups */
-void RCBC_HookupFree(LL* roothookup) {
-	#warning TODO: Free memory here...
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_HookupFree", COLOUR_LIGHT_BLUE);
-	LLNode* node_ptr = roothookup->first;
-	DEBUG(DEBUG_HIGH, "\tLooping through each hookup...");
-	while(node_ptr) {
-		DEBUG(DEBUG_VERY_HIGH, "\t\tloop...");
-		if(node_ptr->data) {
-			//free(((RCBC_Hookup*)node_ptr->data)->id); #warning TODO: free hookups
-			//free(node_ptr->data);
-			DEBUG(DEBUG_VERY_HIGH, "\t\tNode has data...");
-			node_ptr->data = NULL;
-		}
-		node_ptr = node_ptr->next;
-	}
-
-	DEBUG(DEBUG_LOW, "RCBC_HookupFree finish...");
-	LLFree(roothookup);
-	return;
-}
-
-void RCBC_Hookup_Debug(LL* rootnode) {
-	LLNode* itr;
-	RCBC_Hookup* hookup;
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_Hookup_Debug", COLOUR_YELLOW);
-	for(itr = rootnode->first; itr; itr = itr->next) {
-		hookup = itr->data;
-		DEBUG(DEBUG_VERY_HIGH, "ptr: %p, ID: '%s', pointer:%p", hookup, hookup->id, hookup->ptr);
-	}
-}
-void RCBC_Hookup_Execute(LL* sources, LL* sinks) {
-	DEBUG_M("Entering function...");
-	if(sources == NULL) {
-		return;
-	}
-	assert(sources);
-	assert(sinks);
-
-	RCBC_Hookup* source;
-	RCBC_Hookup* destination;
-	LLNode* itr;
-
-	DEBUG_V("\tLoop begiing...");
-	for(itr = sources->first; itr; itr = itr->next) {
-		DEBUG(DEBUG_VERY_HIGH, "\t\tLoop......");
-		source = itr->data;
-		if(!source) {
-			continue;
-		}
-		DEBUG_V("\t\tsearching for '%s'...", source->id);
-		destination = RCBC_HookupFind(sinks, source->id);
-		if(!destination) {
-			#warning TODO: Change error to a warning...
-			ERROR("Hookup failed to find sink '%s'", source->id);
-			continue;
-		}
-		DEBUG_H("\t\tfound '%s'...", source->id);
-		if(!destination->ptr) {
-			DEBUG(DEBUG_HIGH, "No sink in hookup...");
-			continue;
-		}
-		*destination->ptr = source->ptr;
-	}
-} 
 
 RCBC_FloatArray* RCBC_FloatArrayGenerate(int count) {
 	RCBC_FloatArray* array = malloc(sizeof(RCBC_FloatArray));
@@ -302,89 +195,6 @@ void RCBC_TrianglesUnsortedFree(RCBC_TrianglesUnsorted* triangles) {
 	assert(triangles);
 	free(triangles->indices);
 	free(triangles);
-}
-
-/**
- * Generates a linked list head node.
- */
-LL* LLGenerate() {
-	LL* ll = malloc(sizeof(LL));
-	if(!ll) {
-		ERROR("Failed to allocate memory for linked list head node...");
-	}
-	
-	ll->first = NULL;
-	ll->last = NULL;
-	ll->count = 0;
-	
-	return ll;
-}
-	
-
-/**
- * Generates a linked list node.
- */
-LLNode* LLNodeGenerate(void* data) {
-	LLNode* node = malloc(sizeof(LLNode));
-	if(!node) {
-		ERROR("Failed to allocate memory for linked list node...");
-		return NULL;
-	}
-	node->next = NULL;
-	node->prev = NULL;
-	node->data = data;
-	return node;
-}
-
-/**
- * Adds a new node to the linked list
- */
-LLNode* LLAdd(LL* head, void* data) {
-	assert(head);
-	assert(data);
-	
-	LLNode* newnode = LLNodeGenerate(data);
-	if(!newnode) {
-		ERROR("Failed to allocate space for node... %s", SYMBOL_WARNING);
-	}
-	
-	if(!head->first) {
-		head->first = newnode;
-		head->last = newnode;
-		return newnode;
-	}
-
-	newnode->prev = head->last;
-	head->last->next = newnode;
-	head->last = newnode;
-	head->count++;
-
-	return newnode;
-}
-
-/* Deletes a node from the linked list */
-LLNode* LLDelete(LLNode* node) {
-	node->prev->next = node->next;
-	node->prev = NULL;
-	node->next = NULL;
-	free(node);
-}
-
-/* Recursivly free a linked list */
-void LLFree(LL* rootnode) {
-	if(!rootnode) {
-		return;
-	}
-
-	LLNode* node_ptr = rootnode->first;
-	LLNode* node_ptr_tmp;
-	while(node_ptr) {
-		node_ptr_tmp = node_ptr->next;
-		if(node_ptr->data) {
-			free(node_ptr);
-		}
-		node_ptr = node_ptr_tmp;
-	}
 }
 
 /* Contains vertex data in arrays */
