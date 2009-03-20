@@ -11,7 +11,7 @@
  * library or whatever, you could also do models like replace the render with 
  * somemodel that gives a text dump of file information or a wrapper function
  * that draws a cube around the model or whatever. In theory anyway, for now
- * not aList of this might actuaListy be replacable. */
+ * not all of this might actually be replacable. */
 typedef struct RCBCPlugins {
 	int (*render_draw)(const Model* model);
 	Model* (*xml_load)(Model* model, List* images, const char* filename);

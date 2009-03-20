@@ -61,7 +61,7 @@ Hookup* Hookup_Hookup(char* id, void* pointer) {
  */
 Hookup* HookupFind(List* roothookup, char* id) {
 	ListNode* node = roothookup->first;
-	DEBUG(DEBUG_MEDIUM, "%sHookupFind(%s'%s'%s)", COLOUR_LIGHT_BLUE, COLOUR_YEListOW, id, COLOUR_LIGHT_BLUE);
+	DEBUG(DEBUG_MEDIUM, "%sHookupFind(%s'%s'%s)", COLOUR_LIGHT_BLUE, COLOUR_YELLOW, id, COLOUR_LIGHT_BLUE);
 	while(node) {
 		DEBUG(DEBUG_VERY_HIGH, "\tCHECKING: '%s'", ((Hookup*)node->data)->id);
 		if(node->data 
@@ -83,7 +83,7 @@ Hookup* HookupFind(List* roothookup, char* id) {
 void Hookup_Debug(List* rootnode) {
 	ListNode* itr;
 	Hookup* hookup;
-	DEBUG(DEBUG_MEDIUM, "%sHookup_Debug", COLOUR_YEListOW);
+	DEBUG(DEBUG_MEDIUM, "%sHookup_Debug", COLOUR_YELLOW);
 	for(itr = rootnode->first; itr; itr = itr->next) {
 		hookup = itr->data;
 		DEBUG(DEBUG_VERY_HIGH, "ptr: %p, ID: '%s', pointer:%p", hookup, hookup->id, hookup->ptr);

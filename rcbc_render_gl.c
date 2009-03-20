@@ -94,7 +94,7 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 	glPopMatrix();
 }
 
-/* Draws aList the nodes and their children... */
+/* Draws all the nodes and their children... */
 void RCBC_GL_Draw_Nodes(SceneNode* node) {
 
 	while(node) {

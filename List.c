@@ -48,10 +48,8 @@ static const ClassFunctions ListNode_c = {
  * Generates a linked list head node.
  */
 List* List_List() {
-	List* list = calloc(1, sizeof(List));
-	if(!list) {
-		ERROR("Failed to allocate memory for linked list head node...");
-	}
+	ALLOCATE(List, list);
+	
 	list->class = &List_c;
 	return list;
 }
@@ -61,11 +59,8 @@ List* List_List() {
  * Generates a linked list node.
  */
 ListNode* ListNode_ListNode(void* data) {
-	ListNode* node = calloc(1, sizeof(ListNode));
-	if(!node) {
-		ERROR("Failed to allocate memory for linked list node...");
-		return NULL;
-	}
+	ALLOCATE(ListNode, node);
+	
 	node->class = &ListNode_c;
 
 	node->data = data;

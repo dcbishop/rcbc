@@ -14,12 +14,12 @@ void RCBC_MiniXML_ProcessTextureImages(ModelTempory *tempory, mxml_node_t *node)
 
 	const char* id;
 	mxml_node_t* child;
-	char* fuListname = NULL;
+	char* fullname = NULL;
 	char* filename = NULL;
 	char* rname = NULL;
 	int rname_len = 0;
 
-	/* Loop through aList the image nodes */
+	/* Loop through all the image nodes */
 	for(node = node->child; node != NULL; node = node->next) {
 		if(node->type == MXML_ELEMENT 
 		&& strcasecmp(node->value.element.name, "image") == 0) {
@@ -31,14 +31,14 @@ void RCBC_MiniXML_ProcessTextureImages(ModelTempory *tempory, mxml_node_t *node)
 				if(child->type == MXML_ELEMENT 
 				&& strcasecmp(child->value.element.name, "init_from") == 0) {
 
-					fuListname = child->child->value.opaque;
+					fullname = child->child->value.opaque;
 					/* Find the final path element since we want only the filename */
-					filename = strrchr(fuListname, '/')+1; /* Sane OSes path seperator */
+					filename = strrchr(fullname, '/')+1; /* Sane OSes path seperator */
 					if(!filename) {
-						filename = strrchr(fuListname, '\\')+1; /* Or try for a windows style path seperator */
+						filename = strrchr(fullname, '\\')+1; /* Or try for a windows style path seperator */
 					}
 					if(!filename) { /* If we didn't find a path seperator, assume filename only */
-						rname = fuListname;
+						rname = fullname;
 					} else { /* Append texture directory name */
 						rname_len = strlen(DIRECTORY_TEXTURES)+strlen(filename)+1;
 						rname = malloc(rname_len * sizeof(char));
@@ -64,7 +64,7 @@ void RCBC_MiniXML_ProcessTextureMaterial(ModelTempory *tempory, mxml_node_t *nod
 	const char* id;
 	const char* url;
 
-	/* Loop through aList the material nodes */
+	/* Loop through all the material nodes */
 	for(node = node->child; node != NULL; node = node->next) {
 		if(node->type == MXML_ELEMENT && 
 			strcasecmp(node->value.element.name, "material") == 0) {
@@ -96,7 +96,7 @@ void RCBC_MiniXML_ProcessTextureEffects(ModelTempory *tempory, mxml_node_t *node
 	const char* id;
 	mxml_node_t* child;
 
-	/* Loop through aList the effect nodes */
+	/* Loop through all the effect nodes */
 	for(node = node->child; node != NULL; node = node->next) {
 		if(node->type == MXML_ELEMENT	&&
 			strcasecmp(node->value.element.name, "effect") == 0) {
@@ -123,7 +123,7 @@ void RCBC_MiniXML_ProcessTextureEffects_Profile(ModelTempory *tempory, mxml_node
 	DEBUG_M("Entering function...");
 	mxml_node_t* child;
 
-	/* Loop through aList the newparam nodes */
+	/* Loop through all the newparam nodes */
 	for(node = node->child; node != NULL; node = node->next) {
 		if(node->type == MXML_ELEMENT
 		&& strcasecmp(node->value.element.name, "newparam") == 0) {

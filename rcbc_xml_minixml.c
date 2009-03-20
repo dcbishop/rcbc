@@ -7,7 +7,7 @@
 #include "console.h"
 
 /** 
- * Initilize the MiniXML library (not actuaListy required...)
+ * Initilize the MiniXML library (not actually required...)
  */
 int RCBC_MiniXML_Init() {
 	LOG("Initilizing MiniXML...");
@@ -20,7 +20,7 @@ int RCBC_MiniXML_Init() {
 void DumpNodeInfo(mxml_node_t *node) {
 	DEBUG(DEBUG_VERY_HIGH, "------NODE_PTR: %p------", node);
 	if(node == NULL) {
-		DEBUG(DEBUG_VERY_HIGH, "NuList Node!");
+		DEBUG(DEBUG_VERY_HIGH, "Null Node!");
 		return;
 	}
 

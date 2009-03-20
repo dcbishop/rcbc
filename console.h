@@ -27,7 +27,7 @@
 #ifdef USE_COLOUR
 #define COLOUR_LIGHT_RED "\033[1;31m"
 #define COLOUR_LIGHT_GREEN "\033[1;32m"
-#define COLOUR_YEListOW "\033[1;33m"
+#define COLOUR_YELLOW "\033[1;33m"
 #define COLOUR_LIGHT_BLUE "\033[1;34m"
 #define COLOUR_LIGHT_MAGENTA "\033[1;35m"
 #define COLOUR_LIGHT_CYAN "\033[1;36m"
@@ -36,7 +36,7 @@
 #else
 #define COLOUR_LIGHT_RED ""
 #define COLOUR_LIGHT_GREEN ""
-#define COLOUR_YEListOW ""
+#define COLOUR_YELLOW ""
 #define COLOUR_LIGHT_BLUE ""
 #define COLOUR_LIGHT_MAGENTA ""
 #define COLOUR_LIGHT_CYAN ""
