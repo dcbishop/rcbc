@@ -85,9 +85,20 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(ModelTempory *tempory, Mesh *m
 	return 0;
 }
 
-UnsortedTriangleData* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
+UnsortedPolygons* RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
 	
+	assert(tempory);
+	assert(mesh);
+	assert(xnode);
+
+	mxml_node_t *node;	
+}
+
+UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
+	DEBUG_M("Entering function...");
+
+	assert(tempory);
 	assert(mesh);
 	assert(xnode);
 
@@ -98,7 +109,7 @@ UnsortedTriangleData* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory
 	int count = atoi(count_s);
 	int inputs = 0;
 
-	UnsortedTriangleData* triangles = NEW(UnsortedTriangleData, count);
+	UnsortedTriangles* triangles = NEW(UnsortedTriangles, count);
 	
 	for(node = xnode->child; node != NULL; node = node->next) {
 		DumpNodeInfo(node);
@@ -130,7 +141,7 @@ UnsortedTriangleData* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory
 
 			} else if(strcasecmp(node->value.element.name, "p") == 0) {
 				triangles->inputs = inputs;
-				UnsortedTriangleDataAllocateIndices(triangles);
+				UnsortedTrianglesAllocateIndices(triangles);
 				int value = -1;
 				int i = 0;
 				char* pch = strtok(node->child->value.opaque, " ");
@@ -181,7 +192,7 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Children(ModelTempory *tempory, Mesh *me
 		}
 	} else if(strcasecmp(xnode->value.element.name, "polygons") == 0) {
 		#warning TODO: Convert polygons to triangle strips
-		//return RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(mesh, xnode);
+		return RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(tempory, mesh, xnode);
 		ERROR("Model contains polygon data, convert to triangles.");
 		return 1;
 	} 

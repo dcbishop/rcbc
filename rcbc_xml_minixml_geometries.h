@@ -10,7 +10,7 @@
 FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode);
 int RCBC_MiniXML_ProcessGeometries_Mesh_Source(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode);
 int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode);
-UnsortedTriangleData* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode);
+UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode);
 int RCBC_MiniXML_ProcessGeometries_Mesh_Children(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode);
 Mesh* RCBC_MiniXML_ProcessGeometries_Mesh(ModelTempory *tempory, mxml_node_t *xnode);
 Mesh* RCBC_MiniXML_ProcessGeometries_Geometry(ModelTempory *tempory, mxml_node_t *node);

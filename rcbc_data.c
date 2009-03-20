@@ -199,21 +199,21 @@ FloatArray* FloatArray_FloatArray(int count) {
 	
 	return array;
 }
-void UnsortedTriangleData_0UnsortedTriangleData(UnsortedTriangleData* triangles) {
+void UnsortedTriangles_0UnsortedTriangles(UnsortedTriangles* triangles) {
 	free(triangles->indices);
 	free(triangles);
 }
 
-static const ClassFunctions UnsortedTriangleData_c = {
-	(void*)UnsortedTriangleData_0UnsortedTriangleData
+static const ClassFunctions UnsortedTriangles_c = {
+	(void*)UnsortedTriangles_0UnsortedTriangles
 };
 
-UnsortedTriangleData* UnsortedTriangleData_UnsortedTriangleData(int count) {
+UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count) {
 	
-	ALLOCATE(UnsortedTriangleData, triangles);
+	ALLOCATE(UnsortedTriangles, triangles);
 	
 	triangles->count = count;
-	triangles->class = &UnsortedTriangleData_c;
+	triangles->class = &UnsortedTriangles_c;
 	
 	return triangles;
 }
@@ -221,7 +221,7 @@ UnsortedTriangleData* UnsortedTriangleData_UnsortedTriangleData(int count) {
 /**
  * Allocates space for raw COLLADA triangle indices.
  */
-int UnsortedTriangleDataAllocateIndices(UnsortedTriangleData* triangles) {
+int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles) {
 	assert(triangles);
 	free(triangles->indices);
 	triangles->indices = malloc(sizeof(int) * triangles->count * triangles->inputs * 3);
@@ -319,7 +319,7 @@ Triangles* Triangles_Triangles(int count) {
 /**
  * This takes a COLLADA interlaced-indexed model and turns it into vertex arrays.
  */
-void RCBC_SortTriangles(UnsortedTriangleData* unsorted) {
+void RCBC_SortTriangles(UnsortedTriangles* unsorted) {
 	DEBUG(DEBUG_MEDIUM, "Entering function...", COLOUR_LIGHT_BLUE);
 	int i;
 	

@@ -58,7 +58,7 @@ typedef struct Image {
  * Contains unprocessed triangle data as it is read from the COLLADA
  * file.
  */
-typedef struct UnsortedTriangleData {
+typedef struct UnsortedTriangles {
 	const ClassFunctions* class;
 	void** ptr;
 	unsigned int count;
@@ -71,7 +71,14 @@ typedef struct UnsortedTriangleData {
 	int texcoords_offset;
 	FloatArray* texcoords;
 	Image* image;
-} UnsortedTriangleData;
+} UnsortedTriangles;
+
+typedef struct UnsortedPolygons {
+	const ClassFunctions* class;
+	void** ptr;
+	unsigned int count;
+	unsigned int inputs;
+} UnsortedPolygons;
 
 typedef struct Triangles {
 	const ClassFunctions* class;
@@ -130,9 +137,9 @@ Mesh* Mesh_Mesh();
 void FloatArray_0FloatArray(FloatArray* array);
 FloatArray* FloatArray_FloatArray(int count);
 
-void UnsortedTriangleData_0UnsortedTriangleData(UnsortedTriangleData* triangles);
-UnsortedTriangleData* UnsortedTriangleData_UnsortedTriangleData(int count);
-int UnsortedTriangleDataAllocateIndices(UnsortedTriangleData* triangles);
+void UnsortedTriangles_0UnsortedTriangles(UnsortedTriangles* triangles);
+UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count);
+int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles);
 
 void Image_0Image(Image* image);
 Image* Image_Image(char* filename);
