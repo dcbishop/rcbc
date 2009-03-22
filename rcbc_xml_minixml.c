@@ -52,14 +52,17 @@ void DumpNodeInfo(mxml_node_t *node) {
 int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 	LOG("[MINIXML]: Opening '%s'...", filename);
 	if(!model) {
-		ERROR("[MINIXML]: Passed NULL 'model'...");
+		ERROR("Passed NULL model...");
 	}
-
+	if(!images) {
+		ERROR("Passed NULL image list...");
+	}
+	
 	FILE *fp;
 	mxml_node_t *tree;
 	fp = fopen(filename, "r");
 	if(!fp) {
-		ERROR("[MINIXML]: Error opening %s... %s", filename, SYMBOL_FATAL);
+		ERROR("Error opening %s... %s", filename, SYMBOL_FATAL);
 		return 1;
 	}
 	LOG("[MINIXML]: Parsing '%s'...", filename);
@@ -67,7 +70,7 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 	fclose(fp);
 	
 	if(!tree) {
-		ERROR("[MINIXML]: Error parsing %s... %s", filename, SYMBOL_FATAL);
+		ERROR("Error parsing %s... %s", filename, SYMBOL_FATAL);
 		return 1;
 	}
 	LOG("[MINIXML]: Successfuly loaded... %s", SYMBOL_SMILEY);
@@ -109,9 +112,9 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 		itr = itr->next;
 	}
 
-	#warning TODO: Consider removing nodes with no geometry or children (camera/light nodes.)
+	#warning ['TODO']: Consider removing nodes with no geometry or children (camera/light nodes.)
 
-	#warning TODO: Free memory, cleanup segfaults
+	#warning ['TODO']: Free memory, cleanup segfaults
 	/* Free memory */
 	/*HookupFree(model->sources);
 	HookupFree(model->sinks);*/

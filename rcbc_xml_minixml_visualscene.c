@@ -67,7 +67,7 @@ void RCBC_MiniXML_ProcessVisualScene_Node(ModelTempory *tempory, SceneNode **rno
 	assert(rnode);
 	assert(xnode);
 
-	#warning TODO: This loops through the nodes, keep a last node refrence.
+	#warning ['TODO']: This loops through the nodes, keep a last node refrence.
 	
 	if(!(*rnode)) {
 		*rnode = NEW(SceneNode);
@@ -94,9 +94,10 @@ void RCBC_MiniXML_ProcessVisualScene_Node(ModelTempory *tempory, SceneNode **rno
 }
 
 void RCBC_MiniXML_ProcessVisualScene(ModelTempory *tempory, mxml_node_t *node) {
-
 	assert(tempory);
-	assert(node);
+	if(!node) {
+		return;
+	}
 
 	if(tempory->model->visual_scene) {
 		DELETE(&(tempory->model->visual_scene));

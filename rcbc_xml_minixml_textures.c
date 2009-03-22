@@ -1,4 +1,7 @@
 #include "rcbc_xml_minixml_textures.h"
+
+#include <assert.h>
+
 #include "console.h"
 #include "rcbc.h"
 #include "rcbc_xml_minixml.h"
@@ -7,6 +10,7 @@
 /* Process the <library_images> section of COLLADA */
 void RCBC_MiniXML_ProcessTextureImages(ModelTempory *tempory, mxml_node_t *node) {
 	DEBUG_M("Entering function...");
+	assert(tempory);
 	if(!node) {
 		return;
 	}
@@ -45,7 +49,7 @@ void RCBC_MiniXML_ProcessTextureImages(ModelTempory *tempory, mxml_node_t *node)
 						snprintf(rname, rname_len, "%s%s", DIRECTORY_TEXTURES, filename);
 					}
 
-					#warning TODO: What happenes to Images that aren't correctly hooked up?
+					#warning ['TODO']: What happenes to Images that aren't correctly hooked up?
 					Image* image = Image_Add(tempory->images, rname, 1);
 
 					Hookup* hookup = NEW(Hookup, (char*)id, (void*)image);
@@ -63,11 +67,21 @@ void RCBC_MiniXML_ProcessTextureMaterial(ModelTempory *tempory, mxml_node_t *nod
 	mxml_node_t* child;
 	const char* id;
 	const char* url;
+	
+	assert(tempory);
+	if(!node) {
+		return;
+	}
+	
+	DEBUG_A("loop starting...");
 
 	/* Loop through all the material nodes */
 	for(node = node->child; node != NULL; node = node->next) {
+		DEBUG_A("\tloop...");
+
 		if(node->type == MXML_ELEMENT && 
 			strcasecmp(node->value.element.name, "material") == 0) {
+			DEBUG_A("\t\tflag 3...");
 
 			id = mxmlElementGetAttr(node, "id");
 
@@ -88,6 +102,7 @@ void RCBC_MiniXML_ProcessTextureMaterial(ModelTempory *tempory, mxml_node_t *nod
 		
 		}
 	}
+	DEBUG_M("Exiting function...");
 }
 
 /* Process the <library_effects> section of COLLADA */
@@ -96,6 +111,11 @@ void RCBC_MiniXML_ProcessTextureEffects(ModelTempory *tempory, mxml_node_t *node
 	const char* id;
 	mxml_node_t* child;
 
+	assert(tempory);
+	if(!node) {
+		return;
+	}
+	
 	/* Loop through all the effect nodes */
 	for(node = node->child; node != NULL; node = node->next) {
 		if(node->type == MXML_ELEMENT	&&
@@ -123,6 +143,10 @@ void RCBC_MiniXML_ProcessTextureEffects_Profile(ModelTempory *tempory, mxml_node
 	DEBUG_M("Entering function...");
 	mxml_node_t* child;
 
+	assert(tempory);
+	assert(node);
+	assert(fx_hookup);
+
 	/* Loop through all the newparam nodes */
 	for(node = node->child; node != NULL; node = node->next) {
 		if(node->type == MXML_ELEMENT
@@ -134,7 +158,7 @@ void RCBC_MiniXML_ProcessTextureEffects_Profile(ModelTempory *tempory, mxml_node
 	}
 }
 
-#warning TODO: Remove unused, commeneted out code
+#warning ['TODO']: Remove unused, commeneted out code
 /* Process the <library_effects><effect><profile_COMMON><newparam> section of COLLADA */
 void RCBC_MiniXML_ProcessTextureEffects_Newparam(ModelTempory *tempory, mxml_node_t *node, Hookup* fx_hookup) {
 	DEBUG_M("Entering function...");
@@ -142,6 +166,10 @@ void RCBC_MiniXML_ProcessTextureEffects_Newparam(ModelTempory *tempory, mxml_nod
 	//const char* newparam_sid = mxmlElementGetAttr(node, "id");
 	//const char* surface_type;
 	const char* init_from;
+	
+	assert(tempory);
+	assert(node);
+	assert(fx_hookup);
 	
 	DumpNodeInfo(node);
 

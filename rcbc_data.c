@@ -36,6 +36,7 @@ Model* Model_Model() {
 }
 
 void* ModelTempory_0ModelTempory(ModelTempory* tempory) {
+	#warning ['TODO']:Free 'freeme'
 	DELETE(tempory->sinks);
 	DELETE(tempory->sources);
 	DELETE(tempory->unsorted);
@@ -58,6 +59,7 @@ ModelTempory* ModelTempory_ModelTempory() {
 	tempory->sources = NEW(List);
 	tempory->unsorted = NEW(List);
 	tempory->images = NULL;
+	tempory->freeme = NEW(List);
 
 	DEBUG_M("Exiting function...", COLOUR_LIGHT_BLUE);
 	return tempory;
@@ -91,7 +93,7 @@ void SceneNode_0SceneNode(SceneNode *node) {
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_NodeFree", COLOUR_LIGHT_BLUE);
 	assert(node);
 
-	#warning TODO: Free SceneNode memory recusivly, right now it leaks...
+	#warning ['TODO']: Free SceneNode memory recusivly, right now it leaks...
 	
 	DELETE(node->mesh);
 	
@@ -143,7 +145,7 @@ void SceneNodeDebugInfo(SceneNode* node) {
 		Rotate* rotation = itr->data;
 		DEBUG(DEBUG_VERY_HIGH, "      Rotation %f %f %f %f", rotation->x, rotation->y, rotation->z, rotation->angle);
 	}*/
-	#warning TODO: Fix this?...
+	#warning ['TODO']: Fix this?...
 }
 
 void Mesh_0Mesh(Mesh *mesh) {
@@ -152,7 +154,7 @@ void Mesh_0Mesh(Mesh *mesh) {
 		return;
 	}
 
-	#warning TODO: Free memory recusivly, right now it leaks...
+	#warning ['TODO']: Free memory recusivly, right now it leaks...
 	
 	List_DeleteData(mesh->arrays);
 	DELETE(mesh->arrays);
@@ -196,9 +198,20 @@ FloatArray* FloatArray_FloatArray(int count) {
 		return NULL;
 	}
 	array->class = &FloatArray_c;
+	array->count = count;
 	
 	return array;
 }
+
+void FloatArray_Dump(FloatArray* array) {
+	int i;
+	DEBUG_H("Float array dumping %d values\n", array->count);
+	for(i = 0; i < array->count; i++) {
+		printf("%f, ", array->values[i]);
+	}
+	printf("\n");
+}
+
 void UnsortedTriangles_0UnsortedTriangles(UnsortedTriangles* triangles) {
 	free(triangles->indices);
 	free(triangles);
@@ -233,7 +246,7 @@ int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles) {
 }
 
 void Image_0Image(Image* image) {
-	#warning TODO: Unload texture data if it exists, should we do this here?...
+	#warning ['TODO']: Unload texture data if it exists, should we do this here?...
 	image->refs--;
 	if(image->refs <= 0) {
 		//FREE ME

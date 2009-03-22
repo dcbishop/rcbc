@@ -29,6 +29,8 @@ FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory
 
 	ListAdd(mesh->arrays, newarray);
 	
+	//FloatArray_Dump(newarray);
+	
 	DEBUG_M("exiting function");
 	return newarray;
 }
@@ -48,7 +50,7 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Source(ModelTempory *tempory, Mesh *mesh
 			}
 		}
 	}
-	#warning TODO: Remove the line below this line.
+	#warning ['TODO']: Remove the line below this line.
 	DEBUG_M("Failed to find float array..."); 
 	return 1;
 }
@@ -60,24 +62,33 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(ModelTempory *tempory, Mesh *m
 	assert(xnode);
 
 	mxml_node_t *node;
-
+	char input_id[512];
 	const char *source;
 	const char *semantic;
 	const char *id = mxmlElementGetAttr(xnode, "id");
 
 	for(node = xnode->child; node != NULL; node = node->next) {
 		DumpNodeInfo(node);
+		
 		if(node->type == MXML_ELEMENT) {
 			if(strcasecmp(node->value.element.name, "input") == 0) {
 				semantic = mxmlElementGetAttr(node, "semantic");
 				source = mxmlElementGetAttr(node, "source");
 
 				DEHASH(source);
+				
+				int input_id_len = strlen(id)+strlen(semantic)+2;
+				char* input_id = malloc(input_id_len);
+				snprintf(input_id, input_id_len, "%s_%s", id, semantic);
+				ListAdd(tempory->freeme, input_id); /* free after hookups */
 
-				Hookup* idhookup = NEW(Hookup, (char*)id, NULL);
+				Hookup* idhookup = NEW(Hookup, (char*)input_id, NULL);
 				Hookup* sourcehookup = NEW(Hookup, (char*)source, (void*)&idhookup->ptr);
 				ListAdd(tempory->sources, idhookup);
-				ListAdd(tempory->sinks, sourcehookup);				
+				ListAdd(tempory->sinks, sourcehookup);
+				
+				#warning ['TODO']: Don't free this here...
+				
 			}
 		}
 	}
@@ -92,7 +103,11 @@ UnsortedPolygons* RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(ModelTempory *tem
 	assert(mesh);
 	assert(xnode);
 
-	mxml_node_t *node;	
+	//mxml_node_t *node;
+	
+	#warning ['TODO']: Handle polygon models... or not...
+	WARNING("Model contains polygon data! Export as triangles. %s", SYMBOL_WARNING);
+	return NULL;
 }
 
 UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
@@ -105,12 +120,13 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 	mxml_node_t *node;
 	const char* count_s = mxmlElementGetAttr(xnode, "count");
 	const char* material = mxmlElementGetAttr(xnode, "material");
-
+	char* source_id;
+	int source_id_len;
+	
 	int count = atoi(count_s);
 	int inputs = 0;
 
 	UnsortedTriangles* triangles = NEW(UnsortedTriangles, count);
-	
 	for(node = xnode->child; node != NULL; node = node->next) {
 		DumpNodeInfo(node);
 		if(node->type == MXML_ELEMENT) {
@@ -126,17 +142,41 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 				void* ptr = NULL;
 				inputs++;
 				if(strcasecmp(semantic, "VERTEX") == 0) {
+					
 					ptr = &(triangles->vertices);
 					triangles->vertices_offset = offset;
+					
+					#warning ['TODO']: Handle Maya's weirdness
+					/* Maya exports the file in a slightly different format
+					 * where the vertices structure has both position and
+					 * normals rather than them being in trinagles. */
+					source_id_len = strlen(source)+strlen("NORMAL")+2;
+					source_id = malloc(source_id_len);
+					snprintf(source_id, source_id_len, "%s_NORMAL", source);
+					
+					/* Add the normals hookup now, the position will be done below */
+					Hookup* hookup_normals = NEW(Hookup, (char*)source_id, triangles->normals);
+					ListAdd(tempory->sinks, hookup_normals);
+					
+					/* We keep track of strings to free later */
+					ListAdd(tempory->freeme, source_id);
+					
+					source_id_len = strlen(source)+strlen("POSITION")+2;
+					source_id = malloc(source_id_len);
+					snprintf(source_id, source_id_len, "%s_POSITION", source);
+					ListAdd(tempory->freeme, source_id);
+					
 				} else if(strcasecmp(semantic, "NORMAL") == 0) {
 					ptr = &(triangles->normals);
 					triangles->normals_offset = offset;
+					source_id = source;
 				} else if(strcasecmp(semantic, "TEXCOORD") == 0) {
 					ptr = &(triangles->texcoords);
 					triangles->texcoords_offset = offset;
+					source_id = source;
 				}
 
-				Hookup* hookup = NEW(Hookup, (char*)source, ptr);
+				Hookup* hookup = NEW(Hookup, (char*)source_id, ptr);
 				ListAdd(tempory->sinks, hookup);
 
 			} else if(strcasecmp(node->value.element.name, "p") == 0) {
@@ -191,7 +231,7 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Children(ModelTempory *tempory, Mesh *me
 			return 1;
 		}
 	} else if(strcasecmp(xnode->value.element.name, "polygons") == 0) {
-		#warning TODO: Convert polygons to triangle strips
+		#warning ['TODO']: Convert polygons to triangle strips
 		return RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(tempory, mesh, xnode);
 		ERROR("Model contains polygon data, convert to triangles.");
 		return 1;
@@ -249,9 +289,11 @@ int RCBC_MiniXML_ProcessGeometries(ModelTempory *tempory, mxml_node_t *node) {
 	DEBUG(DEBUG_MEDIUM, "RCBC_MiniXML_ProcessGeometries");
 
 	assert(tempory);
-	assert(node);
+	if(!node) {
+		return;
+	}
 
-	#warning TODO: Free the mesh if it already exists for safety
+	#warning ['TODO']: Free the mesh if it already exists for safety... probably not needed...
 	if(tempory->model->geometries) {
 		//DEBUG(DEBUG_HIGH, "Freeing empty...");
 		//RCBC_MeshFree(&(tempory->geometries));

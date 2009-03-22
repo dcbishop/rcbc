@@ -24,6 +24,7 @@ typedef struct ModelTempory {
 	List* sinks;
 	List* unsorted;
 	List* images;
+	List* freeme;
 } ModelTempory;
 
 /**

@@ -6,14 +6,14 @@
  * Hookup deconstructor.
  **/
 void Hookup_0Hookup(List* roothookup) {
-	#warning TODO: Free memory here...
+	#warning ['TODO']: Free memory here...
 	DEBUG(DEBUG_MEDIUM, "%sHookupFree", COLOUR_LIGHT_BLUE);
 	ListNode* node_ptr = roothookup->first;
 	DEBUG(DEBUG_HIGH, "\tLooping through each hookup...");
 	while(node_ptr) {
 		DEBUG(DEBUG_VERY_HIGH, "\t\tloop...");
 		if(node_ptr->data) {
-			//free(((Hookup*)node_ptr->data)->id); #warning TODO: free hookups
+			//free(((Hookup*)node_ptr->data)->id); #warning ['TODO']: free hookups
 			//free(node_ptr->data);
 			DEBUG(DEBUG_VERY_HIGH, "\t\tNode has data...");
 			node_ptr->data = NULL;
@@ -115,7 +115,7 @@ void Hookup_Execute(List* sources, List* sinks) {
 		DEBUG_V("\t\tsearching for '%s'...", source->id);
 		destination = HookupFind(sinks, source->id);
 		if(!destination) {
-			#warning TODO: Change error to a warning...
+			#warning ['TODO']: Change error to a warning...
 			ERROR("Hookup failed to find sink '%s'", source->id);
 			continue;
 		}
