@@ -94,14 +94,29 @@ ListNode* ListAdd(List* head, void* data) {
 }
 
 /**
- * Deletes the data from the linked list assuming its an ooc class.
+ * DELETE()'s the data from the linked list assuming its an ooc class.
  */
-void* List_DeleteData(List* list) {
+void List_DeleteData(List* list) {
 	ListNode* node = list->first;
 
 	while(node) {
 		DELETE(node->data);
 		node->data = NULL;
+		node = node->next;
+	}
+}
+
+/**
+ * free()'s the data from the linked list, for non-complex data structs.
+ */
+void List_FreeData(List* list) {
+	ListNode* node = list->first;
+
+	while(node) {
+		if(node->data) {
+			free(node->data);
+		}
+		node->data=NULL;
 		node = node->next;
 	}
 }

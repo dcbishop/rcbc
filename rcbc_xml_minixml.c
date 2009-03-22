@@ -58,29 +58,55 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 		ERROR("Passed NULL image list...");
 	}
 	
+	/* Open the file. */
 	FILE *fp;
 	mxml_node_t *tree;
 	fp = fopen(filename, "r");
 	if(!fp) {
-		ERROR("Error opening %s... %s", filename, SYMBOL_FATAL);
+		ERROR("Error opening '%s'... %s", filename, SYMBOL_FATAL);
 		return 1;
 	}
+	
+	/* Load the XML file in. */
 	LOG("[MINIXML]: Parsing '%s'...", filename);
 	tree = mxmlLoadFile(NULL, fp, MXML_OPAQUE_CALLBACK);
 	fclose(fp);
 	
 	if(!tree) {
-		ERROR("Error parsing %s... %s", filename, SYMBOL_FATAL);
+		ERROR("Error parsing '%s'... %s", filename, SYMBOL_FATAL);
 		return 1;
 	}
-	LOG("[MINIXML]: Successfuly loaded... %s", SYMBOL_SMILEY);
+	LOG("[MINIXML]: Successfuly loaded... '%s'", SYMBOL_SMILEY);
 
 	DumpNodeInfo(tree);
 
+	/* Make a tempory structure to store raw COLLADA data befoure conversion. */
 	ModelTempory* tempory = NEW(ModelTempory);
 	tempory->model = model;
 	tempory->images = images;
 	mxml_node_t* node;
+
+	/* Find the up axis. */
+	char* axis;
+	node = mxmlFindElement(tree, tree, "asset", NULL, NULL, MXML_DESCEND);
+	node = mxmlFindElement(node, node, "up_axis", NULL, NULL, MXML_DESCEND);
+	if(node && node->child) {
+		axis = node->child->value.opaque;
+	}
+	
+	if(strcasecmp(axis, "X_UP") == 0) {
+		tempory->up_axis = X_UP;
+		DEBUG_M("Axis is X_UP.");
+	} else if(strcasecmp(axis, "Y_UP") == 0) {
+		tempory->up_axis = X_UP;
+		DEBUG_M("Axis is Y_UP.");
+	} else if(strcasecmp(axis, "Z_UP") == 0) {
+		tempory->up_axis = Z_UP;
+		DEBUG_M("Axis is Z_UP.");
+	} else {
+		WARNING("Unable to determine COLLADA axis orientation. Guessing Y_UP.");
+		tempory->up_axis = Y_UP;
+	}
 
 	node = mxmlFindElement(tree, tree, "library_geometries", NULL, NULL, MXML_DESCEND);
 	RCBC_MiniXML_ProcessGeometries(tempory, node);
@@ -114,14 +140,10 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 
 	#warning ['TODO']: Consider removing nodes with no geometry or children (camera/light nodes.)
 
-	#warning ['TODO']: Free memory, cleanup segfaults
 	/* Free memory */
-	/*HookupFree(model->sources);
-	HookupFree(model->sinks);*/
-	//HookupsFree(hookups);
-	//ListFree(hookups);
-	//Free tempory
-
-  mxmlDelete(tree);
+	Hookups_DeleteMissing(tempory->sources);
+	DELETE(tempory)
+	mxmlDelete(tree);
+	
 	return 0;
 }

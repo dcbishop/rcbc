@@ -16,6 +16,7 @@ typedef struct Hookup {
 	 * the data is intened to be linked to
 	 */
 	void** ptr;
+	int hooked;
 } Hookup;
 
 Hookup* Hookup_Hookup(char* id, void* pointer);

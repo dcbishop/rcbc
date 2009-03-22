@@ -5,6 +5,10 @@
 #include "List.h"
 #include "rcbc_data_hookup.h"
 
+#define X_UP 0
+#define Y_UP 1
+#define Z_UP 2
+
 /**
  * A container for a COLLADA model.
  */
@@ -25,6 +29,8 @@ typedef struct ModelTempory {
 	List* unsorted;
 	List* images;
 	List* freeme;
+	List* deleteme;
+	int up_axis;
 } ModelTempory;
 
 /**
@@ -95,7 +101,6 @@ typedef struct Triangles {
  **/
 typedef struct Mesh {
 	const ClassFunctions* class;
-	List* arrays;
 	Triangles* triangles;
 } Mesh;
 

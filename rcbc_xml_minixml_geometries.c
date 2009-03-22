@@ -27,7 +27,7 @@ FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory
 		i++;
 	}
 
-	ListAdd(mesh->arrays, newarray);
+	ListAdd(tempory->deleteme, newarray);
 	
 	//FloatArray_Dump(newarray);
 	
@@ -84,11 +84,9 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(ModelTempory *tempory, Mesh *m
 
 				Hookup* idhookup = NEW(Hookup, (char*)input_id, NULL);
 				Hookup* sourcehookup = NEW(Hookup, (char*)source, (void*)&idhookup->ptr);
+
 				ListAdd(tempory->sources, idhookup);
 				ListAdd(tempory->sinks, sourcehookup);
-				
-				#warning ['TODO']: Don't free this here...
-				
 			}
 		}
 	}
@@ -145,8 +143,9 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 					
 					ptr = &(triangles->vertices);
 					triangles->vertices_offset = offset;
+					triangles->normals_offset = offset;
 					
-					#warning ['TODO']: Handle Maya's weirdness
+					#warning ['TODO']: Handle Mayas weirdness
 					/* Maya exports the file in a slightly different format
 					 * where the vertices structure has both position and
 					 * normals rather than them being in trinagles. */
@@ -169,11 +168,11 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 				} else if(strcasecmp(semantic, "NORMAL") == 0) {
 					ptr = &(triangles->normals);
 					triangles->normals_offset = offset;
-					source_id = source;
+					source_id = (char*)source;
 				} else if(strcasecmp(semantic, "TEXCOORD") == 0) {
 					ptr = &(triangles->texcoords);
 					triangles->texcoords_offset = offset;
-					source_id = source;
+					source_id = (char*)source;
 				}
 
 				Hookup* hookup = NEW(Hookup, (char*)source_id, ptr);
@@ -232,7 +231,7 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Children(ModelTempory *tempory, Mesh *me
 		}
 	} else if(strcasecmp(xnode->value.element.name, "polygons") == 0) {
 		#warning ['TODO']: Convert polygons to triangle strips
-		return RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(tempory, mesh, xnode);
+		//return RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(tempory, mesh, xnode);
 		ERROR("Model contains polygon data, convert to triangles.");
 		return 1;
 	} 

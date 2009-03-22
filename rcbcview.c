@@ -194,7 +194,9 @@ void idleFunc() {
 void keyboardFunc(unsigned char key, int x, int y) {
 	switch(key) {
 		case(KEY_ESC): case(KEY_q): case(KEY_Q): /* ESC / Q */
-			exit(1);
+			LOG("Cleaning up...");
+			DELETE(g.model);
+			exit(0);
 			break;
 		case(KEY_w): case(KEY_W): /* Toggle wireframe on/off */
 			g.wireframe = !g.wireframe;

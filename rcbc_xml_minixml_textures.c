@@ -49,7 +49,7 @@ void RCBC_MiniXML_ProcessTextureImages(ModelTempory *tempory, mxml_node_t *node)
 						snprintf(rname, rname_len, "%s%s", DIRECTORY_TEXTURES, filename);
 					}
 
-					#warning ['TODO']: What happenes to Images that aren't correctly hooked up?
+					#warning ['TODO']: What happenes to Images that arent correctly hooked up?
 					Image* image = Image_Add(tempory->images, rname, 1);
 
 					Hookup* hookup = NEW(Hookup, (char*)id, (void*)image);
@@ -158,7 +158,6 @@ void RCBC_MiniXML_ProcessTextureEffects_Profile(ModelTempory *tempory, mxml_node
 	}
 }
 
-#warning ['TODO']: Remove unused, commeneted out code
 /* Process the <library_effects><effect><profile_COMMON><newparam> section of COLLADA */
 void RCBC_MiniXML_ProcessTextureEffects_Newparam(ModelTempory *tempory, mxml_node_t *node, Hookup* fx_hookup) {
 	DEBUG_M("Entering function...");

@@ -5,24 +5,13 @@
 /**
  * Hookup deconstructor.
  **/
-void Hookup_0Hookup(List* roothookup) {
-	#warning ['TODO']: Free memory here...
-	DEBUG(DEBUG_MEDIUM, "%sHookupFree", COLOUR_LIGHT_BLUE);
-	ListNode* node_ptr = roothookup->first;
-	DEBUG(DEBUG_HIGH, "\tLooping through each hookup...");
-	while(node_ptr) {
-		DEBUG(DEBUG_VERY_HIGH, "\t\tloop...");
-		if(node_ptr->data) {
-			//free(((Hookup*)node_ptr->data)->id); #warning ['TODO']: free hookups
-			//free(node_ptr->data);
-			DEBUG(DEBUG_VERY_HIGH, "\t\tNode has data...");
-			node_ptr->data = NULL;
-		}
-		node_ptr = node_ptr->next;
-	}
+void Hookup_0Hookup(Hookup* hookup) {
+	DEBUG(DEBUG_MEDIUM, "Entering function...");
 
+	free(hookup->id);
+	free(hookup);
+	
 	DEBUG(DEBUG_LOW, "HookupFree finish...");
-	DELETE(roothookup);
 	return;
 }
 
@@ -44,13 +33,14 @@ Hookup* Hookup_Hookup(char* id, void* pointer) {
 	}
 
 	ALLOCATE(Hookup, hookup);
-	
 	hookup->class = &Hookup_c;
-
-	DEBUG_H("Values: ID:'%s', pointer:%p", id, pointer);
-
-	hookup->id = id;
+		
+	int id_len = (strlen(id) + 1);
+	hookup->id = malloc(id_len * sizeof(char));
+	strncpy(hookup->id, id, id_len);
 	hookup->ptr = pointer;
+	hookup->hooked = 0;
+	
 	DEBUG_H("exiting function...");
 
 	return hookup;
@@ -124,6 +114,24 @@ void Hookup_Execute(List* sources, List* sinks) {
 			DEBUG(DEBUG_HIGH, "No sink in hookup...");
 			continue;
 		}
+		source->hooked = 1;
+		destination->hooked = 1;
 		*destination->ptr = source->ptr;
+	}
+}
+
+void Hookups_DeleteMissing(List* list) {
+	Hookup* hookup;
+	ListNode* itr;
+
+	for(itr = list->first; itr; itr = itr->next) {
+		hookup = itr->data;
+
+		if(hookup->hooked == 0) {
+			DEBUG_M("\tMissing hookup found.....");
+
+			DELETE(hookup->ptr);
+			hookup->ptr = NULL;
+		}
 	}
 }

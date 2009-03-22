@@ -28,6 +28,7 @@ ListNode* ListNode_0ListNode(ListNode* node);
 List* List_List();
 ListNode* ListNode_ListNode(void* data);
 ListNode* ListAdd(List* head, void* data);
-void* List_DeleteData(List* list);
+void List_DeleteData(List* list);
+void List_FreeData(List* list);
 
 #endif

@@ -8,7 +8,16 @@
  * Model Deconstructor.
  */
 void *Model_0Model(Model* model) {
-	DELETE(model->geometries);
+	
+	DEBUG_M("Entering function...");
+
+	DEBUG_M("Deleting visual scene %p...", model->visual_scene);
+	DELETE(model->visual_scene);
+	
+	#warning TODO: Are there any situations where geometires exist not in visual_scene?
+	//DEBUG_M("Deleting geometries...");
+	//List_DeleteData(model->geometries);
+	
 	free(model);
 }
 
@@ -23,7 +32,7 @@ static const ClassFunctions Model_c = {
  * Model Constructor.
  */
 Model* Model_Model() {
-	DEBUG(DEBUG_MEDIUM, "%sModelGenerate", COLOUR_LIGHT_BLUE);
+	DEBUG_M("Entering function...");	
 	
 	ALLOCATE(Model, model);
 	
@@ -36,10 +45,23 @@ Model* Model_Model() {
 }
 
 void* ModelTempory_0ModelTempory(ModelTempory* tempory) {
-	#warning ['TODO']:Free 'freeme'
+	DEBUG_M("Entering function...");
+
+	List_DeleteData(tempory->sinks);
 	DELETE(tempory->sinks);
+
+	List_DeleteData(tempory->sources);
 	DELETE(tempory->sources);
+
+	List_DeleteData(tempory->unsorted);
 	DELETE(tempory->unsorted);
+
+	List_DeleteData(tempory->deleteme);
+	DELETE(tempory->deleteme);
+
+	List_FreeData(tempory->freeme);
+	DELETE(tempory->freeme);
+
 	free(tempory);
 }
 
@@ -60,6 +82,8 @@ ModelTempory* ModelTempory_ModelTempory() {
 	tempory->unsorted = NEW(List);
 	tempory->images = NULL;
 	tempory->freeme = NEW(List);
+	tempory->deleteme = NEW(List);
+	tempory->up_axis = Y_UP;
 
 	DEBUG_M("Exiting function...", COLOUR_LIGHT_BLUE);
 	return tempory;
@@ -69,6 +93,7 @@ ModelTempory* ModelTempory_ModelTempory() {
  * Rotate deconstructor.
  */
 void Rotate_0Rotate(Rotate* rotate) {
+	DEBUG_M("Entering function...");
 	free(rotate);
 }
 
@@ -80,6 +105,7 @@ static const ClassFunctions Rotate_c = {
  * Rotate constructor.
  */
 Rotate* Rotate_Rotate() {
+	DEBUG_M("Entering function...");
 	ALLOCATE(Rotate, rotate);
 	rotate->class = &Rotate_c;
 	rotate->x = 0.0f;
@@ -90,15 +116,20 @@ Rotate* Rotate_Rotate() {
 }
 
 void SceneNode_0SceneNode(SceneNode *node) {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_NodeFree", COLOUR_LIGHT_BLUE);
+	DEBUG_M("Entering function...");
 	assert(node);
 
 	#warning ['TODO']: Free SceneNode memory recusivly, right now it leaks...
 	
 	DELETE(node->mesh);
+	node->mesh = NULL;
+	
+	DELETE(node->child);
+	DELETE(node->next);	
 	
 	List_DeleteData(node->rotations);
 	DELETE(node->rotations);
+	node->rotations = NULL;
 	
 	free(node);
 }
@@ -111,7 +142,8 @@ SceneNode* SceneNode_SceneNode() {
 	DEBUG_M("Entering function...");
 	
 	ALLOCATE(SceneNode, node);
-
+	node->class = &SceneNode_c;
+	
 	node->mesh = NULL;
 	node->translate[0] = 0.0f;
 	node->translate[1] = 0.0f;
@@ -119,9 +151,9 @@ SceneNode* SceneNode_SceneNode() {
 
 	node->rotations = NEW(List);
 
-	node->scale[0] = 0.0f;
-	node->scale[1] = 0.0f;
-	node->scale[2] = 0.0f;
+	node->scale[0] = 1.0f;
+	node->scale[1] = 1.0f;
+	node->scale[2] = 1.0f;
 
 	node->next = NULL;
 	node->prev = NULL;
@@ -149,15 +181,11 @@ void SceneNodeDebugInfo(SceneNode* node) {
 }
 
 void Mesh_0Mesh(Mesh *mesh) {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_MeshFree", COLOUR_LIGHT_BLUE);
+	DEBUG_M("Entering function...");
 	if(!mesh) {
 		return;
 	}
 
-	#warning ['TODO']: Free memory recusivly, right now it leaks...
-	
-	List_DeleteData(mesh->arrays);
-	DELETE(mesh->arrays);
 	DELETE(mesh->triangles);
 	
 	free(mesh);
@@ -168,17 +196,18 @@ static const ClassFunctions Mesh_c = {
 };
 
 Mesh* Mesh_Mesh() {
-	DEBUG(DEBUG_MEDIUM, "%sRCBC_MeshGenerate", COLOUR_LIGHT_BLUE);
+	DEBUG_M("Entering function...");
 	
 	ALLOCATE(Mesh, mesh);
 	mesh->class = &Mesh_c;
 	
-	mesh->arrays = NEW(List);
+	//mesh->arrays = NEW(List);
 	mesh->triangles = NULL;
 	return mesh;
 }
 
 void FloatArray_0FloatArray(FloatArray* array) {
+	DEBUG_M("Entering function...");
 	free(array->values);
 	free(array);
 }
@@ -188,7 +217,7 @@ static const ClassFunctions FloatArray_c = {
 };
 
 FloatArray* FloatArray_FloatArray(int count) {
-	
+	DEBUG_M("Entering function...");
 	ALLOCATE(FloatArray, array);
 	
 	array->values = calloc(1, count * sizeof(float));
@@ -199,7 +228,7 @@ FloatArray* FloatArray_FloatArray(int count) {
 	}
 	array->class = &FloatArray_c;
 	array->count = count;
-	
+
 	return array;
 }
 
@@ -213,6 +242,15 @@ void FloatArray_Dump(FloatArray* array) {
 }
 
 void UnsortedTriangles_0UnsortedTriangles(UnsortedTriangles* triangles) {
+	DEBUG_M("Entering function...");
+	
+	// These should be handled when tempory is nuked
+	//DELETE(triangles->vertices);
+	//DELETE(triangles->normals);
+	//DELETE(triangles->texcoords);
+	
+	#warning ['TODO']: Do textures get done here?
+	//DELETE(triangles->image);
 	free(triangles->indices);
 	free(triangles);
 }
@@ -222,7 +260,7 @@ static const ClassFunctions UnsortedTriangles_c = {
 };
 
 UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count) {
-	
+	DEBUG_M("Entering function...");
 	ALLOCATE(UnsortedTriangles, triangles);
 	
 	triangles->count = count;
@@ -235,6 +273,8 @@ UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count) {
  * Allocates space for raw COLLADA triangle indices.
  */
 int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles) {
+	DEBUG_M("Entering function...");
+
 	assert(triangles);
 	free(triangles->indices);
 	triangles->indices = malloc(sizeof(int) * triangles->count * triangles->inputs * 3);
@@ -246,12 +286,17 @@ int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles) {
 }
 
 void Image_0Image(Image* image) {
+	DEBUG_M("Entering function...");
+
 	#warning ['TODO']: Unload texture data if it exists, should we do this here?...
 	image->refs--;
 	if(image->refs <= 0) {
 		//FREE ME
 		//free(image);
-	}	
+		if(image->id != 0) {
+			//SOIL_free_image_data(image->id);
+		}
+	}
 };	
 
 static const ClassFunctions Image_c = {
@@ -262,6 +307,7 @@ static const ClassFunctions Image_c = {
  * Image Constructor.
  */
 Image* Image_Image(char* filename) {
+	DEBUG_M("Entering function...");
 
 	ALLOCATE(Image, image);
 	image->class = &Image_c;
@@ -291,6 +337,8 @@ Image* Image_FindByName(List* images, char* filename) {
  * Sets or increases the ref count of the image.
  */
 Image* Image_Add(List* images, char* filename, int refs) {
+	DEBUG_M("Entering function...");
+
 	Image* image = Image_FindByName(images, filename);
 	
 	if(image) {
@@ -305,6 +353,8 @@ Image* Image_Add(List* images, char* filename, int refs) {
 }
 
 void Triangles_0Triangles(Triangles* triangles) {
+	DEBUG_M("Entering function...");
+
 	if(!triangles) {return;}
 	
 	DELETE(triangles->vertices);
@@ -321,6 +371,7 @@ static const ClassFunctions Triangles_c = {
 
 /* Contains vertex data in arrays */
 Triangles* Triangles_Triangles(int count) {
+	DEBUG_M("Entering function...");
 
 	ALLOCATE(Triangles, triangles);
 	triangles->class = &Triangles_c;
