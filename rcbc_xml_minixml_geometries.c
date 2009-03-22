@@ -155,7 +155,7 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 					snprintf(source_id, source_id_len, "%s_NORMAL", source);
 					
 					/* Add the normals hookup now, the position will be done below */
-					Hookup* hookup_normals = NEW(Hookup, (char*)source_id, triangles->normals);
+					Hookup* hookup_normals = NEW(Hookup, (char*)source_id, &triangles->normals);
 					ListAdd(tempory->sinks, hookup_normals);
 					
 					/* We keep track of strings to free later */
