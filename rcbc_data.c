@@ -4,6 +4,22 @@
 #include "rcbc_data.h"
 #include "console.h"
 
+#define SWAP(a,b) tmp = a; a = b; b = tmp;
+void RCBC_FixAxis(const int up_axis, float *x, float *y, float *z) {
+	float tmp;
+
+	/* Work out axis mappings */
+	if(up_axis == X_UP) {
+		*y = -*y;
+		SWAP(*x, *y);
+	} else if (up_axis == Y_UP) {
+		*y = -*y;
+	} else if (up_axis == Z_UP) {
+		SWAP(*y, *z);
+		*x = -*x;
+	}
+}
+
 /**
  * Model Deconstructor.
  */
@@ -14,7 +30,7 @@ void *Model_0Model(Model* model) {
 	DEBUG_M("Deleting visual scene %p...", model->visual_scene);
 	DELETE(model->visual_scene);
 	
-	#warning TODO: Are there any situations where geometires exist not in visual_scene?
+	#warning TODO: Are there any situations where geometires exist but not in visual_scene?
 	//DEBUG_M("Deleting geometries...");
 	//List_DeleteData(model->geometries);
 	
@@ -383,8 +399,8 @@ Triangles* Triangles_Triangles(int count) {
 /**
  * This takes a COLLADA interlaced-indexed model and turns it into vertex arrays.
  */
-void RCBC_SortTriangles(UnsortedTriangles* unsorted) {
-	DEBUG(DEBUG_MEDIUM, "Entering function...", COLOUR_LIGHT_BLUE);
+void RCBC_SortTriangles(ModelTempory* tempory, UnsortedTriangles* unsorted) {
+	DEBUG_M("Entering function...");
 	int i;
 	
 	Triangles* triangles = NEW(Triangles, unsorted->count);
@@ -392,6 +408,7 @@ void RCBC_SortTriangles(UnsortedTriangles* unsorted) {
 	*unsorted->ptr = triangles;
 	triangles->count = unsorted->count;
 	triangles->image = unsorted->image;
+	
 	/* Process vertices */
 	if(unsorted->vertices) {
 		int v = 0;
@@ -399,9 +416,11 @@ void RCBC_SortTriangles(UnsortedTriangles* unsorted) {
 		triangles->vertices = NEW(FloatArray, unsorted->count * 3 * 3);
 		for(i = unsorted->vertices_offset; i < 3 * unsorted->count * unsorted->inputs; i+=unsorted->inputs) {
 			int index = unsorted->indices[i] * 3;
-			triangles->vertices->values[v++] = -unsorted->vertices->values[index];
-			triangles->vertices->values[v++] = unsorted->vertices->values[index+2];
-			triangles->vertices->values[v++] = unsorted->vertices->values[index+1];
+			triangles->vertices->values[v] = unsorted->vertices->values[index++]*-1;
+			triangles->vertices->values[v+1] = unsorted->vertices->values[index++];
+			triangles->vertices->values[v+2] = unsorted->vertices->values[index];
+			RCBC_FixAxis(tempory->up_axis, &triangles->vertices->values[v], &triangles->vertices->values[v+1], &triangles->vertices->values[v+2]);
+			v+=3;
 		}
 	}
 
@@ -412,9 +431,11 @@ void RCBC_SortTriangles(UnsortedTriangles* unsorted) {
 		triangles->normals = NEW(FloatArray, unsorted->count * 3 * 3);
 		for(i = unsorted->normals_offset; i < 3 * unsorted->count * unsorted->inputs; i+=unsorted->inputs) {
 			int index = unsorted->indices[i] * 3;
-			triangles->normals->values[v++] = -unsorted->normals->values[index];
-			triangles->normals->values[v++] = unsorted->normals->values[index+2];
-			triangles->normals->values[v++] = unsorted->normals->values[index+1];
+			triangles->normals->values[v] = -unsorted->normals->values[index++];
+			triangles->normals->values[v+1] = unsorted->normals->values[index++];
+			triangles->normals->values[v+2] = unsorted->normals->values[index];
+			RCBC_FixAxis(tempory->up_axis, &triangles->normals->values[v], &triangles->normals->values[v+1], &triangles->normals->values[v+2]);
+			v+=3;
 		}
 	}
 

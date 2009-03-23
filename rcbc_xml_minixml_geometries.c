@@ -28,9 +28,7 @@ FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory
 	}
 
 	ListAdd(tempory->deleteme, newarray);
-	
-	//FloatArray_Dump(newarray);
-	
+
 	DEBUG_M("exiting function");
 	return newarray;
 }

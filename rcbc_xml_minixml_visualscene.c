@@ -2,29 +2,33 @@
 #include "rcbc_xml_minixml_visualscene.h"
 #include "console.h"
 
-void RCBC_MiniXML_ProcessVisualScene_Node_Scale(SceneNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_Scale(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);
 
 	sscanf(xnode->value.opaque, "%f %f %f", &rnode->scale[0], &rnode->scale[1], &rnode->scale[2]);
+	RCBC_FixAxis(tempory->up_axis, &rnode->scale[0], &rnode->scale[1], &rnode->scale[2]);
 }
 
-void RCBC_MiniXML_ProcessVisualScene_Node_Translate(SceneNode *rnode, mxml_node_t *xnode) {
+void RCBC_MiniXML_ProcessVisualScene_Node_Translate(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);
-	sscanf(xnode->value.opaque, "%f %f %f", &rnode->translate[0], &rnode->translate[2], &rnode->translate[1]);
-	rnode->translate[0] = -rnode->translate[0];
+
+	sscanf(xnode->value.opaque, "%f %f %f", &rnode->translate[0], &rnode->translate[1], &rnode->translate[2]);
+	RCBC_FixAxis(tempory->up_axis, &rnode->translate[0], &rnode->translate[1], &rnode->translate[2]);
 }
 
-Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(SceneNode *rnode, mxml_node_t *xnode) {
+Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode) {
+	float tmp;
 	Rotate *rotate = NEW(Rotate);
 
 	assert(rnode);
 	assert(xnode);
 	assert(rotate);
+	
+	sscanf(xnode->value.opaque, "%f %f %f %f", &rotate->x, &rotate->y, &rotate->z, &rotate->angle);
+	RCBC_FixAxis(tempory->up_axis, &rotate->x, &rotate->y, &rotate->z);
 
-	sscanf(xnode->value.opaque, "%f %f %f %f", &rotate->x, &rotate->z, &rotate->y, &rotate->angle);
-	rotate->x = -rotate->x;
 	DumpNodeInfo(xnode);
 
 	ListAdd(rnode->rotations, rotate);
@@ -50,11 +54,11 @@ void RCBC_MiniXML_ProcessVisualScene_Node_Children(ModelTempory *tempory, SceneN
 	if(strcasecmp(xnode->value.element.name, "node") == 0) {
 		RCBC_MiniXML_ProcessVisualScene_Node(tempory, &(rnode->child), xnode);
 	} else if(strcasecmp(xnode->value.element.name, "translate") == 0) {
-		RCBC_MiniXML_ProcessVisualScene_Node_Translate(rnode, xnode->child);
+		RCBC_MiniXML_ProcessVisualScene_Node_Translate(tempory, rnode, xnode->child);
 	} else if(strcasecmp(xnode->value.element.name, "rotate") == 0) {
-		RCBC_MiniXML_ProcessVisualScene_Node_Rotate(rnode, xnode->child);
+		RCBC_MiniXML_ProcessVisualScene_Node_Rotate(tempory, rnode, xnode->child);
 	} else if(strcasecmp(xnode->value.element.name, "scale") == 0) {
-		RCBC_MiniXML_ProcessVisualScene_Node_Scale(rnode, xnode->child);
+		RCBC_MiniXML_ProcessVisualScene_Node_Scale(tempory, rnode, xnode->child);
 	} else if(strcasecmp(xnode->value.element.name, "instance_geometry") == 0) {
 		RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(tempory, rnode, xnode);
 	}

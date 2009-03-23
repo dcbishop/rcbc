@@ -94,18 +94,17 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 		axis = node->child->value.opaque;
 	}
 	
+	tempory->up_axis = Y_UP;
 	if(strcasecmp(axis, "X_UP") == 0) {
 		tempory->up_axis = X_UP;
 		DEBUG_M("Axis is X_UP.");
 	} else if(strcasecmp(axis, "Y_UP") == 0) {
-		tempory->up_axis = X_UP;
 		DEBUG_M("Axis is Y_UP.");
 	} else if(strcasecmp(axis, "Z_UP") == 0) {
 		tempory->up_axis = Z_UP;
 		DEBUG_M("Axis is Z_UP.");
 	} else {
 		WARNING("Unable to determine COLLADA axis orientation. Guessing Y_UP.");
-		tempory->up_axis = Y_UP;
 	}
 
 	node = mxmlFindElement(tree, tree, "library_geometries", NULL, NULL, MXML_DESCEND);
@@ -134,7 +133,7 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 
 	ListNode* itr = tempory->unsorted->first;
 	while(itr) {
-		RCBC_SortTriangles(itr->data);
+		RCBC_SortTriangles(tempory, itr->data);
 		itr = itr->next;
 	}
 
