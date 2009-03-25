@@ -9,7 +9,7 @@
  * pointers.
  */
 typedef struct Hookup {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	char* id; /**< The XML id string. */
 	
 	/** Either pointer to the data or a pointer to the pointer where 

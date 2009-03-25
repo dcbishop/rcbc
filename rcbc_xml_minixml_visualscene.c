@@ -25,7 +25,7 @@ Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(ModelTempory *tempory, Scene
 	assert(rnode);
 	assert(xnode);
 	assert(rotate);
-	
+
 	sscanf(xnode->value.opaque, "%f %f %f %f", &rotate->x, &rotate->y, &rotate->z, &rotate->angle);
 	RCBC_FixAxis(tempory->up_axis, &rotate->x, &rotate->y, &rotate->z);
 

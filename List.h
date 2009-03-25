@@ -7,7 +7,7 @@
  * A generic linked list node
  */
 typedef struct ListNode {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	void* data;
 	struct ListNode* next;
 	struct ListNode* prev;
@@ -17,7 +17,7 @@ typedef struct ListNode {
  * A generic linked list node
  */
 typedef struct List {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	int count;
 	struct ListNode* first;
 	struct ListNode* last;

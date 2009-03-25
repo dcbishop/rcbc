@@ -1,6 +1,10 @@
 #ifndef _RCBC_DEF
 #define _RCBC_DEF
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Default paths */
 #define DIRECTORY_TEXTURES "./data/textures/"
 #define DIRECTORY_MODELS "./data/models/"
@@ -21,5 +25,9 @@ typedef struct RCBCPlugins {
 int RCBC_Init();
 Model* RCBC_LoadFile(const char* filename, List* images);
 int RCBC_Render(const Model* model);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

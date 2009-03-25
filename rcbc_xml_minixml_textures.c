@@ -64,44 +64,42 @@ void RCBC_MiniXML_ProcessTextureImages(ModelTempory *tempory, mxml_node_t *node)
 /* Process the <library_materials> section of COLLADA */
 void RCBC_MiniXML_ProcessTextureMaterial(ModelTempory *tempory, mxml_node_t *node) {
 	DEBUG_M("Entering function...");
+
 	mxml_node_t* child;
 	const char* id;
 	const char* url;
-	
+
 	assert(tempory);
 	if(!node) {
 		return;
 	}
-	
-	DEBUG_A("loop starting...");
 
 	/* Loop through all the material nodes */
 	for(node = node->child; node != NULL; node = node->next) {
-		DEBUG_A("\tloop...");
 
 		if(node->type == MXML_ELEMENT && 
 			strcasecmp(node->value.element.name, "material") == 0) {
-			DEBUG_A("\t\tflag 3...");
 
 			id = mxmlElementGetAttr(node, "id");
 
 			for(child = node->child; child != NULL; child = child->next) {
 				if(child->type == MXML_ELEMENT && 
 					strcasecmp(child->value.element.name, "instance_effect") == 0) {
-			
+
 					url = mxmlElementGetAttr(child, "url");
 					DEHASH(url);
 
 					Hookup* material_hookup = NEW(Hookup, (char*)id, NULL);
 					ListAdd(tempory->sources, material_hookup);
-				
+
 					Hookup* fx_hookup = NEW(Hookup, (char*)url, &material_hookup->ptr);
 					ListAdd(tempory->sinks, fx_hookup);	
 				}
 			}
-		
+
 		}
 	}
+
 	DEBUG_M("Exiting function...");
 }
 
@@ -126,10 +124,10 @@ void RCBC_MiniXML_ProcessTextureEffects(ModelTempory *tempory, mxml_node_t *node
 			for(child = node->child; child != NULL; child = child->next) {
 				if(child->type == MXML_ELEMENT &&
 					strcasecmp(child->value.element.name, "profile_COMMON") == 0) {
-					
+
 					Hookup* fx_hookup =  NEW(Hookup, (char*)id, NULL);
 					ListAdd(tempory->sources, fx_hookup);
-					
+
 					RCBC_MiniXML_ProcessTextureEffects_Profile(tempory, child, fx_hookup);
 				}
 			}
@@ -165,18 +163,18 @@ void RCBC_MiniXML_ProcessTextureEffects_Newparam(ModelTempory *tempory, mxml_nod
 	//const char* newparam_sid = mxmlElementGetAttr(node, "id");
 	//const char* surface_type;
 	const char* init_from;
-	
+
 	assert(tempory);
 	assert(node);
 	assert(fx_hookup);
-	
+
 	DumpNodeInfo(node);
 
 	for(node = node->child; node != NULL; node = node->next) {
 		DumpNodeInfo(node);
 		if(node->type == MXML_ELEMENT
 		&& strcasecmp(node->value.element.name, "surface") == 0) {
-			
+
 			for(child = node->child; child != NULL; child = child->next) {
 				if(child->type == MXML_ELEMENT
 				&& strcasecmp(child->value.element.name, "init_from") == 0) {
@@ -187,7 +185,7 @@ void RCBC_MiniXML_ProcessTextureEffects_Newparam(ModelTempory *tempory, mxml_nod
 					ListAdd(tempory->sinks, img_hookup);
 				}
 			}
-				
+
 		}
 	}
 }

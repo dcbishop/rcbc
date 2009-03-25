@@ -39,9 +39,9 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 	Mesh* mesh = node->mesh;
 	Triangles* triangles;
 	if(!mesh || !(triangles = mesh->triangles)) { // If there is node mesh data
-		#warning ['TODO']: Dont draw a red sphere...
+		/*#warning ['TODO']: Dont draw a red sphere...
 		glColor3f(1.0f, 0.0f, 0.0f);
-		glutWireSphere(1.0f, 5, 5); // Draw a red sphere
+		glutWireSphere(1.0f, 5, 5); // Draw a red sphere*/
 	} else {
 		glColor3f(1.0f, 1.0f, 1.0f);
 		// Bind vertex data...

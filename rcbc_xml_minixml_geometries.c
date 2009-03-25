@@ -11,7 +11,7 @@ FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory
 	const char* id = mxmlElementGetAttr(xnode, "id");
 	const char* count_s = mxmlElementGetAttr(xnode, "count");
 	int count = atoi(count_s);
-	
+
 	FloatArray* newarray = NEW(FloatArray, count);
 	if(!newarray) {
 		return NULL;
@@ -36,7 +36,7 @@ FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory
 int RCBC_MiniXML_ProcessGeometries_Mesh_Source(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
 	const char* id = mxmlElementGetAttr(xnode, "id");
-	
+
 	for(xnode = xnode->child; xnode; xnode = xnode->next) {
 		if(xnode->type == MXML_ELEMENT) {
 			DumpNodeInfo(xnode);
@@ -55,7 +55,7 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Source(ModelTempory *tempory, Mesh *mesh
 
 int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
-	
+
 	assert(mesh); 
 	assert(xnode);
 
@@ -67,14 +67,14 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(ModelTempory *tempory, Mesh *m
 
 	for(node = xnode->child; node != NULL; node = node->next) {
 		DumpNodeInfo(node);
-		
+
 		if(node->type == MXML_ELEMENT) {
 			if(strcasecmp(node->value.element.name, "input") == 0) {
 				semantic = mxmlElementGetAttr(node, "semantic");
 				source = mxmlElementGetAttr(node, "source");
 
 				DEHASH(source);
-				
+
 				int input_id_len = strlen(id)+strlen(semantic)+2;
 				char* input_id = malloc(input_id_len);
 				snprintf(input_id, input_id_len, "%s_%s", id, semantic);
@@ -94,7 +94,7 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(ModelTempory *tempory, Mesh *m
 
 UnsortedPolygons* RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
-	
+
 	assert(tempory);
 	assert(mesh);
 	assert(xnode);
@@ -118,7 +118,7 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 	const char* material = mxmlElementGetAttr(xnode, "material");
 	char* source_id;
 	int source_id_len;
-	
+
 	int count = atoi(count_s);
 	int inputs = 0;
 
@@ -127,7 +127,7 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 		DumpNodeInfo(node);
 		if(node->type == MXML_ELEMENT) {
 			if(strcasecmp(node->value.element.name, "input") == 0) {
-				
+
 				const char *semantic = mxmlElementGetAttr(node, "semantic");
 				const char *source = mxmlElementGetAttr(node, "source");
 				const char *offset_s = mxmlElementGetAttr(node, "offset");
@@ -138,11 +138,11 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 				void* ptr = NULL;
 				inputs++;
 				if(strcasecmp(semantic, "VERTEX") == 0) {
-					
+
 					ptr = &(triangles->vertices);
 					triangles->vertices_offset = offset;
 					triangles->normals_offset = offset;
-					
+
 					#warning ['TODO']: Handle Mayas weirdness
 					/* Maya exports the file in a slightly different format
 					 * where the vertices structure has both position and
@@ -150,19 +150,19 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 					source_id_len = strlen(source)+strlen("NORMAL")+2;
 					source_id = malloc(source_id_len);
 					snprintf(source_id, source_id_len, "%s_NORMAL", source);
-					
+
 					/* Add the normals hookup now, the position will be done below */
 					Hookup* hookup_normals = NEW(Hookup, (char*)source_id, &triangles->normals);
 					ListAdd(tempory->sinks, hookup_normals);
-					
+
 					/* We keep track of strings to free later */
 					ListAdd(tempory->freeme, source_id);
-					
+
 					source_id_len = strlen(source)+strlen("POSITION")+2;
 					source_id = malloc(source_id_len);
 					snprintf(source_id, source_id_len, "%s_POSITION", source);
 					ListAdd(tempory->freeme, source_id);
-					
+
 				} else if(strcasecmp(semantic, "NORMAL") == 0) {
 					ptr = &(triangles->normals);
 					triangles->normals_offset = offset;

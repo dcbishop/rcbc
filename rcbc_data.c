@@ -24,12 +24,12 @@ void RCBC_FixAxis(const int up_axis, float *x, float *y, float *z) {
  * Model Deconstructor.
  */
 void *Model_0Model(Model* model) {
-	
+
 	DEBUG_M("Entering function...");
 
 	DEBUG_M("Deleting visual scene %p...", model->visual_scene);
 	DELETE(model->visual_scene);
-	
+
 	#warning TODO: Are there any situations where geometires exist but not in visual_scene?
 	//DEBUG_M("Deleting geometries...");
 	//List_DeleteData(model->geometries);
@@ -49,14 +49,14 @@ static const ClassFunctions Model_c = {
  */
 Model* Model_Model() {
 	DEBUG_M("Entering function...");	
-	
+
 	ALLOCATE(Model, model);
-	
-	model->class = &Model_c;
-	
+
+	model->class_ = &Model_c;
+
 	model->visual_scene = NULL;
 	model->geometries = NEW(List);
-	
+
 	return model;
 }
 
@@ -87,11 +87,11 @@ static const ClassFunctions ModelTempory_c = {
 
 ModelTempory* ModelTempory_ModelTempory() {
 	DEBUG_M("Entering function...");
-	
+
 	ALLOCATE(ModelTempory, tempory);
-	
-	tempory->class = &ModelTempory_c;
-	
+
+	tempory->class_ = &ModelTempory_c;
+
 	tempory->model = NULL;
 	tempory->sinks = NEW(List);
 	tempory->sources = NEW(List);
@@ -123,7 +123,7 @@ static const ClassFunctions Rotate_c = {
 Rotate* Rotate_Rotate() {
 	DEBUG_M("Entering function...");
 	ALLOCATE(Rotate, rotate);
-	rotate->class = &Rotate_c;
+	rotate->class_ = &Rotate_c;
 	rotate->x = 0.0f;
 	rotate->y = 0.0f;
 	rotate->z = 0.0f;
@@ -136,17 +136,17 @@ void SceneNode_0SceneNode(SceneNode *node) {
 	assert(node);
 
 	#warning ['TODO']: Free SceneNode memory recusivly, right now it leaks...
-	
+
 	DELETE(node->mesh);
 	node->mesh = NULL;
 	
 	DELETE(node->child);
 	DELETE(node->next);	
-	
+
 	List_DeleteData(node->rotations);
 	DELETE(node->rotations);
 	node->rotations = NULL;
-	
+
 	free(node);
 }
 
@@ -156,10 +156,10 @@ static const ClassFunctions SceneNode_c = {
 
 SceneNode* SceneNode_SceneNode() {
 	DEBUG_M("Entering function...");
-	
+
 	ALLOCATE(SceneNode, node);
-	node->class = &SceneNode_c;
-	
+	node->class_ = &SceneNode_c;
+
 	node->mesh = NULL;
 	node->translate[0] = 0.0f;
 	node->translate[1] = 0.0f;
@@ -175,7 +175,7 @@ SceneNode* SceneNode_SceneNode() {
 	node->prev = NULL;
 	node->child = NULL;
 	node->parent = NULL;
-	
+
 	DEBUG(DEBUG_MEDIUM, "end of function");
 
 	return node;	
@@ -203,7 +203,7 @@ void Mesh_0Mesh(Mesh *mesh) {
 	}
 
 	DELETE(mesh->triangles);
-	
+
 	free(mesh);
 }
 
@@ -213,11 +213,10 @@ static const ClassFunctions Mesh_c = {
 
 Mesh* Mesh_Mesh() {
 	DEBUG_M("Entering function...");
-	
+
 	ALLOCATE(Mesh, mesh);
-	mesh->class = &Mesh_c;
-	
-	//mesh->arrays = NEW(List);
+	mesh->class_ = &Mesh_c;
+
 	mesh->triangles = NULL;
 	return mesh;
 }
@@ -235,14 +234,14 @@ static const ClassFunctions FloatArray_c = {
 FloatArray* FloatArray_FloatArray(int count) {
 	DEBUG_M("Entering function...");
 	ALLOCATE(FloatArray, array);
-	
+
 	array->values = calloc(1, count * sizeof(float));
 	if(!array->values) {
 		DELETE(array);
 		ERROR("Failed to allocate float array values...");
 		return NULL;
 	}
-	array->class = &FloatArray_c;
+	array->class_ = &FloatArray_c;
 	array->count = count;
 
 	return array;
@@ -260,6 +259,7 @@ void FloatArray_Dump(FloatArray* array) {
 void UnsortedTriangles_0UnsortedTriangles(UnsortedTriangles* triangles) {
 	DEBUG_M("Entering function...");
 	
+	#warning ['TODO']: Remove this commented code
 	// These should be handled when tempory is nuked
 	//DELETE(triangles->vertices);
 	//DELETE(triangles->normals);
@@ -278,10 +278,10 @@ static const ClassFunctions UnsortedTriangles_c = {
 UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count) {
 	DEBUG_M("Entering function...");
 	ALLOCATE(UnsortedTriangles, triangles);
-	
+
 	triangles->count = count;
-	triangles->class = &UnsortedTriangles_c;
-	
+	triangles->class_ = &UnsortedTriangles_c;
+
 	return triangles;
 }
 
@@ -318,7 +318,7 @@ void Image_0Image(Image* image) {
 static const ClassFunctions Image_c = {
 	(void*)Image_0Image
 };
-	
+
 /**
  * Image Constructor.
  */
@@ -326,9 +326,9 @@ Image* Image_Image(char* filename) {
 	DEBUG_M("Entering function...");
 
 	ALLOCATE(Image, image);
-	image->class = &Image_c;
+	image->class_ = &Image_c;
 	image->filename = filename;
-	
+
 	return image;
 }
 
@@ -356,7 +356,7 @@ Image* Image_Add(List* images, char* filename, int refs) {
 	DEBUG_M("Entering function...");
 
 	Image* image = Image_FindByName(images, filename);
-	
+
 	if(image) {
 		image->refs += refs;
 	} else {
@@ -364,7 +364,7 @@ Image* Image_Add(List* images, char* filename, int refs) {
 		image->refs = refs;
 		ListAdd(images, image);
 	}
-	
+
 	return image;
 }
 
@@ -372,12 +372,12 @@ void Triangles_0Triangles(Triangles* triangles) {
 	DEBUG_M("Entering function...");
 
 	if(!triangles) {return;}
-	
+
 	DELETE(triangles->vertices);
 	DELETE(triangles->normals);
 	DELETE(triangles->texcoords);
 	DELETE(triangles->image);
-	
+
 	free(triangles);
 }
 
@@ -390,7 +390,7 @@ Triangles* Triangles_Triangles(int count) {
 	DEBUG_M("Entering function...");
 
 	ALLOCATE(Triangles, triangles);
-	triangles->class = &Triangles_c;
+	triangles->class_ = &Triangles_c;
 	triangles->count = count;
 
 	return triangles;
@@ -402,13 +402,13 @@ Triangles* Triangles_Triangles(int count) {
 void RCBC_SortTriangles(ModelTempory* tempory, UnsortedTriangles* unsorted) {
 	DEBUG_M("Entering function...");
 	int i;
-	
+
 	Triangles* triangles = NEW(Triangles, unsorted->count);
-	
+
 	*unsorted->ptr = triangles;
 	triangles->count = unsorted->count;
 	triangles->image = unsorted->image;
-	
+
 	/* Process vertices */
 	if(unsorted->vertices) {
 		int v = 0;

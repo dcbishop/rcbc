@@ -6,7 +6,7 @@
 #define ALLOCATE(type, name) type* name; CALLOC(name, sizeof(type));
 
 #define NEW(x, ...) x##_##x(__VA_ARGS__)
-#define DELETE(x) if(x && ((ClassArchetype*)x)->class && ((ClassArchetype*)x)->class->deconstructor) { ((ClassArchetype*)x)->class->deconstructor(x); }
+#define DELETE(x) if(x && ((ClassArchetype*)x)->class_ && ((ClassArchetype*)x)->class_->deconstructor) { ((ClassArchetype*)x)->class_->deconstructor(x); }
 
 /**
  * Holds functions bindings for a class.
@@ -19,7 +19,7 @@ typedef struct ClassFunctions_s {
  * A generic class type for type casting.
  */
 typedef struct ClassArchetype_s {
-	ClassFunctions* class;
+	ClassFunctions* class_;
 } ClassArchetype;
 
 #endif

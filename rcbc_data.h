@@ -13,7 +13,7 @@
  * A container for a COLLADA model.
  */
 typedef struct Model {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	struct SceneNode* visual_scene;
 	struct List* geometries;
 } Model;
@@ -22,7 +22,7 @@ typedef struct Model {
  * A throwaway struct for holding tempory values while loading a model.
  */
 typedef struct ModelTempory {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	Model* model;
 	List* sources;
 	List* sinks;
@@ -37,7 +37,7 @@ typedef struct ModelTempory {
  *  Contains rotation information for a COLLADA scene node.
  **/
 typedef struct Rotate {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	float x;
 	float y;
 	float z;
@@ -45,7 +45,7 @@ typedef struct Rotate {
 } Rotate;
 
 typedef struct FloatArray {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	int count;
 	float* values;
 } FloatArray;
@@ -55,7 +55,7 @@ typedef struct FloatArray {
  * and the number of refrences to this image.
  */
 typedef struct Image {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	int id;
 	char* filename;
 	int refs;
@@ -66,7 +66,7 @@ typedef struct Image {
  * file.
  */
 typedef struct UnsortedTriangles {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	void** ptr;
 	unsigned int count;
 	unsigned int inputs;
@@ -81,14 +81,14 @@ typedef struct UnsortedTriangles {
 } UnsortedTriangles;
 
 typedef struct UnsortedPolygons {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	void** ptr;
 	unsigned int count;
 	unsigned int inputs;
 } UnsortedPolygons;
 
 typedef struct Triangles {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	unsigned int count;
 	FloatArray* vertices;
 	FloatArray* normals;
@@ -100,7 +100,7 @@ typedef struct Triangles {
  * Contains mesh data
  **/
 typedef struct Mesh {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	Triangles* triangles;
 } Mesh;
 
@@ -108,7 +108,7 @@ typedef struct Mesh {
  * A basic COLLADA scene node
  */
 typedef struct SceneNode {
-	const ClassFunctions* class;
+	const ClassFunctions* class_;
 	
 	Mesh* mesh;
 

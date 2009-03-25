@@ -6,12 +6,12 @@
  * Hookup deconstructor.
  **/
 void Hookup_0Hookup(Hookup* hookup) {
-	DEBUG(DEBUG_MEDIUM, "Entering function...");
+	DEBUG_M("Entering function...");
 
 	free(hookup->id);
 	free(hookup);
 	
-	DEBUG(DEBUG_LOW, "HookupFree finish...");
+	DEBUG_H("finished...");
 	return;
 }
 
@@ -26,14 +26,14 @@ static const ClassFunctions Hookup_c = {
  * Allocates a hookup
  */
 Hookup* Hookup_Hookup(char* id, void* pointer) {
-	DEBUG(DEBUG_MEDIUM, "Entering function...");
+	DEBUG_M("Entering function...");
 	if(!id) {
 		WARNING("Tried to generate NULL hookup.");
 		return;
 	}
 
 	ALLOCATE(Hookup, hookup);
-	hookup->class = &Hookup_c;
+	hookup->class_ = &Hookup_c;
 		
 	int id_len = (strlen(id) + 1);
 	hookup->id = malloc(id_len * sizeof(char));

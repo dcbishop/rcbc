@@ -129,7 +129,7 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 	Hookup_Execute(tempory->sources, tempory->sinks);
 	Hookup_Execute(tempory->sources, tempory->sinks);
 
-	DEBUG(DEBUG_LOW, "[MINIXML]: Hookups processed");
+	DEBUG_M("[MINIXML]: Hookups processed");
 
 	ListNode* itr = tempory->unsorted->first;
 	while(itr) {

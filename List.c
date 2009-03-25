@@ -49,19 +49,18 @@ static const ClassFunctions ListNode_c = {
  */
 List* List_List() {
 	ALLOCATE(List, list);
-	
-	list->class = &List_c;
+
+	list->class_ = &List_c;
 	return list;
 }
-	
 
 /**
  * Generates a linked list node.
  */
 ListNode* ListNode_ListNode(void* data) {
 	ALLOCATE(ListNode, node);
-	
-	node->class = &ListNode_c;
+
+	node->class_ = &ListNode_c;
 
 	node->data = data;
 	return node;
@@ -73,12 +72,12 @@ ListNode* ListNode_ListNode(void* data) {
 ListNode* ListAdd(List* head, void* data) {
 	assert(head);
 	assert(data);
-	
+
 	ListNode* newnode = NEW(ListNode, data);
 	if(!newnode) {
 		ERROR("Failed to allocate space for node... %s", SYMBOL_WARNING);
 	}
-	
+
 	if(!head->first) {
 		head->first = newnode;
 		head->last = newnode;
