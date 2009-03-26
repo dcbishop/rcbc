@@ -1,17 +1,26 @@
 #include <stdio.h>
 #include <GL/gl.h>
-#include <SOIL.h>
+#include <IL/il.h>
 
 #include "rcbc_render_gl.h"
 #include "console.h"
 
 #define PI 3.14152f
 
-/* Initilize the GL render... */
+// Initilize the GL render...
 int RCBC_GL_Init() {
 	LOG("Initilizing GL render...");
-	#warning Initilize sane OpenGL defaults here....
-	
+
+	// Ensure DevIL is correct version...
+	if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION) {
+			ERROR("DevIL version is different...exiting!\n");
+			BREAK();
+			return 1;
+	}
+
+	// Initilize DevIL
+	ilInit();
+
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClearDepth(10000.0f);
 
@@ -81,18 +90,33 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 		// Check for a image for this mesh
 		if(triangles->image) {
 			if(triangles->image->id == 0) { // If the image hasn't been loaded, we do it now
-				DEBUG_A("load image...");
-				triangles->image->id = SOIL_load_OGL_texture(
+				/*triangles->image->id = SOIL_load_OGL_texture(
 					triangles->image->filename,
 					SOIL_LOAD_AUTO,
 					SOIL_CREATE_NEW_ID,
 					SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-				);
+				);*/
+				
+				ILuint texid = 0;
+				ilGenImages(1, &texid);
+				ilBindImage(texid);
+				if(ilLoadImage(triangles->image->filename)) {
+					glGenTextures(1, &triangles->image->id);
+					glBindTexture(GL_TEXTURE_2D, triangles->image->id);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+					glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP),
+						ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0,
+						ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE, ilGetData());
+				}
+				ilDeleteImages(1, &texid);
 				
 				// If the image failed to load, we throw an error and set it to -1 so it won't load again
 				if(triangles->image->id == 0) {
 					triangles->image->id = -1;
-					ERROR("Failed to load texture: '%s', %s", triangles->image->filename, SOIL_last_result());
+					#warning ['TODO']: Error message...
+					//ERROR("Failed to load texture: '%s', %s", triangles->image->filename, SOIL_last_result());
+					ERROR("Failed to load texture: '%s', %s", triangles->image->filename, "");
 				}
 			}
 			if(triangles->image->id != 0) {
@@ -102,7 +126,6 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 
 		/* Draw it, yay! */
 		glDrawArrays(GL_TRIANGLES, 0, triangles->count * 3);
-		//glDrawArrays(GL_POINTS, 0, triangles->count * 3);
 
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
