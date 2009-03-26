@@ -19,7 +19,7 @@ void RCBC_MiniXML_ProcessVisualScene_Node_Translate(ModelTempory *tempory, Scene
 }
 
 Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode) {
-	float tmp;
+	GLfloat tmp;
 	Rotate *rotate = NEW(Rotate);
 
 	assert(rnode);

@@ -17,7 +17,7 @@ FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory
 		return NULL;
 	}
 
-	float f = 0.0f;
+	GLfloat f = 0.0f;
 	int i = 0;
 	char* pch = strtok(xnode->child->value.opaque, " ");
 	while(pch && i < count) {

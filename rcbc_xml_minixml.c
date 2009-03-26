@@ -85,7 +85,7 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 	tempory->model = model;
 	tempory->images = images;
 	mxml_node_t* node;
-
+	
 	/* Find the up axis. */
 	char* axis;
 	node = mxmlFindElement(tree, tree, "asset", NULL, NULL, MXML_DESCEND);
@@ -93,7 +93,7 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 	if(node && node->child) {
 		axis = node->child->value.opaque;
 	}
-	
+
 	tempory->up_axis = Y_UP;
 	if(strcasecmp(axis, "X_UP") == 0) {
 		tempory->up_axis = X_UP;

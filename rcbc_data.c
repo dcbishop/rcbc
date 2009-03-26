@@ -5,15 +5,15 @@
 #include "console.h"
 
 #define SWAP(a,b) tmp = a; a = b; b = tmp;
-void RCBC_FixAxis(const int up_axis, float *x, float *y, float *z) {
-	float tmp;
+void RCBC_FixAxis(const int up_axis, GLfloat *x, GLfloat *y, GLfloat *z) {
+	GLfloat tmp;
 
 	/* Work out axis mappings */
 	if(up_axis == X_UP) {
 		*y = -*y;
 		SWAP(*x, *y);
 	} else if (up_axis == Y_UP) {
-		*y = -*y;
+		// No changes for sane coordinate system
 	} else if (up_axis == Z_UP) {
 		SWAP(*y, *z);
 		*x = -*x;
@@ -235,7 +235,7 @@ FloatArray* FloatArray_FloatArray(int count) {
 	DEBUG_M("Entering function...");
 	ALLOCATE(FloatArray, array);
 
-	array->values = calloc(1, count * sizeof(float));
+	array->values = calloc(1, count * sizeof(GLfloat));
 	if(!array->values) {
 		DELETE(array);
 		ERROR("Failed to allocate float array values...");
@@ -336,9 +336,16 @@ Image* Image_Image(char* filename) {
  * Finds an Images based on its filename
  */
 Image* Image_FindByName(List* images, char* filename) {
+	DEBUG_M("Entering function...");
 	assert(images);
 	assert(filename);
+	
+	#warning ['TODO']: Remove debug...
+	DEBUG_M("Pre first...");
 	ListNode* node = images->first;
+	#warning ['TODO']: Remove debug...
+	DEBUG_M("Got first...");
+
 	while(node) {
 		if(strcasecmp( ((Image*)node->data)->filename, filename) == 0 ) {
 			return node->data;
@@ -354,9 +361,10 @@ Image* Image_FindByName(List* images, char* filename) {
  */
 Image* Image_Add(List* images, char* filename, int refs) {
 	DEBUG_M("Entering function...");
+	assert(images);
+	assert(filename);
 
 	Image* image = Image_FindByName(images, filename);
-
 	if(image) {
 		image->refs += refs;
 	} else {

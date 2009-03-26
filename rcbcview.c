@@ -212,7 +212,7 @@ int main(int argc, char** argv) {
 	char* filename;
 
 	if(argc < 2) {
-		filename = "data/models/monkey-test.dae"; /* Default model to view */
+		filename = "data/models/monkey-test.dae"; // Default model to view
 		WARNING("No model file specified, using trying default '%s'.", filename);
 	} else {
 		filename = argv[1];
@@ -230,7 +230,7 @@ int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
-	/* Create window */
+	// Create window
 	glutInitWindowSize(g.width, g.height);
 	glutCreateWindow("RCBC Viewer");
 

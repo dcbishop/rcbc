@@ -6,6 +6,8 @@ MINGW_LIBDIR = /usr/${MINGW_PREFIX}/lib
 #MINGW_PREFIX=i686-pc-mingw32
 #MINGW_LIBDIR = /usr/${MINGW_PREFIX}/sys-root/mingw/lib
 
+PREFIX=/usr/${MINGW_PREFIX}
+
 CC = ${MINGW_PREFIX}-gcc
 CFLAGSA = $(shell pkg-config --cflags mxml)
 CFLAGS = ${CFLAGSA} -D_STDCALL_SUPPORTED -D_M_IX86 -DWIN32
@@ -21,19 +23,28 @@ all: rcbcview.exe librcbc.a
 rcbcview.exe: rcbcview.c ${OBJS} 
 	${CC} $< ${CFLAGS} ${LIBS} -I${INC} ${OBJS} -o $@ -Wall ${DIRECTLIBS} -L /usr/i586-mingw32msvc/lib/
 
-librcbc.a: rcbc.o
-	${AR} rcs $@ $<
+librcbc.a: rcbc.o ${OBJS}
+	${AR} rcs $@ $< ${OBJS}
 
 rcbc_render_gl.o: rcbc_render_gl.c rcbc_render_gl.h
 	${CC} ${CFLAGS} ${INC} -c $<
 
 install: librcbc.a
-	cp librcbc.a ${MINGW_LIBDIR}/
-	cp rcbc.h ${INC}/
+	cp librcbc.a ${PREFIX}/lib
+	cp rcbc.h ${PREFIX}/include
+	cp rcbc_data.h ${PREFIX}/include
+	cp rcbc_data_hookup.h ${PREFIX}/include
+	cp List.h ${PREFIX}/include
+	cp ooc.h ${PREFIX}/include
 
 uninstall:
-	rm -f ${MINGW_LIBDIR}/librcbc.a
-	rm -f ${INC}/rcbc.h
+	rm -f ${PREFIX}/lib/librcbc.a
+	rm -f ${PREFIX}/bin/rcbcview
+	rm -f ${PREFIX}/include/rcbc.h
+	rm -f ${PREFIX}/include/rcbc_data.h
+	rm -f ${PREFIX}/include/rcbc_data_hookup.h
+	rm -f ${PREFIX}/include/List.h
+	rm -f ${PREFIX}/include/ooc.h
 
 clean:
 	rm -f rcbcview.exe *~ *.o core

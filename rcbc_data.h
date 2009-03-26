@@ -2,6 +2,8 @@
 #ifndef _RCBC_DATA_DEF
 #define _RCBC_DATA_DEF
 
+#include <GL/gl.h>
+
 #include "List.h"
 #include "rcbc_data_hookup.h"
 
@@ -47,7 +49,7 @@ typedef struct Rotate {
 typedef struct FloatArray {
 	const ClassFunctions* class_;
 	int count;
-	float* values;
+	GLfloat* values;
 } FloatArray;
 
 /** 

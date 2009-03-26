@@ -119,3 +119,10 @@ void List_FreeData(List* list) {
 		node = node->next;
 	}
 }
+
+void List_DumpList(List* list) {
+	ListNode* node = list->first;
+	while(node) {
+		DEBUG_H("Node[%p]: node->data: %p");
+	}
+}

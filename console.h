@@ -8,7 +8,7 @@
 #include <stdarg.h>
 #include <string.h>
 
-#define DEBUG_LEVEL DEBUG_LOW
+#define DEBUG_LEVEL DEBUG_VERY_HIGH
 
 #define DEBUG_VERY_HIGH 40
 #define DEBUG_HIGH 30
@@ -75,6 +75,8 @@
 #define ERROR(fmt, ...) errorit("%s[%s%s:%u%s]: [%s%s%s] %s" fmt, COLOUR_WHITE, COLOUR_LIGHT_CYAN, __FILE__, __LINE__, COLOUR_WHITE, COLOUR_LIGHT_BLUE, __FUNCTION__, COLOUR_WHITE, COLOUR_NONE, ## __VA_ARGS__)
 
 #define _DEBUG
+#undef _DEBUG
+
 #ifndef _DEBUG
 #undef DEBUG
 #define DEBUG(level, fmt, ...)

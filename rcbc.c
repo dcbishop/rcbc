@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <assert.h>
 
 #include "rcbc.h"
 #include "rcbc_defaults.h"
@@ -69,6 +70,8 @@ Model* RCBC_LoadFile(const char* filename, List* images) {
 }
 
 int RCBC_Render(const Model* model) {
+	DEBUG_H("Enterting function...");
+	assert(model);
 	if(!rcbc_initilized) {
 		ERROR("Attempted to use uninitilized RCBC... %s", SYMBOL_FATAL);
 		return 1;

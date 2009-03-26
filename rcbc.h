@@ -1,6 +1,8 @@
 #ifndef _RCBC_DEF
 #define _RCBC_DEF
 
+#warning ['TODO']: Make this more library friendly (dont pull in heaps of .h files)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
