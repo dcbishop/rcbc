@@ -2,7 +2,7 @@ PREFIX = /usr/local
 
 CC = $(shell which cc gcc colorgcc | tail -n 1)
 CFLAGS = $(shell pkg-config --cflags mxml)
-LIBS = -lmxml -lGL -lGLU -lglut -lIL /usr/lib/libSOIL.so
+LIBS = -lmxml -lGL -lGLU -lglut -lIL
 OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o rcbc_xml_minixml_textures.o rcbc_data_hookup.o List.o
 INC = -I/usr/include/SOIL
 
