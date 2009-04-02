@@ -1,4 +1,5 @@
 #include <assert.h>
+#include "rcbc_xml_minixml.h"
 #include "rcbc_xml_minixml_visualscene.h"
 #include "console.h"
 
@@ -36,7 +37,7 @@ Rotate* RCBC_MiniXML_ProcessVisualScene_Node_Rotate(ModelTempory *tempory, Scene
 }
 
 void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode) {
-	mxml_node_t *child1, *child2, *child3, *child4;
+	mxml_node_t *bm_node, *tc_node, *im_node;
 	const char *semantic, *input_semantic;
 	const char *id = mxmlElementGetAttr(xnode, "url");
 	if(id[0] == '#') {
@@ -44,7 +45,40 @@ void RCBC_MiniXML_ProcessVisualScene_Node_InstanceGeometry(ModelTempory *tempory
 	}
 
 	Hookup* hookup = NEW(Hookup, (char*)id, (void*)&rnode->mesh);
-	ListAdd(tempory->sinks, hookup);		
+	ListAdd(tempory->sinks, hookup);
+	
+	bm_node = mxmlFindElement(xnode, xnode, "bind_material", NULL, NULL, MXML_DESCEND);
+	if(!bm_node) {
+		return;
+	}
+	
+	tc_node = mxmlFindElement(bm_node, bm_node, "technique_common", NULL, NULL, MXML_DESCEND);
+	if(!tc_node) {
+		return;
+	}
+	
+	im_node = mxmlFindElement(tc_node, tc_node, "instance_material", NULL, NULL, MXML_DESCEND);
+	if(!im_node) {
+		return;
+	}
+	
+	const char* symbol = mxmlElementGetAttr(im_node, "symbol");
+	const char* target = mxmlElementGetAttr(im_node, "target");
+	DEHASH(target);
+	
+	if(!symbol || !target) {
+		return;
+	}
+	
+	Hookup* ims_hookup = NEW(Hookup, (char*)symbol, NULL);
+	if(!ims_hookup) {
+		return;
+	}
+	
+	ListAdd(tempory->sources, ims_hookup);
+	
+	Hookup* imt_hookup = NEW(Hookup, (char*)target, &ims_hookup->ptr);
+	ListAdd(tempory->sinks, imt_hookup);
 }
 
 void RCBC_MiniXML_ProcessVisualScene_Node_Children(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode) {

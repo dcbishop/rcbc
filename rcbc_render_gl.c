@@ -54,7 +54,7 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 	// Scale
 	glScalef(node->scale[0], node->scale[1], node->scale[2]);
 
-	#warning ['TODO']: Load this onto the graphics card...
+	#warning ['TODO']: Load this onto the graphics card for increased speed...
 	// Mesh data
 	Mesh* mesh = node->mesh;
 	Triangles* triangles;
@@ -63,29 +63,28 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 		//glColor3f(1.0f, 0.0f, 0.0f);
 		//glutWireSphere(1.0f, 5, 5); // Draw a red sphere*/
 	} else {
-		//glColor3f(1.0f, 1.0f, 1.0f);
 		// Bind vertex data...
 		if(triangles->vertices) {
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glVertexPointer(3, GL_FLOAT, 0, triangles->vertices->values);
+		} else {
+			glDisableClientState(GL_VERTEX_ARRAY);
 		}
+		
 		// Bind normal data...
 		if(triangles->normals) {
 			glNormalPointer(GL_FLOAT, 0, triangles->normals->values);
 			glEnableClientState(GL_NORMAL_ARRAY);
 		} else {
-			#warning ['TODO']: Clear normal pointer so no normals are used...
+			glDisableClientState(GL_NORMAL_ARRAY);
 		}
 		// Bind texture cordinates...
 		if(triangles->texcoords) {	
 			glTexCoordPointer(2, GL_FLOAT, 0, triangles->texcoords->values);
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		} else {
-			#warning ['TODO']: Clear texcoord pointer so no texcoords are used...
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
-		#warning ['TODO']: Find out what these do exactly...
-		//glActiveTextureARB(GL_TEXTURE0_ARB);
-		//glClientActiveTextureARB(GL_TEXTURE0_ARB);
 
 		// Check for a image for this mesh
 		if(triangles->image) {
@@ -114,21 +113,20 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 				// If the image failed to load, we throw an error and set it to -1 so it won't load again
 				if(triangles->image->id == 0) {
 					triangles->image->id = -1;
-					#warning ['TODO']: Error message...
 					//ERROR("Failed to load texture: '%s', %s", triangles->image->filename, SOIL_last_result());
 					ERROR("Failed to load texture: '%s', %s", triangles->image->filename, "");
 				}
 			}
 			if(triangles->image->id != 0) {
 				glBindTexture(GL_TEXTURE_2D, triangles->image->id);
+				glEnable(GL_TEXTURE_2D);
 			}
+		} else {
+			glDisable(GL_TEXTURE_2D);
 		}
 
 		/* Draw it, yay! */
 		glDrawArrays(GL_TRIANGLES, 0, triangles->count * 3);
-
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 
 	glPopMatrix();
