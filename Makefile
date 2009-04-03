@@ -4,7 +4,6 @@ CC = $(shell which cc gcc colorgcc | tail -n 1)
 CFLAGS = $(shell pkg-config --cflags mxml)
 LIBS = -lmxml -lGL -lGLU -lglut -lIL
 OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o rcbc_xml_minixml_textures.o rcbc_data_hookup.o List.o
-INC = -I/usr/include/SOIL
 
 all: rcbcview librcbc.a
 
@@ -36,4 +35,4 @@ uninstall:
 	rm -f ${PREFIX}/include/ooc.h
 
 clean:
-	rm -f rcbcview rcbcview.exe *~ *.o *.a core
+	rm -f rcbcview rcbcview.exe *~ *.o *.a core *.so *.os .scon*
