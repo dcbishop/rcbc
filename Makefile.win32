@@ -16,7 +16,7 @@ OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minix
 INC = /usr/${MINGW_PREFIX}/include
 AR = ${MINGW_PREFIX}-ar
 
-DIRECTLIBS = ${MINGW_LIBDIR}/libopengl32.a ${MINGW_LIBDIR}/libmxml.a ${MINGW_LIBDIR}/libglut32.a ${MINGW_LIBDIR}/DevIL.lib
+DIRECTLIBS = ${MINGW_LIBDIR}/libopengl32.a ${MINGW_LIBDIR}/libmxml.a ${MINGW_LIBDIR}/DevIL.lib
 
 all: rcbcview.exe librcbc.a
 

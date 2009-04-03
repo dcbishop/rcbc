@@ -5,3 +5,8 @@
 rcbcview
 *.exe
 .scons*
+*.os
+*.so
+*.pyc
+*.def
+*.lib
