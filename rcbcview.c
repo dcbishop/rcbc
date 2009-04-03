@@ -219,9 +219,6 @@ int main(int argc, char** argv) {
 	}
 
 	List* images = NEW(List);
-	
-	RCBC_Init();
-	g.model = RCBC_LoadFile(filename, images);
 
 	g.height = 600;
 	g.width = 800;
@@ -233,6 +230,9 @@ int main(int argc, char** argv) {
 	// Create window
 	glutInitWindowSize(g.width, g.height);
 	glutCreateWindow("RCBC Viewer");
+
+	RCBC_Init();
+	g.model = RCBC_LoadFile(filename, images);
 
 	glutDisplayFunc(&displayFunc);
 	glutIdleFunc(&idleFunc);
