@@ -34,6 +34,7 @@ else:
 env.AppendUnique (LIBS=['m', 'IL', 'mxml'])
 
 # Building
+env.Tool('colourful', toolpath=['scons-tools'])
 objects = env.Object(lib_sources)
 lib_sources.append(extra_objects)
 static_lib = env.StaticLibrary(target = lib_target, source = lib_sources)
@@ -57,6 +58,7 @@ Default(static_lib)
 # Installing
 bin_dir = '$PREFIX/bin'
 lib_dir = '$PREFIX/lib'
+inc_dir = '$PREFIX/include'
 
 if not int(win32):
 	installed_bin = env.Install(bin_dir, target)
@@ -64,12 +66,14 @@ else:
 	installed_bin = ""
 	
 installed_lib = env.Install(lib_dir, [shared_lib, static_lib])
+installed_inc = env.Install(inc_dir, ['rcbc.h', 'rcbc_data.h', 'rcbc_data_hookup.h', 'List.h', 'ooc.h'])
 
 ib = env.Alias('install-bin', bin_dir)
 il = env.Alias('install-lib', lib_dir)
-ina = env.Alias('install', [ib, il])
+ii = env.Alias('install-inc', inc_dir)
+ina = env.Alias('install', [ib, il, ii])
 
 # Uninstall
-uninstall_files = env.Command('uninstall-files-com', [], [ Delete(installed_bin), Delete(installed_lib)])
+uninstall_files = env.Command('uninstall-files-com', [], [ Delete(installed_bin), Delete(installed_lib), Delete(installed_inc)])
 env.Alias('uninstall', uninstall_files)
 
