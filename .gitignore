@@ -10,3 +10,4 @@ rcbcview
 *.pyc
 *.def
 *.lib
+a.out

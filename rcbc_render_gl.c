@@ -4,6 +4,7 @@
 
 #include "rcbc_render_gl.h"
 #include "console.h"
+#include "shaders.h"
 
 #define PI 3.14152f
 
@@ -40,6 +41,26 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 
 	if(!node) {return;}
 	ListNode* itr;
+
+#warning ['TODO']: This probably shouldnt be here
+	static ShaderProgram* vert_shader = NULL;
+	static ShaderProgram* frag_shader = NULL;
+
+	if(!vert_shader) {
+		vert_shader = load_phong_vert_shader();
+	}
+
+	if(!frag_shader) {
+		frag_shader = load_phong_frag_shader();
+	}
+
+	/*if(vert_shader) {
+		glUseProgram(vert_shader->program);
+	}
+
+	if(frag_shader) {
+		glUseProgram(frag_shader->program);
+	}*/
 
 	// Translate node
 	glTranslatef(node->translate[0], node->translate[1], node->translate[2]);
