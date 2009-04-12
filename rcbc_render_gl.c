@@ -29,8 +29,12 @@ int RCBC_GL_Init() {
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glEnable(GL_CULL_FACE);
+	//glFrontFace(GL_CCW);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	return 0;
 }
 
@@ -43,25 +47,16 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 	ListNode* itr;
 
 #warning ['TODO']: This probably shouldnt be here
-	static ShaderProgram* vert_shader = NULL;
-	static ShaderProgram* frag_shader = NULL;
-
-	if(!vert_shader) {
-		vert_shader = load_phong_vert_shader();
+	/*static ShaderProgram* phong = NULL;
+	if(!phong) {
+		phong = load_phong_shader();
 	}
-
-	if(!frag_shader) {
-		frag_shader = load_phong_frag_shader();
-	}
-
-	/*if(vert_shader) {
-		glUseProgram(vert_shader->program);
-	}
-
-	if(frag_shader) {
-		glUseProgram(frag_shader->program);
+	
+	if(phong) {
+		glUseProgram(phong->program);
 	}*/
-
+	
+	
 	// Translate node
 	glTranslatef(node->translate[0], node->translate[1], node->translate[2]);
 	glPushMatrix();
@@ -145,7 +140,14 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 		} else {
 			glDisable(GL_TEXTURE_2D);
 		}
-
+		
+		#warning ['TODO']: Debugging
+		glEnable ( GL_LIGHTING ) ;
+		glEnable(GL_LIGHT0);
+		//glEnable(GL_COLOR_MATERIAL);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		//glDisable(GL_TEXTURE_2D);
+		
 		/* Draw it, yay! */
 		glDrawArrays(GL_TRIANGLES, 0, triangles->count * 3);
 	}

@@ -6,7 +6,8 @@
 
 typedef struct ShaderProgram {
 	const ClassFunctions* class_;
-	GLuint shader;
+	GLuint vert;
+	GLuint frag;
 	GLuint program;
 } ShaderProgram;
 
@@ -14,8 +15,7 @@ void ShaderProgram_0ShaderProgram(ShaderProgram* sp);
 ShaderProgram* ShaderProgram_ShaderProgram();
 
 int load_file(const char* filename, char**data);
-
-ShaderProgram* load_phong_vert_shader();
-ShaderProgram* load_phong_frag_shader();
+GLuint load_shader(char* filename, int type);
+ShaderProgram* load_phong_shader();
 
 #endif

@@ -19,9 +19,14 @@ AddOption('--prefix',
 
 env = Environment(PREFIX = GetOption('prefix'))
 win32 = ARGUMENTS.get('win32', 0)
+debug_flag = ARGUMENTS.get('debug', 0)
 
 extra_objects=[]
 
+if int(debug_flag):
+	env.Append(CCFLAGS = ['-g'])
+	env.MergeFlags('-D_DEBUG')
+	
 # Setup libs
 if int(win32):
 	env.Tool('crossmingw', toolpath = ['scons-tools'])

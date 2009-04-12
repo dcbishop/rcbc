@@ -1,3 +1,6 @@
+#warning ['TODO']: This isn't used... (Also the OpenGL windows uses doesn't support it).
+#if 0
+
 #include "shaders.h"
 
 #include <stdio.h>
@@ -6,10 +9,18 @@
 #include "console.h"
 
 void ShaderProgram_0ShaderProgram(ShaderProgram* sp) {
-	glDetachShader(sp->program, sp->shader);
+	if(sp->vert) {
+		glDetachShader(sp->program, sp->vert);
+		glDeleteShader(sp->vert);
+	}
+	if(sp->frag) {
+		glDetachShader(sp->program, sp->frag);
+		glDeleteShader(sp->frag);
+	}
 
-	glDeleteShader(sp->shader);
-	glDeleteProgram(sp->program);
+	if(sp->program) {
+		glDeleteProgram(sp->program);
+	}
 
 	free(sp);
 }
@@ -59,33 +70,41 @@ int load_file(const char* filename, char**data) {
 	return size;
 }
 
-ShaderProgram* load_shader(char* filename, int type) {
-	ShaderProgram* sp = NEW(ShaderProgram);
-
+GLuint load_shader(char* filename, int type) {
 	char* source;
-	int result = load_file("phong.vert", &source);
+	int result = load_file(filename, &source);
 	if(result < 0) {
 		ERROR("Failed to load shader...");
-		return NULL;
+		return 0;
 	}
+	
+	GLuint shader = glCreateShader(type);
 
-	sp->shader = glCreateShader(type);
-	sp->program = glCreateProgram();
+	glShaderSource(shader, 1, &source, NULL);
+	glCompileShader(shader);
 
-	glShaderSource(sp->shader, 1, &source, NULL);
-	glCompileShader(sp->shader);
-
-	glAttachShader(sp->program, sp->shader);
-	glLinkProgram(sp->program);
+	
 
 	free(source);
+	return shader;
+}
+
+ShaderProgram* load_phong_shader() {
+	ShaderProgram* sp = NEW(ShaderProgram);
+	sp->vert = load_shader("phong.vert", GL_VERTEX_SHADER);
+	sp->frag = load_shader("phong.frag", GL_FRAGMENT_SHADER);
+	
+	sp->program = glCreateProgram();
+	if(!sp->vert || !sp->frag || !sp->program) {
+		DELETE(sp);
+		return NULL;
+	}
+		
+	glAttachShader(sp->program, sp->vert);
+	glAttachShader(sp->program, sp->frag);
+	
+	glLinkProgram(sp->program);
+	
 	return sp;
 }
-
-ShaderProgram* load_phong_vert_shader() {
-	return load_shader("phong.vert", GL_VERTEX_SHADER);
-}
-
-ShaderProgram* load_phong_frag_shader() {
-	return load_shader("phong.frag", GL_FRAGMENT_SHADER);
-}
+#endif
