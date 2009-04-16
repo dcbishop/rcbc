@@ -4,11 +4,14 @@
 #include <GL/gl.h>
 #include "ooc.h"
 
+/**
+ * A program with vertex and fragment shaders.
+ */
 typedef struct ShaderProgram {
-	const ClassFunctions* class_;
-	GLuint vert;
-	GLuint frag;
-	GLuint program;
+	const ClassFunctions* class_;	/**< Class functions. */
+	GLuint vert;					/**< The vertex shader id */
+	GLuint frag;					/**< The fragment shader id */
+	GLuint program;					/**< The compiled/linked shader program id */
 } ShaderProgram;
 
 void ShaderProgram_0ShaderProgram(ShaderProgram* sp);

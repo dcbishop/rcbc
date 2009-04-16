@@ -30,7 +30,7 @@ if int(debug_flag):
 # Setup libs
 if int(win32):
 	env.Tool('crossmingw', toolpath = ['scons-tools'])
-	env.AppendUnique (LIBS=['glut32', 'opengl32', 'glu32', 'm', 'IL', 'mxml'])
+	env.AppendUnique (LIBS=['glut32', 'opengl32', 'glu32', 'm', 'IL', 'mxml', 'png12', 'jpeg'])
 	extra_objects.append('./glut32.lib')
 	extra_objects.append('/usr/'+env['MINGWPREFIX']+'/lib/DevIL.lib')
 else:

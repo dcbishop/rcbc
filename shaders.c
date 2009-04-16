@@ -1,4 +1,4 @@
-#warning ['TODO']: This isn't used... (Also the OpenGL windows uses doesn't support it).
+#warning ['TODO']: This isn't used... (Also the OpenGL 1.1 windows uses doesn't support it without extentions).
 #if 0
 
 #include "shaders.h"

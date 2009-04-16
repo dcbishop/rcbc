@@ -15,41 +15,45 @@
  * A container for a COLLADA model.
  */
 typedef struct Model {
-	const ClassFunctions* class_;
-	struct SceneNode* visual_scene;
-	struct List* geometries;
+	const ClassFunctions* class_;	/**< Class functions. */
+	struct SceneNode* visual_scene;	/**< The COLLADA visual scene */
+	struct List* geometries;		/**< All the geometry mesh data */
 } Model;
 
 /**
  * A throwaway struct for holding tempory values while loading a model.
+ * After processing the COLLADA model into OpenGL these need to be cleaned.
  */
 typedef struct ModelTempory {
-	const ClassFunctions* class_;
-	Model* model;
-	List* sources;
-	List* sinks;
-	List* unsorted;
-	List* images;
-	List* freeme;
-	List* deleteme;
-	int up_axis;
+	const ClassFunctions* class_;	/**< Class functions. */
+	Model* model;					/**< The model */
+	List* sources;					/**< Sources of data to hookup*/
+	List* sinks;					/**< A sink in which to plug the source */
+	List* unsorted;					/**< Unsorted Triangles that need sorting */
+	List* images;					/**< The list of texture images */
+	List* freeme;					/**< misc data that needs a free() */
+	List* deleteme;					/**< misc data that needs a DELETE() */
+	int up_axis;					/**< The COLLADA axis direction */
 } ModelTempory;
 
 /**
  *  Contains rotation information for a COLLADA scene node.
  **/
 typedef struct Rotate {
-	const ClassFunctions* class_;
-	float x;
-	float y;
-	float z;
-	float angle;
+	const ClassFunctions* class_;	/**< Class functions. */
+	float x;						/**< OpenGL X rotation */
+	float y;						/**< OpenGL Y rotation */
+	float z;						/**< OpenGL Z rotation */
+	float angle;					/**< OpenGL rotation angle */
 } Rotate;
 
+/**
+ * An array of floats.
+ */
 typedef struct FloatArray {
-	const ClassFunctions* class_;
-	int count;
-	GLfloat* values;
+	const ClassFunctions* class_;	/**< Class functions. */
+	int count;						/**< Number of floats in the array */
+	GLfloat* values;				/**< Pointer to the actual floats. */
 } FloatArray;
 
 /** 
@@ -57,10 +61,10 @@ typedef struct FloatArray {
  * and the number of refrences to this image.
  */
 typedef struct Image {
-	const ClassFunctions* class_;
-	int id;
-	char* filename;
-	int refs;
+	const ClassFunctions* class_;	/**< Class functions. */
+	int id;							/**< Unique ID used by image library */
+	char* filename;					/**< The image filename */
+	int refs;						/**< Number of times this image is in use */
 } Image;
 
 /**
@@ -68,68 +72,74 @@ typedef struct Image {
  * file.
  */
 typedef struct UnsortedTriangles {
-	const ClassFunctions* class_;
-	void** ptr;
-	unsigned int count;
-	unsigned int inputs;
-	unsigned int* indices;
-	int vertices_offset;
-	FloatArray* vertices;
-	int normals_offset;
-	FloatArray* normals;
-	int texcoords_offset;
-	FloatArray* texcoords;
-	Image* image;
+	const ClassFunctions* class_;	/**< Class functions. */
+	void** ptr;						/**< Pointer to the sorted triangle struct. */
+	unsigned int count;				/**< Number of trinagles. */
+	unsigned int inputs;			/**< Number of inputs for vertex info. */
+	unsigned int* indices;			/**< Index numbers. */
+	int vertices_offset;			/**< The vertexs offset in the interlaces index */
+	FloatArray* vertices;			/**< The vertices cordinates */
+	int normals_offset;				/**< The normals offset in the interlaces index */
+	FloatArray* normals;			/**< The normals cordinates */
+	int texcoords_offset;			/**< The textcoords offset in the interlaces index */
+	FloatArray* texcoords;			/**< The texture cordinates */
+	Image* image;					/**< The texture image */
 } UnsortedTriangles;
 
+/**
+ * A bunch of unsorted polygons.
+ */
 typedef struct UnsortedPolygons {
-	const ClassFunctions* class_;
-	void** ptr;
-	unsigned int count;
-	unsigned int inputs;
+	const ClassFunctions* class_;	/**< Class functions. */
+	void** ptr;						/**< Pointer to the sorted polygon struct. */
+	unsigned int count;				/**< Number of polygons */
+	unsigned int inputs;			/**< Number of inputs */
 } UnsortedPolygons;
 
+/**
+ * Triangle data for a mesh.
+ */
 typedef struct Triangles {
-	const ClassFunctions* class_;
-	unsigned int count;
-	FloatArray* vertices;
-	FloatArray* normals;
-	FloatArray* texcoords;
-	Image* image;
+	const ClassFunctions* class_;	/**< Class functions. */
+	unsigned int count;				/**< Number of trinagles. */
+	FloatArray* vertices;			/**< The vertex cordinates. */
+	FloatArray* normals;			/**< The normal cordinates. */
+	FloatArray* texcoords;			/**< The texture cordinates. */
+	Image* image;					/**< Texture image. */
 } Triangles;
 
 /** 
- * Contains mesh data
+ * Contains model mesh data.
  **/
 typedef struct Mesh {
-	const ClassFunctions* class_;
-	Triangles* triangles;
+	const ClassFunctions* class_;	/**< Class functions. */
+	Triangles* triangles;			/**< Triangle model data. */
 } Mesh;
 
 /**
- * A basic COLLADA scene node
+ * A COLLADA scene node.
  */
 typedef struct SceneNode {
-	const ClassFunctions* class_;
-	
-	Mesh* mesh;
+	const ClassFunctions* class_;	/**< Class functions. */
 
-	float translate[3];
-	float scale[3];
+	Mesh* mesh;						/**< Mesh model. */
 
-	struct List* rotations;
+	float translate[3];				/**< Spacial cordinates. */
+	float scale[3];					/**< Model scale. */
 
-	struct SceneNode* next;
-	struct SceneNode* prev;
-	struct SceneNode* child;
-	struct SceneNode* parent;
+	struct List* rotations;			/**< Rotations to apply. */
+
+	struct SceneNode* next;			/**< Next sibbling node in tree. */
+	struct SceneNode* prev;			/**< Previous sibbling node in the tree. */
+	struct SceneNode* child;		/**< Head child node */
+	struct SceneNode* parent;		/**< The parent node */
 } SceneNode;
 
 
-void *Model_0Model(Model* model);
+void Model_0Model(Model* model);
 Model* Model_Model();
 
-void* ModelTempory_0ModelTempory(ModelTempory* tempory);
+void ModelTempory_0ModelTempory(ModelTempory* tempory);
 ModelTempory* ModelTempory_ModelTempory();
 
 void Rotate_0Rotate(Rotate* rotate);

@@ -53,7 +53,9 @@ struct globals {
 
 struct globals g;
 
-/* Position camera around box using some voodoo math */
+/**
+ * Position camera around box using some voodoo math.
+ */
 void cameraPosition() {
 	/* http://en.wikipedia.org/wiki/Spherical_coordinates */
 	float theta = g.cam_rot_x+g.cam_rot_x_temp;
@@ -66,7 +68,9 @@ void cameraPosition() {
 	gluLookAt( g.cam_x, g.cam_y, g.cam_z, 0.0f, 0.0f, 0.0f, 0.0f, 10.0f, 0.0f );
 }
 
-/* Set 3D perspective mode */
+/**
+ * Set 3D perspective mode.
+ */
 void setPerspective() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -119,6 +123,9 @@ void displayFunc() {
 		ERROR("GLUT: %s", gluErrorString(error));
 }
 
+/**
+ * Sets OpenGL info to Solid/Wireframe mode.
+ */
 void setPolygonMode() {
 	if(g.wireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -127,6 +134,9 @@ void setPolygonMode() {
 	}
 }
 
+/**
+ * When the window is resized.
+ */
 void reshapeFunc(int width, int height) {
 	if (height==0) {
 		height=1;
@@ -139,7 +149,9 @@ void reshapeFunc(int width, int height) {
 	setPerspective();
 }
 
-/* Handle mouse roation */
+/**
+ * Handle mouse rotation
+ */
 void motionFunc(int x, int y) {
 	int x_diff, y_diff;
 
@@ -157,7 +169,9 @@ void motionFunc(int x, int y) {
 	}
 }
 
-/* When mouse clicked */
+/**
+ * When mouse clicked.
+ */
 void mouseFunc(int button, int state, int x, int y) {
 	switch(button) {
 		case(0):
@@ -186,11 +200,16 @@ void mouseFunc(int button, int state, int x, int y) {
 	}
 }
 
+/**
+ * GLUT idle function.
+ */
 void idleFunc() {
 	glutPostRedisplay();
 }
 
-/* Handle key presses */
+/**
+ * Handle key presses
+ */
 void keyboardFunc(unsigned char key, int x, int y) {
 	switch(key) {
 		case(KEY_ESC): case(KEY_q): case(KEY_Q): /* ESC / Q */
@@ -208,6 +227,9 @@ void keyboardFunc(unsigned char key, int x, int y) {
 	}
 }
 
+/**
+ * The glorious main function.
+ */
 int main(int argc, char** argv) {
 	char* filename;
 

@@ -13,6 +13,9 @@
 
 #include "console.h"
 
+/**
+ * Outputs data in the LOG format.
+ */
 void logit(const char* format, ...) {
 	char prefix[] = "LOG";
 	char* colour = COLOUR_LIGHT_GREEN;
@@ -33,6 +36,9 @@ void logit(const char* format, ...) {
 	free(newformat);
 }
 
+/**
+ * Outputs an error message.
+ */
 void errorit(const char* format, ...) {
 	char prefix[] = "ERROR";
 	char* colour = COLOUR_LIGHT_RED;
@@ -53,6 +59,12 @@ void errorit(const char* format, ...) {
 	free(newformat);
 }
 
+/**
+ * Outputs some debbuging info providing the level is less than the set one.
+ * @param level The debug level.
+ * @param format The string format.
+ * @param ... The string args.
+ */
 void debugit(int level, const char* format, ...) {
 	if(DEBUG_LEVEL < level) {
 		return;

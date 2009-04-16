@@ -8,7 +8,9 @@
 
 #define PI 3.14152f
 
-// Initilize the GL render...
+/**
+ * Initilize the GL render and DevIL library...
+ */
 int RCBC_GL_Init() {
 	LOG("Initilizing GL render...");
 
@@ -39,7 +41,10 @@ int RCBC_GL_Init() {
 }
 
 #warning ['TODO']: Optimize me :)
-// Draws a node
+/**
+ * Draws a SceneNode.
+ * @param node The node to draw.
+ */
 void RCBC_GL_Draw_Node(SceneNode* node) {
 	DEBUG_V("Entering function...");
 
@@ -148,14 +153,17 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 		glColor3f(1.0f, 0.0f, 0.0f);
 		//glDisable(GL_TEXTURE_2D);
 		
-		/* Draw it, yay! */
+		// Draw it, yay!
 		glDrawArrays(GL_TRIANGLES, 0, triangles->count * 3);
 	}
 
 	glPopMatrix();
 }
 
-/* Draws all the nodes and their children... */
+/**
+ * Draws all the nodes and their children...
+ * @param node The root node to draw.
+ */
 void RCBC_GL_Draw_Nodes(SceneNode* node) {
 	DEBUG_V("Entering function...");
 	while(node) {
@@ -170,7 +178,10 @@ void RCBC_GL_Draw_Nodes(SceneNode* node) {
 	}
 }
 
-/* Draws a model */
+/**
+ * Draws a model.
+ * @return 0 or crash
+ */
 int RCBC_GL_Draw(Model* model) {
 	DEBUG_V("Entering function...");
 	SceneNode* head = model->visual_scene;

@@ -33,6 +33,9 @@
 static RCBCPlugins rcbc_plugins;
 static int rcbc_initilized = 0;
 
+/**
+ * Initilizes RCBC.
+ */
 int RCBC_Init() {
 	LOG("RCBC initilizing...");
 	rcbc_plugins.render_draw = (void*)RCBC_RENDER_RENDER;
@@ -55,6 +58,12 @@ int RCBC_Init() {
 	return 0;
 }
 
+/**
+ * Loads a COLLADA model into memory.
+ * @param filename Name of file.
+ * @param images A List of images for resource managment.
+ * @return A pointer to the loaded Model or NULL on error.
+ */
 Model* RCBC_LoadFile(const char* filename, List* images) {
 	LOG("RCBC loading '%s'...", filename);
 
@@ -69,9 +78,17 @@ Model* RCBC_LoadFile(const char* filename, List* images) {
 	return model;
 }
 
+/**
+ * Renders a model to screen.
+ * @param model The model to render.
+ * @return 0, 1 on error
+ */
 int RCBC_Render(const Model* model) {
 	DEBUG_H("Enterting function...");
-	assert(model);
+	if(!model) {
+		return 1;
+	}
+
 	if(!rcbc_initilized) {
 		ERROR("Attempted to use uninitilized RCBC... %s", SYMBOL_FATAL);
 		return 1;

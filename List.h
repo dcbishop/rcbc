@@ -4,27 +4,27 @@
 #include "ooc.h"
 
 /**
- * A generic linked list node
+ * A generic linked list node.
  */
 typedef struct ListNode {
-	const ClassFunctions* class_;
-	void* data;
-	struct ListNode* next;
-	struct ListNode* prev;
+	const ClassFunctions* class_;	/**< Class functions. */
+	void* data;						/**< Data stored in the List */
+	struct ListNode* next;			/**< Pointer to next node in the List */
+	struct ListNode* prev;			/**< Pointer to prev node in the List */
 } ListNode;
 
 /**
- * A generic linked list node
+ * A head Linked list node.
  */
 typedef struct List {
-	const ClassFunctions* class_;
-	int count;
-	struct ListNode* first;
-	struct ListNode* last;
+	const ClassFunctions* class_;	/**< Class functions. */
+	int count;						/**< Number of nodes in the List */
+	struct ListNode* first;			/**< Pointer to first node in the List */
+	struct ListNode* last;			/**< Pointer to last node in the List */
 } List;
 
 void List_0List(List* rootnode);
-ListNode* ListNode_0ListNode(ListNode* node);
+void ListNode_0ListNode(ListNode* node);
 List* List_List();
 ListNode* ListNode_ListNode(void* data);
 ListNode* ListAdd(List* head, void* data);

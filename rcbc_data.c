@@ -5,6 +5,14 @@
 #include "console.h"
 
 #define SWAP(a,b) tmp = a; a = b; b = tmp;
+/**
+ * Converts to the correct hand rule for OpenGL, deals with various
+ * COLLADA axis directions.
+ * @param up_axis X_UP, Y_UP or Z_UP depending on COLLADA format.
+ * @param x Pointer to the X cordinate to process.
+ * @param y Pointer to the Y cordiniate to process.
+ * @param z Pointer to the Z cordiniate to process.
+ */
 void RCBC_FixAxis(const int up_axis, GLfloat *x, GLfloat *y, GLfloat *z) {
 	GLfloat tmp;
 
@@ -22,18 +30,19 @@ void RCBC_FixAxis(const int up_axis, GLfloat *x, GLfloat *y, GLfloat *z) {
 
 /**
  * Model Deconstructor.
+ * @param model Model to free.
  */
-void *Model_0Model(Model* model) {
+void Model_0Model(Model* model) {
 
 	DEBUG_M("Entering function...");
 
 	DEBUG_M("Deleting visual scene %p...", model->visual_scene);
 	DELETE(model->visual_scene);
 
-	#warning TODO: Are there any situations where geometires exist but not in visual_scene?
+	#warning ['TODO']: Are there any situations where geometires exist but not in visual_scene?
 	//DEBUG_M("Deleting geometries...");
 	//List_DeleteData(model->geometries);
-	
+
 	free(model);
 }
 
@@ -46,6 +55,7 @@ static const ClassFunctions Model_c = {
 
 /**
  * Model Constructor.
+ * @return A new blank model, or NULL.
  */
 Model* Model_Model() {
 	DEBUG_M("Entering function...");	
@@ -60,7 +70,11 @@ Model* Model_Model() {
 	return model;
 }
 
-void* ModelTempory_0ModelTempory(ModelTempory* tempory) {
+/**
+ * ModelTempory deconstructor.
+ * @param the ModelTempory to free.
+ */
+void ModelTempory_0ModelTempory(ModelTempory* tempory) {
 	DEBUG_M("Entering function...");
 
 	List_DeleteData(tempory->sinks);
@@ -81,10 +95,17 @@ void* ModelTempory_0ModelTempory(ModelTempory* tempory) {
 	free(tempory);
 }
 
+/**
+ * ModelTempory class function binds.
+ */
 static const ClassFunctions ModelTempory_c = {
 	(void*)ModelTempory_0ModelTempory
 };
 
+/**
+ * ModelTempory constructor.
+ * @return A new ModelTempory or NULL on error.
+ */
 ModelTempory* ModelTempory_ModelTempory() {
 	DEBUG_M("Entering function...");
 
@@ -107,18 +128,23 @@ ModelTempory* ModelTempory_ModelTempory() {
 
 /**
  * Rotate deconstructor.
+ * @param rotate The Rotate to free.
  */
 void Rotate_0Rotate(Rotate* rotate) {
 	DEBUG_M("Entering function...");
 	free(rotate);
 }
 
+/**
+ * Rotate class function binds.
+ */
 static const ClassFunctions Rotate_c = {
 	(void*)Rotate_0Rotate
 };
 
 /**
  * Rotate constructor.
+ * @return a new blank Rotate or NULL on error.
  */
 Rotate* Rotate_Rotate() {
 	DEBUG_M("Entering function...");
@@ -131,6 +157,10 @@ Rotate* Rotate_Rotate() {
 	return rotate;
 }
 
+/**
+ * SceneNode deconstructor.
+ * @param node The node to free.
+ */
 void SceneNode_0SceneNode(SceneNode *node) {
 	DEBUG_M("Entering function...");
 	assert(node);
@@ -150,10 +180,17 @@ void SceneNode_0SceneNode(SceneNode *node) {
 	free(node);
 }
 
+/**
+ * SceneNode class function binds.
+ */
 static const ClassFunctions SceneNode_c = {
 	(void*)SceneNode_0SceneNode
 };
 
+/**
+ * SceneNode constructor
+ * @return A new SceneNode or NULL on error.
+ */
 SceneNode* SceneNode_SceneNode() {
 	DEBUG_M("Entering function...");
 
@@ -183,6 +220,7 @@ SceneNode* SceneNode_SceneNode() {
 
 /**
  * Dump some visual scene node info for debugging.
+ * @param node The node to dump.
  */
 void SceneNodeDebugInfo(SceneNode* node) {
 	DEBUG(DEBUG_VERY_HIGH, "%sSceneNodeDebugInfo", COLOUR_LIGHT_BLUE);
@@ -196,6 +234,10 @@ void SceneNodeDebugInfo(SceneNode* node) {
 	#warning ['TODO']: Fix this?...
 }
 
+/**
+ * Mesh deconstructor.
+ * @param mesh The mesh to free.
+ */
 void Mesh_0Mesh(Mesh *mesh) {
 	DEBUG_M("Entering function...");
 	if(!mesh) {
@@ -207,10 +249,17 @@ void Mesh_0Mesh(Mesh *mesh) {
 	free(mesh);
 }
 
+/**
+ * Mesh class function binds.
+ */
 static const ClassFunctions Mesh_c = {
 	(void*)Mesh_0Mesh
 };
 
+/**
+ * Mesh constructor.
+ * @return A new blank mesh or NULL on error.
+ */
 Mesh* Mesh_Mesh() {
 	DEBUG_M("Entering function...");
 
@@ -221,16 +270,28 @@ Mesh* Mesh_Mesh() {
 	return mesh;
 }
 
+/**
+ * FloatArray deconstructor.
+ * @param array The float array to free.
+ */
 void FloatArray_0FloatArray(FloatArray* array) {
 	DEBUG_M("Entering function...");
 	free(array->values);
 	free(array);
 }
 
+/**
+ * FloatArray class function binds.
+ */
 static const ClassFunctions FloatArray_c = {
 	(void*)FloatArray_0FloatArray
 };
 
+/**
+ * FloatArray constructor.
+ * @param count The number of floats in the array.
+ * @return An emprty float array with count elements or NULL on error.
+ */
 FloatArray* FloatArray_FloatArray(int count) {
 	DEBUG_M("Entering function...");
 	ALLOCATE(FloatArray, array);
@@ -247,6 +308,10 @@ FloatArray* FloatArray_FloatArray(int count) {
 	return array;
 }
 
+/**
+ * A debuging function.
+ * @param The array to dump.
+ */
 void FloatArray_Dump(FloatArray* array) {
 	int i;
 	DEBUG_H("Float array dumping %d values\n", array->count);
@@ -256,6 +321,10 @@ void FloatArray_Dump(FloatArray* array) {
 	printf("\n");
 }
 
+/**
+ * UnsortedTriangles deconstructor.
+ * @param triangles Pointer to UnsortedTriangles to free.
+ */
 void UnsortedTriangles_0UnsortedTriangles(UnsortedTriangles* triangles) {
 	DEBUG_M("Entering function...");
 	
@@ -275,6 +344,11 @@ static const ClassFunctions UnsortedTriangles_c = {
 	(void*)UnsortedTriangles_0UnsortedTriangles
 };
 
+/**
+ * UnsortedTriangles constructor.
+ * @param count Number of triangles.
+ * @return A new empty UnsortedTriangles of specified size, NULL on err.
+ */
 UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count) {
 	DEBUG_M("Entering function...");
 	ALLOCATE(UnsortedTriangles, triangles);
@@ -287,6 +361,8 @@ UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count) {
 
 /**
  * Allocates space for raw COLLADA triangle indices.
+ * @trinalges Pointer to UnsortedTriangles that needs space allocated.
+ * @return 1 on error or 0 on success.
  */
 int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles) {
 	DEBUG_M("Entering function...");

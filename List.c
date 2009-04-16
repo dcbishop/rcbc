@@ -5,7 +5,11 @@
 
 #include "console.h"
 
-/* Recursivly free a linked list */
+/**
+ * List deconstructor.
+ * Recursivly free a linked list.
+ * @param rootnode Pointer to List to free.
+ */
 void List_0List(List* rootnode) {
 	if(!rootnode) {
 		return;
@@ -22,8 +26,12 @@ void List_0List(List* rootnode) {
 	}
 }
 
-/* Deletes a node from the linked list */
-ListNode* ListNode_0ListNode(ListNode* node) {
+/**
+ * ListNode deconstructor.
+ * Deletes a node from the linked list.
+ * @param node Pointer to ListNode to free
+ */
+void ListNode_0ListNode(ListNode* node) {
 	node->prev->next = node->next;
 	node->prev = NULL;
 	node->next = NULL;
@@ -31,21 +39,23 @@ ListNode* ListNode_0ListNode(ListNode* node) {
 }
 
 /**
- * List class
+ * List class functions.
  */
 static const ClassFunctions List_c = {
 	(void*)List_0List
 };
 
 /**
- * List node class
+ * ListNode class functions.
  */
 static const ClassFunctions ListNode_c = {
 	(void*)ListNode_0ListNode
 };
 
 /**
+ * List constructor.
  * Generates a linked list head node.
+ * @return Pointer to new List head node or NULL on error.
  */
 List* List_List() {
 	ALLOCATE(List, list);
@@ -55,7 +65,10 @@ List* List_List() {
 }
 
 /**
+ * ListNode constructor
  * Generates a linked list node.
+ * @param data Data to be stored in the ListNode.
+ * @return Pointer to new ListNode or NULL on error.
  */
 ListNode* ListNode_ListNode(void* data) {
 	ALLOCATE(ListNode, node);
@@ -68,6 +81,9 @@ ListNode* ListNode_ListNode(void* data) {
 
 /**
  * Adds a new node to the linked list
+ * @param head List head node.
+ * @param data Data to be stored in the ListNode.
+ * @return New ListNode or NULL on error.
  */
 ListNode* ListAdd(List* head, void* data) {
 	assert(head);
@@ -94,6 +110,8 @@ ListNode* ListAdd(List* head, void* data) {
 
 /**
  * DELETE()'s the data from the linked list assuming its an ooc class.
+ * Doesn't effect the list itself.
+ * @param list List with data to DELETE().
  */
 void List_DeleteData(List* list) {
 	ListNode* node = list->first;
@@ -107,6 +125,8 @@ void List_DeleteData(List* list) {
 
 /**
  * free()'s the data from the linked list, for non-complex data structs.
+ * Doesn't effect the list itself.
+ * @param list List with data to free(). 
  */
 void List_FreeData(List* list) {
 	ListNode* node = list->first;
@@ -120,6 +140,10 @@ void List_FreeData(List* list) {
 	}
 }
 
+/**
+ * Debuggin function.
+ * @param list List to dump.
+ */
 void List_DumpList(List* list) {
 	ListNode* node = list->first;
 	while(node) {

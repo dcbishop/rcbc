@@ -7,7 +7,9 @@
 #include "rcbc_xml_minixml.h"
 
 
-/* Process the <library_images> section of COLLADA */
+/**
+ * Process the <library_images> section of COLLADA.
+ */
 void RCBC_MiniXML_ProcessTextureImages(ModelTempory *tempory, mxml_node_t *node) {
 	DEBUG_M("Entering function...");
 	assert(tempory);

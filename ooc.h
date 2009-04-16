@@ -12,14 +12,14 @@
  * Holds functions bindings for a class.
  */
 typedef struct ClassFunctions_s {
-	void (*deconstructor)(void* obj);
+	void (*deconstructor)(void* obj);	/**< Pointer to the deconstructor function. */
 } ClassFunctions;
 
 /**
  * A generic class type for type casting.
  */
 typedef struct ClassArchetype_s {
-	ClassFunctions* class_;
+	ClassFunctions* class_;				/**< Class functions. */
 } ClassArchetype;
 
 #endif

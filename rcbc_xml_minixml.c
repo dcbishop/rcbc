@@ -139,7 +139,7 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 
 	#warning ['TODO']: Consider removing nodes with no geometry or children (camera/light nodes.)
 
-	/* Free memory */
+	// Free memory
 	Hookups_DeleteMissing(tempory->sources);
 	DELETE(tempory)
 	mxmlDelete(tree);

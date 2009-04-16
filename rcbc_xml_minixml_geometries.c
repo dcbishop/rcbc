@@ -4,7 +4,12 @@
 #include "rcbc_xml_minixml.h"
 #include "console.h"
 
-/* Reads a float array, such as verticies, normals, text cords, etc... */
+/**
+ * Reads a float array, such as verticies, normals, text cords, etc...
+ * @param tempory The ModelTempory struct to hold the array.
+ * @param mesh The mesh using the floats
+ * @param xnode The XML node containing the data.
+ */
 FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
 
@@ -33,6 +38,14 @@ FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory
 	return newarray;
 }
 
+/**
+ * Reads COLLADA mesh source data.
+ * @param tempory The ModelTempory struct to hold the data.
+ * @param mesh The mesh using the data.
+ * @param xnode The XML node containing the data.
+ * @return 1 for some reason...
+ */
+#warning ['TODO']: Check for allocation errors.
 int RCBC_MiniXML_ProcessGeometries_Mesh_Source(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
 	const char* id = mxmlElementGetAttr(xnode, "id");
@@ -48,11 +61,17 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Source(ModelTempory *tempory, Mesh *mesh
 			}
 		}
 	}
-	#warning ['TODO']: Remove the line below this line.
-	DEBUG_M("Failed to find float array..."); 
 	return 1;
 }
 
+/**
+ * Reads COLLADA mesh vertex data.
+ * @param tempory The ModelTempory struct to hold the vertices.
+ * @param mesh The mesh using the vertices
+ * @param xnode The XML node containing the data.
+ * @return 0 or crash.
+ */
+#warning ['TODO']: Check for allocation errors. (remember why this returns a 1).
 int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
 
@@ -92,6 +111,13 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Verticies(ModelTempory *tempory, Mesh *m
 	return 0;
 }
 
+/**
+ * Reads COLLADA mesh polygon data.
+ * @param tempory The ModelTempory struct to hold the polygons.
+ * @param mesh The mesh using the polygons
+ * @param xnode The XML node containing the data.
+ * @return NULL because its not implemented yet.
+ */
 UnsortedPolygons* RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
 
@@ -106,6 +132,13 @@ UnsortedPolygons* RCBC_MiniXML_ProcessGeometries_Mesh_Polygons(ModelTempory *tem
 	return NULL;
 }
 
+/**
+ * Reads COLLADA mesh triangle data.
+ * @param tempory The ModelTempory struct to hold the array.
+ * @param mesh The mesh using the triangles
+ * @param xnode The XML node containing the data.
+ * @return The collada triangles in unsorted form.
+ */
 UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
 
@@ -205,6 +238,13 @@ UnsortedTriangles* RCBC_MiniXML_ProcessGeometries_Mesh_Triangles(ModelTempory *t
 	return triangles;
 }
 
+/**
+ * Reads COLLADA mesh child data.
+ * @param tempory The ModelTempory struct to hold the data.
+ * @param mesh The mesh using the data.
+ * @param xnode The XML node containing the data.
+ * @return The collada triangles in unsorted form.
+ */
 int RCBC_MiniXML_ProcessGeometries_Mesh_Children(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
 	if(!mesh) {
@@ -235,6 +275,12 @@ int RCBC_MiniXML_ProcessGeometries_Mesh_Children(ModelTempory *tempory, Mesh *me
 	} 
 }
 
+/**
+ * Reads a COLLADA mesg
+ * @param tempory The ModelTempory struct to hold the mesh data.
+ * @param xnode The XML node containing the mesh.
+ * @return The Mesh or crash.
+ */
 Mesh* RCBC_MiniXML_ProcessGeometries_Mesh(ModelTempory *tempory, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");
 
@@ -261,6 +307,9 @@ Mesh* RCBC_MiniXML_ProcessGeometries_Mesh(ModelTempory *tempory, mxml_node_t *xn
 /**
  * Grabs the mesh from the geometry (COLLADA specs say there can be only one  
  * although a few nonmesh temporys are supported, they are usless to us and ignored)
+ * @param tempory The ModelTempory struct to hold throwaway data.
+ * @param node The XML node containing the mesh.
+ * @return The mesh or NULL on error.
  */ 
 Mesh* RCBC_MiniXML_ProcessGeometries_Geometry(ModelTempory *tempory, mxml_node_t *node) {
 	DEBUG(DEBUG_MEDIUM, "%sRCBC_MiniXML_ProcessGeometries_Geometry", COLOUR_LIGHT_BLUE);
@@ -280,6 +329,12 @@ Mesh* RCBC_MiniXML_ProcessGeometries_Geometry(ModelTempory *tempory, mxml_node_t
 	return mesh;
 }
 
+/**
+ * Reads COLLADA geometry information. 
+ * @param tempory The ModelTempory struct to hold throwaway data.
+ * @param node The XML node containing the geometry infomration.
+ * @return 1 on error (or success?)
+ */ 
 int RCBC_MiniXML_ProcessGeometries(ModelTempory *tempory, mxml_node_t *node) {
 	const char* id;
 
@@ -287,7 +342,7 @@ int RCBC_MiniXML_ProcessGeometries(ModelTempory *tempory, mxml_node_t *node) {
 
 	assert(tempory);
 	if(!node) {
-		return;
+		return 1;
 	}
 
 	#warning ['TODO']: Free the mesh if it already exists for safety... probably not needed...
