@@ -3,9 +3,11 @@ import os.path
 from glob import glob
 
 prog_target = "rcbcview"
+loadcheck_target = "loadcheck"
 lib_target = "rcbc"
 lib_sources = glob("*.c")
-
+#lib_sources.remove('rcbcview.c')
+lib_sources.remove('loadcheck.c')
 env = Environment()
 
 AddOption('--prefix',
@@ -53,13 +55,10 @@ else:
 
 objects.append(extra_objects)
 target = env.Program(target = prog_target, source=objects)
+#loadchecktarget = env.Program(target = loadcheck_target, source=objects)
 
 #if not int(win32):
 	
-Default(target)
-Default(shared_lib)
-Default(static_lib)
-
 # Installing
 bin_dir = '$PREFIX/bin'
 lib_dir = '$PREFIX/lib'
@@ -82,3 +81,7 @@ ina = env.Alias('install', [ib, il, ii])
 uninstall_files = env.Command('uninstall-files-com', [], [ Delete(installed_bin), Delete(installed_lib), Delete(installed_inc)])
 env.Alias('uninstall', uninstall_files)
 
+Default(target)
+#Default(loadchecktarget)
+Default(shared_lib)
+Default(static_lib)

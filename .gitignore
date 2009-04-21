@@ -12,3 +12,6 @@ rcbcview
 *.lib
 a.out
 doc/*
+loadcheck
+*.supp
+data/*

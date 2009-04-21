@@ -3,6 +3,7 @@
 #include "rcbc.h"
 #include "rcbc_data.h"
 #include "console.h"
+#include "GL/gl.h"
 
 #define SWAP(a,b) tmp = a; a = b; b = tmp;
 /**
@@ -16,7 +17,7 @@
 void RCBC_FixAxis(const int up_axis, GLfloat *x, GLfloat *y, GLfloat *z) {
 	GLfloat tmp;
 
-	/* Work out axis mappings */
+	// Work out axis mappings
 	if(up_axis == X_UP) {
 		*y = -*y;
 		SWAP(*x, *y);
@@ -42,6 +43,7 @@ void Model_0Model(Model* model) {
 	#warning ['TODO']: Are there any situations where geometires exist but not in visual_scene?
 	//DEBUG_M("Deleting geometries...");
 	//List_DeleteData(model->geometries);
+	DELETE(model->geometries);
 
 	free(model);
 }
@@ -60,7 +62,8 @@ static const ClassFunctions Model_c = {
 Model* Model_Model() {
 	DEBUG_M("Entering function...");	
 
-	ALLOCATE(Model, model);
+	//ALLOCATE(Model, model);
+	Model* model = malloc(sizeof(Model));
 
 	model->class_ = &Model_c;
 
@@ -109,7 +112,8 @@ static const ClassFunctions ModelTempory_c = {
 ModelTempory* ModelTempory_ModelTempory() {
 	DEBUG_M("Entering function...");
 
-	ALLOCATE(ModelTempory, tempory);
+	//ALLOCATE(ModelTempory, tempory);
+	ModelTempory* tempory = malloc(sizeof(ModelTempory));
 
 	tempory->class_ = &ModelTempory_c;
 
@@ -379,16 +383,28 @@ int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles) {
 
 void Image_0Image(Image* image) {
 	DEBUG_M("Entering function...");
+	if(!image) {
+		return;
+	}
 
 	#warning ['TODO']: Unload texture data if it exists, should we do this here?...
 	image->refs--;
 	if(image->refs <= 0) {
+		DEBUG_A("Freeing image %s", image->filename);
 		//FREE ME
-		//free(image);
+		if(image->filename) {
+			free(image->filename);
+			image->filename = NULL;
+		}
+		
 		if(image->id != 0) {
 			//SOIL_free_image_data(image->id);
+			glDeleteTextures( 1, &image->id);
+			image->id = 0;
 		}
+		free(image);
 	}
+	//free(image);
 };	
 
 static const ClassFunctions Image_c = {
@@ -457,10 +473,25 @@ void Triangles_0Triangles(Triangles* triangles) {
 
 	if(!triangles) {return;}
 
-	DELETE(triangles->vertices);
-	DELETE(triangles->normals);
-	DELETE(triangles->texcoords);
-	DELETE(triangles->image);
+	if(triangles->vertices) {
+		DELETE(triangles->vertices);
+		triangles->vertices = NULL;
+	}
+	
+	if(triangles->normals) {
+		DELETE(triangles->normals);
+		triangles->normals = NULL;
+	}
+	
+	if(triangles->texcoords) {
+		DELETE(triangles->texcoords);
+		triangles->texcoords = NULL;
+	}
+	
+	if(triangles->image) {
+		DELETE(triangles->image);
+		triangles->image = NULL;
+	}
 
 	free(triangles);
 }
@@ -476,7 +507,11 @@ Triangles* Triangles_Triangles(int count) {
 	ALLOCATE(Triangles, triangles);
 	triangles->class_ = &Triangles_c;
 	triangles->count = count;
-
+	triangles->vertices = NULL;
+	triangles->normals = NULL;
+	triangles->texcoords = NULL;
+	triangles->image = NULL;
+	
 	return triangles;
 }
 

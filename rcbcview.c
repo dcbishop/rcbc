@@ -3,8 +3,11 @@
 
 #include <math.h>
 
+#define DO_OPENGL
+#ifdef DO_OPENGL
 #include <GL/gl.h>
 #include <GL/glut.h>
+#endif
 
 #include "rcbc.h"
 #include "console.h"
@@ -52,6 +55,7 @@ struct globals {
 };
 
 struct globals g;
+#ifdef DO_OPENGL
 
 /**
  * Position camera around box using some voodoo math.
@@ -226,6 +230,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
 			break;
 	}
 }
+#endif
 
 /**
  * The glorious main function.
@@ -245,17 +250,16 @@ int main(int argc, char** argv) {
 	g.height = 600;
 	g.width = 800;
 
-	LOG("Initilizing RCBC GLUT Viewer...");
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-
-	// Create window
-	glutInitWindowSize(g.width, g.height);
-	glutCreateWindow("RCBC Viewer");
-
 	RCBC_Init();
 	g.model = RCBC_LoadFile(filename, images);
 
+	// Create window
+	LOG("Initilizing RCBC GLUT Viewer...");
+	#ifdef DO_OPENGL
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitWindowSize(g.width, g.height);
+	glutCreateWindow("RCBC Viewer");
 	glutDisplayFunc(&displayFunc);
 	glutIdleFunc(&idleFunc);
 	glutReshapeFunc(&reshapeFunc);
@@ -270,12 +274,13 @@ int main(int argc, char** argv) {
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_TEXTURE_2D);
+	#endif
 	
 	g.mouse_x = 0;
 	g.mouse_y = 0;
 
 	g.wireframe = 0;
-	setPolygonMode();
+	//setPolygonMode();
 
 	g.limitfps = 1;
 
@@ -288,7 +293,14 @@ int main(int argc, char** argv) {
 	g.cam_fov = 45.0f;
 
 	LOG("Starting GLUT main loop...");
+	
+	#ifdef DO_OPENGL
 	glutMainLoop();
+	#endif
+	
+	DELETE(g.model);
+	List_DeleteData(images);
+	DELETE(images);
 
 	exit(EXIT_SUCCESS);
 }

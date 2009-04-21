@@ -1,6 +1,9 @@
 #include <stdio.h>
+#define DO_OPENGL
+#ifdef DO_OPENGL
 #include <GL/gl.h>
 #include <IL/il.h>
+#endif
 
 #include "rcbc_render_gl.h"
 #include "console.h"
@@ -12,12 +15,13 @@
  * Initilize the GL render and DevIL library...
  */
 int RCBC_GL_Init() {
+#ifdef DO_OPENGL
 	LOG("Initilizing GL render...");
 
 	// Ensure DevIL is correct version...
 	if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION) {
 			ERROR("DevIL version is different...exiting!\n");
-			BREAK();
+//			BREAK();
 			return 1;
 	}
 
@@ -36,7 +40,7 @@ int RCBC_GL_Init() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glEnable(GL_CULL_FACE);
 	//glFrontFace(GL_CCW);
-
+#endif
 	return 0;
 }
 
@@ -46,6 +50,7 @@ int RCBC_GL_Init() {
  * @param node The node to draw.
  */
 void RCBC_GL_Draw_Node(SceneNode* node) {
+	#ifdef DO_OPENGL
 	DEBUG_V("Entering function...");
 
 	if(!node) {return;}
@@ -109,7 +114,8 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 
 		// Check for a image for this mesh
 		if(triangles->image) {
-			if(triangles->image->id == 0) { // If the image hasn't been loaded, we do it now
+			// If the image hasn't been loaded, we do it now
+			if(triangles->image->id == 0) {
 				/*triangles->image->id = SOIL_load_OGL_texture(
 					triangles->image->filename,
 					SOIL_LOAD_AUTO,
@@ -117,6 +123,7 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 					SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 				);*/
 				
+				// Use DevIL to load the image and bind it to the texture id.
 				ILuint texid = 0;
 				ilGenImages(1, &texid);
 				ilBindImage(texid);
@@ -137,13 +144,17 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 					//ERROR("Failed to load texture: '%s', %s", triangles->image->filename, SOIL_last_result());
 					ERROR("Failed to load texture: '%s', %s", triangles->image->filename, "");
 				}
+				DEBUG_M("Loaded texture: '%s'", triangles->image->filename);
 			}
+			
+			// If we have a valid texture id, bind it
 			if(triangles->image->id != 0) {
 				glBindTexture(GL_TEXTURE_2D, triangles->image->id);
 				glEnable(GL_TEXTURE_2D);
 			}
-		} else {
+		} else { // If this mesh doesn't use a texture
 			glDisable(GL_TEXTURE_2D);
+			//return;
 		}
 		
 		#warning ['TODO']: Debugging
@@ -158,6 +169,7 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 	}
 
 	glPopMatrix();
+#endif
 }
 
 /**
@@ -165,6 +177,7 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
  * @param node The root node to draw.
  */
 void RCBC_GL_Draw_Nodes(SceneNode* node) {
+#ifdef DO_OPENGL
 	DEBUG_V("Entering function...");
 	while(node) {
 		glPushMatrix();
@@ -176,6 +189,7 @@ void RCBC_GL_Draw_Nodes(SceneNode* node) {
 		glPopMatrix();
 		node = node->next;
 	}
+#endif
 }
 
 /**
@@ -183,22 +197,24 @@ void RCBC_GL_Draw_Nodes(SceneNode* node) {
  * @return 0 or crash
  */
 int RCBC_GL_Draw(Model* model) {
+#ifdef DO_OPENGL
 	DEBUG_V("Entering function...");
 	SceneNode* head = model->visual_scene;
 	#warning ['TODO']: Remove debug...
-	/* Draw axis */
-	//glBegin(GL_LINES);
-	//	glColor3f(1.0f, 0.0f, 0.0f);
-	//	glVertex3f(0.0f, 0.0f, 0.0f);
-	//	glVertex3f(1.0f, 0.0f, 0.0f);
-	//	glColor3f(0.0f, 0.0f, 1.0f);
-	//	glVertex3f(0.0f, 0.0f, 0.0f);
-	//	glVertex3f(0.0f, 1.0f, 0.0f);
-	//	glColor3f(0.0f, 1.0f, 0.0f);
-	//	glVertex3f(0.0f, 0.0f, 0.0f);
-	//	glVertex3f(0.0f, 0.0f, 1.0f);
-	//glEnd();*/
+	// Draw axis
+	/*glBegin(GL_LINES);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(1.0f, 0.0f, 0.0f);
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 1.0f, 0.0f);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 1.0f);
+	glEnd();*/
 
 	RCBC_GL_Draw_Nodes(head);
+#endif
 	return 0;
 }

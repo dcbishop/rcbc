@@ -3,6 +3,12 @@
 #include "rcbc_xml_minixml_visualscene.h"
 #include "console.h"
 
+/**
+ * 
+ * @param tempory The ModelTempory to hold throwaway data.
+ * @param rnode The SceneNode.
+ * @param xnode The XML node.
+ */
 void RCBC_MiniXML_ProcessVisualScene_Node_Scale(ModelTempory *tempory, SceneNode *rnode, mxml_node_t *xnode) {
 	assert(rnode);
 	assert(xnode);

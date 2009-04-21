@@ -125,9 +125,9 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 	Hookup_Debug(tempory->sources);
 	Hookup_Debug(tempory->sinks);
 
-	Hookup_Execute(tempory->sources, tempory->sinks);
-	Hookup_Execute(tempory->sources, tempory->sinks);
-	Hookup_Execute(tempory->sources, tempory->sinks);
+	Hookups_Execute(tempory->sources, tempory->sinks);
+	Hookups_Execute(tempory->sources, tempory->sinks);
+	Hookups_Execute(tempory->sources, tempory->sinks);
 
 	DEBUG_M("[MINIXML]: Hookups processed");
 

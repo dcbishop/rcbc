@@ -9,6 +9,7 @@
  * @param tempory The ModelTempory struct to hold the array.
  * @param mesh The mesh using the floats
  * @param xnode The XML node containing the data.
+ * @return 
  */
 FloatArray* RCBC_MiniXML_ProcessGeometries_Mesh_FloatArray(ModelTempory *tempory, Mesh *mesh, mxml_node_t *xnode) {
 	DEBUG_M("Entering function...");

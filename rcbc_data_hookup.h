@@ -28,6 +28,6 @@ Hookup* Hookup_Hookup(char* id, void* pointer);
 Hookup* HookupFind(List* roothookup, char* id);
 void HookupFree(List* roothookup);
 void Hookup_Debug(List* rootnode);
-void Hookup_Execute(List* sources, List* sinks);
+void Hookup_Execute(Hookup* source, List* sinks);
 
 #endif

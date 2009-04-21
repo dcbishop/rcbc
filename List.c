@@ -11,19 +11,29 @@
  * @param rootnode Pointer to List to free.
  */
 void List_0List(List* rootnode) {
+	DEBUG_M("Entering function...");
 	if(!rootnode) {
+		DEBUG_H("\tNo root node...");
 		return;
 	}
 
 	ListNode* node_ptr = rootnode->first;
 	ListNode* node_ptr_tmp;
 	while(node_ptr) {
+		DEBUG_H("\tPointer...");
 		node_ptr_tmp = node_ptr->next;
 		if(node_ptr->data) {
-			free(node_ptr);
+			DEBUG_H("\tData fround, this is bad as is should be dead already...");
+//			BREAK();
+			//free(node_ptr->data);
+			//DELETE(node_ptr);
 		}
+		node_ptr->prev = NULL;
+		DELETE(node_ptr);
 		node_ptr = node_ptr_tmp;
+		
 	}
+	free(rootnode);
 }
 
 /**
@@ -32,7 +42,11 @@ void List_0List(List* rootnode) {
  * @param node Pointer to ListNode to free
  */
 void ListNode_0ListNode(ListNode* node) {
-	node->prev->next = node->next;
+	DEBUG_M("Entering function...");
+	if(node->prev) {
+		node->prev->next = node->next;
+	}
+
 	node->prev = NULL;
 	node->next = NULL;
 	free(node);
@@ -58,9 +72,15 @@ static const ClassFunctions ListNode_c = {
  * @return Pointer to new List head node or NULL on error.
  */
 List* List_List() {
-	ALLOCATE(List, list);
+	DEBUG_M("Entering function...");
+	//ALLOCATE(List, list);
+	List* list = malloc(sizeof(List));
 
 	list->class_ = &List_c;
+	list->count = 0;
+	list->first = NULL;
+	list->last = NULL;
+
 	return list;
 }
 
@@ -71,11 +91,18 @@ List* List_List() {
  * @return Pointer to new ListNode or NULL on error.
  */
 ListNode* ListNode_ListNode(void* data) {
-	ALLOCATE(ListNode, node);
+	DEBUG_M("Entering function...");
+	//ALLOCATE(ListNode, node);
+	ListNode* node = malloc(sizeof(ListNode));
+	if(!node) {
+		return NULL;
+	}
 
 	node->class_ = &ListNode_c;
-
 	node->data = data;
+	node->prev = NULL;
+	node->next = NULL;
+
 	return node;
 }
 
@@ -86,12 +113,14 @@ ListNode* ListNode_ListNode(void* data) {
  * @return New ListNode or NULL on error.
  */
 ListNode* ListAdd(List* head, void* data) {
+	DEBUG_M("Entering function...");
 	assert(head);
 	assert(data);
 
 	ListNode* newnode = NEW(ListNode, data);
 	if(!newnode) {
 		ERROR("Failed to allocate space for node... %s", SYMBOL_WARNING);
+		return NULL;
 	}
 
 	if(!head->first) {
@@ -114,9 +143,11 @@ ListNode* ListAdd(List* head, void* data) {
  * @param list List with data to DELETE().
  */
 void List_DeleteData(List* list) {
+	DEBUG_M("Entering function...");
 	ListNode* node = list->first;
 
 	while(node) {
+		DEBUG_H("\tDELETE Node...");
 		DELETE(node->data);
 		node->data = NULL;
 		node = node->next;
@@ -129,13 +160,16 @@ void List_DeleteData(List* list) {
  * @param list List with data to free(). 
  */
 void List_FreeData(List* list) {
+	DEBUG_M("Entering function...");
 	ListNode* node = list->first;
 
 	while(node) {
+		DEBUG_H("\tNode freeing...");
 		if(node->data) {
+			DEBUG_H("\Free data...");
 			free(node->data);
 		}
-		node->data=NULL;
+		node->data = NULL;
 		node = node->next;
 	}
 }
@@ -145,6 +179,7 @@ void List_FreeData(List* list) {
  * @param list List to dump.
  */
 void List_DumpList(List* list) {
+	DEBUG_M("Entering function...");
 	ListNode* node = list->first;
 	while(node) {
 		DEBUG_H("Node[%p]: node->data: %p");
