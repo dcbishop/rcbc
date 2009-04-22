@@ -84,7 +84,7 @@ Model* RCBC_LoadFile(const char* filename, List* images) {
  * @return 0, 1 on error
  */
 int RCBC_Render(const Model* model) {
-	DEBUG_H("Enterting function...");
+	DEBUG_V("Enterting function...");
 	if(!model) {
 		return 1;
 	}

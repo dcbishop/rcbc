@@ -391,8 +391,9 @@ void Image_0Image(Image* image) {
 	image->refs--;
 	if(image->refs <= 0) {
 		DEBUG_A("Freeing image %s", image->filename);
+		#warning ['TODO']: Free me
 		//FREE ME
-		if(image->filename) {
+		/*if(image->filename) {
 			free(image->filename);
 			image->filename = NULL;
 		}
@@ -401,8 +402,8 @@ void Image_0Image(Image* image) {
 			//SOIL_free_image_data(image->id);
 			glDeleteTextures( 1, &image->id);
 			image->id = 0;
-		}
-		free(image);
+		}*/
+		//free(image);
 	}
 	//free(image);
 };	

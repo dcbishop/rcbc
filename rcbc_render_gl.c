@@ -143,6 +143,7 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 					triangles->image->id = -1;
 					//ERROR("Failed to load texture: '%s', %s", triangles->image->filename, SOIL_last_result());
 					ERROR("Failed to load texture: '%s', %s", triangles->image->filename, "");
+					//ERROR("DevIL says: '%d'", ilGetError());
 				}
 				DEBUG_M("Loaded texture: '%s'", triangles->image->filename);
 			}
@@ -161,7 +162,7 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
 		glEnable ( GL_LIGHTING ) ;
 		glEnable(GL_LIGHT0);
 		//glEnable(GL_COLOR_MATERIAL);
-		glColor3f(1.0f, 0.0f, 0.0f);
+		//glColor3f(1.0f, 0.0f, 0.0f);
 		//glDisable(GL_TEXTURE_2D);
 		
 		// Draw it, yay!
