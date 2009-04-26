@@ -10,6 +10,7 @@
  * List deconstructor.
  * Recursivly free a linked list.
  * @param rootnode Pointer to List to free.
+ * \memberof List
  */
 void List_0List(List* rootnode) {
 	assert(rootnode);
@@ -42,6 +43,7 @@ void List_0List(List* rootnode) {
  * ListNode deconstructor.
  * Deletes a node from the linked list.
  * @param node Pointer to ListNode to free
+ * \memberof ListNode
  */
 void ListNode_0ListNode(ListNode* node) {
 	DEBUG_M("Entering function...");
@@ -73,6 +75,7 @@ static const ClassFunctions ListNode_c = {
  * List constructor.
  * Generates a linked list head node.
  * @return Pointer to new List head node or NULL on error.
+ * \memberof List
  */
 List* List_List() {
 	DEBUG_M("Entering function...");
@@ -92,6 +95,7 @@ List* List_List() {
  * Generates a linked list node.
  * @param data Data to be stored in the ListNode.
  * @return Pointer to new ListNode or NULL on error.
+ * \memberof ListNode
  */
 ListNode* ListNode_ListNode(void* data) {
 	DEBUG_M("Entering function...");
@@ -114,6 +118,7 @@ ListNode* ListNode_ListNode(void* data) {
  * @param head List head node.
  * @param data Data to be stored in the ListNode.
  * @return New ListNode or NULL on error.
+ * \memberof List
  */
 ListNode* ListAdd(List* head, void* data) {
 	DEBUG_M("Entering function...");
@@ -145,6 +150,7 @@ ListNode* ListAdd(List* head, void* data) {
  * Doesn't effect the list itself.
  * @param list List with data to DELETE().
  * @see List_FreeData()
+ * \memberof List
  */
 void List_DeleteData(List* list) {
 	DEBUG_M("Entering function...");
@@ -171,6 +177,7 @@ void List_DeleteData(List* list) {
  * Deletes a node from the list, ensuring the list pointers remain correct.
  * @param list The list containing the node.
  * @param node The node to remove from the list.
+ * \memberof List
  */
 void List_DeleteNode(List* list, ListNode* node) {
 	DEBUG_M("Entering function...");
@@ -201,6 +208,7 @@ void List_DeleteNode(List* list, ListNode* node) {
 
 /**
  * Prunes Images without refrences from the list.
+ * \memberof List
  */
 void List_ScrubImages(List* list) {
 	DEBUG_M("Entering function...");
@@ -230,6 +238,7 @@ void List_ScrubImages(List* list) {
  * Doesn't effect the list itself.
  * @param list List with data to free().
  * @see List_DeleteData()
+ * \memberof List
  */
 void List_FreeData(List* list) {
 	DEBUG_M("Entering function...");
@@ -249,6 +258,7 @@ void List_FreeData(List* list) {
 /**
  * Debuggin function.
  * @param list List to dump.
+ * \memberof List
  */
 void List_DumpList(List* list) {
 	DEBUG_M("Entering function...");
@@ -263,6 +273,7 @@ void List_DumpList(List* list) {
  * Sets all the data pointers in a List to null.
  * No memory freeing or DELETING is done.
  * @param list The list with the data.
+ * \memberof List
  */
 void List_NullifyData(List* list) {
 	ListNode* itr = list->first;

@@ -13,10 +13,6 @@
 
 
 /**
- * \defgroup Model
- */
-/*@{*/
-/**
  * A container for a COLLADA model.
  * @see Model_Model()
  * @see Model_0Model()
@@ -29,14 +25,10 @@ typedef struct Model {
 
 void Model_0Model(Model* model);
 Model* Model_Model();
-/*@}*/
 
 
 
-/**
- * \defgroup ModelTempory
- */
-/*@{*/
+
 /**
  * A throwaway struct for holding tempory values while loading a model.
  * After processing the COLLADA model into OpenGL these need to be cleaned.
@@ -59,14 +51,10 @@ typedef struct ModelTempory {
 
 void ModelTempory_0ModelTempory(ModelTempory* tempory);
 ModelTempory* ModelTempory_ModelTempory();
-/*@}*/
 
 
 
-/**
- * \defgroup Rotate
- */
-/*@{*/
+
 /**
  * Contains rotation information for a COLLADA scene node.
  * @see Rotate_Rotate()
@@ -82,14 +70,10 @@ typedef struct Rotate {
 
 void Rotate_0Rotate(Rotate* rotate);
 Rotate* Rotate_Rotate();
-/*@}*/
 
 
 
-/**
- * \defgroup FloatArray
- */
-/*@{*/
+
 /**
  * An array of floats.
  * @see FloatArray_FloatArray()
@@ -103,13 +87,9 @@ typedef struct FloatArray {
 
 void FloatArray_0FloatArray(FloatArray* array);
 FloatArray* FloatArray_FloatArray(int count);
-/*@}*/
 
 
-/**
- * \defgroup Image
- */
-/*@{*/
+
 /** 
  * Contains a filename for a image, an id for opengl texture binding 
  * and the number of refrences to this image.
@@ -129,14 +109,9 @@ Image* Image_Image(char* filename);
 void Image_0Image(Image* image);
 Image* Image_FindByName(List* images, char* filename);
 Image* Image_Add(List* images, char* filename, int refs);
-/*@}*/
 
 
 
-/**
- * \defgroup UnsortedTriangles
- */
-/*@{*/
 /**
  * Contains unprocessed triangle data as it is read from the COLLADA
  * file.
@@ -162,12 +137,11 @@ typedef struct UnsortedTriangles {
 UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count);
 void UnsortedTriangles_0UnsortedTriangles(UnsortedTriangles* triangles);
 int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles);
-/*@}*/
+
 
 
 /**
  * A bunch of unsorted polygons.
- * \addtogroup UnsortedPolygons
  */
 typedef struct UnsortedPolygons {
 	const ClassFunctions* class_;	/**< Class functions. */
@@ -178,10 +152,6 @@ typedef struct UnsortedPolygons {
 
 
 
-/**
- * \defgroup Triangles
- */
-/*@{*/
 /**
  * Triangle data for a mesh.
  * @see Triangles_Triangles()
@@ -198,13 +168,9 @@ typedef struct Triangles {
 
 void Triangles_0Triangles(Triangles* triangles);
 Triangles* Triangles_Triangles(int count);
-/*@}*/
 
 
-/**
- * \defgroup Mesh
- */
-/*@{*/
+
 /** 
  * Contains model mesh data.
  * @see Mesh_Mesh()
@@ -217,13 +183,8 @@ typedef struct Mesh {
 
 void Mesh_0Mesh(Mesh *mesh);
 Mesh* Mesh_Mesh();
-/*@}*/
 
 
-/**
- * \defgroup SceneNode
- */
-/*@{*/
 /**
  * A COLLADA scene node.
  * @see SceneNode_SceneNode()
@@ -249,6 +210,6 @@ typedef struct SceneNode {
 void SceneNode_0SceneNode(SceneNode *node);
 SceneNode* SceneNode_SceneNode();
 void SceneNodeDebugInfo(SceneNode* node);
-/*@}*/
+
 
 #endif /* _RCBC_DATA_DEF */

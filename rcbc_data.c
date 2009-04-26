@@ -34,7 +34,7 @@ void RCBC_FixAxis(const int up_axis, GLfloat *x, GLfloat *y, GLfloat *z) {
  * @param model Model to free.
  * @see Model
  * @see Model_Model()
- * \ingroup Model
+ * \memberof Model
  */
 void Model_0Model(Model* model) {
 
@@ -65,7 +65,7 @@ static const ClassFunctions Model_c = {
  * @return A new blank model, or NULL.
  * @see Model
  * @see Model_0Model()
- * \ingroup Model
+ * \memberof Model
  */
 Model* Model_Model() {
 	DEBUG_M("Entering function...");	
@@ -86,7 +86,7 @@ Model* Model_Model() {
  * @param the ModelTempory to free.
  * @see ModelTempory
  * @see ModelTempory_ModelTempory()
- * \ingroup ModelTempory
+ * \memberof ModelTempory
  */
 void ModelTempory_0ModelTempory(ModelTempory* tempory) {
 	DEBUG_M("Entering function...");
@@ -131,7 +131,7 @@ static const ClassFunctions ModelTempory_c = {
  * @return A new ModelTempory or NULL on error.
  * @see ModelTempory
  * @see ModelTempory_0ModelTempory()
- * \ingroup ModelTempory
+ * \memberof ModelTempory
  */
 ModelTempory* ModelTempory_ModelTempory() {
 	DEBUG_M("Entering function...");
@@ -158,7 +158,7 @@ ModelTempory* ModelTempory_ModelTempory() {
 /**
  * Rotate deconstructor.
  * @param rotate The Rotate to free.
- * \ingroup Rotate
+ * \memberof Rotate
  */
 void Rotate_0Rotate(Rotate* rotate) {
 	DEBUG_M("Entering function...");
@@ -175,7 +175,7 @@ static const ClassFunctions Rotate_c = {
 /**
  * Rotate constructor.
  * @return a new blank Rotate or NULL on error.
- * \ingroup Rotate
+ * \memberof Rotate
  */
 Rotate* Rotate_Rotate() {
 	DEBUG_M("Entering function...");
@@ -191,7 +191,7 @@ Rotate* Rotate_Rotate() {
 /**
  * SceneNode deconstructor.
  * @param node The node to free.
- * \ingroup SceneNode
+ * \memberof SceneNode
  */
 void SceneNode_0SceneNode(SceneNode *node) {
 	DEBUG_M("Entering function...");
@@ -227,7 +227,7 @@ static const ClassFunctions SceneNode_c = {
 /**
  * SceneNode constructor
  * @return A new SceneNode or NULL on error.
- * \ingroup SceneNode
+ * \memberof SceneNode
  */
 SceneNode* SceneNode_SceneNode() {
 	DEBUG_M("Entering function...");
@@ -259,7 +259,7 @@ SceneNode* SceneNode_SceneNode() {
 /**
  * Dump some visual scene node info for debugging.
  * @param node The node to dump.
- * \ingroup SceneNode
+ * \memberof SceneNode
  */
 void SceneNodeDebugInfo(SceneNode* node) {
 	DEBUG(DEBUG_VERY_HIGH, "%sSceneNodeDebugInfo", COLOUR_LIGHT_BLUE);
@@ -276,7 +276,7 @@ void SceneNodeDebugInfo(SceneNode* node) {
 /**
  * Mesh deconstructor.
  * @param mesh The mesh to free.
- * \ingroup Mesh
+ * \memberof Mesh
  */
 void Mesh_0Mesh(Mesh *mesh) {
 	DEBUG_M("Entering function...");
@@ -291,7 +291,6 @@ void Mesh_0Mesh(Mesh *mesh) {
 
 /**
  * Mesh class function binds.
- * \ingroup Mesh
  */
 static const ClassFunctions Mesh_c = {
 	(void*)Mesh_0Mesh
@@ -300,7 +299,7 @@ static const ClassFunctions Mesh_c = {
 /**
  * Mesh constructor.
  * @return A new blank mesh or NULL on error.
- * \ingroup Mesh
+ * \memberof Mesh
  */
 Mesh* Mesh_Mesh() {
 	DEBUG_M("Entering function...");
@@ -315,6 +314,7 @@ Mesh* Mesh_Mesh() {
 /**
  * FloatArray deconstructor.
  * @param array The float array to free.
+ * \memberof FloatArray
  */
 void FloatArray_0FloatArray(FloatArray* array) {
 	DEBUG_M("Entering function...");
@@ -333,6 +333,7 @@ static const ClassFunctions FloatArray_c = {
  * FloatArray constructor.
  * @param count The number of floats in the array.
  * @return An emprty float array with count elements or NULL on error.
+ * \memberof FloatArray
  */
 FloatArray* FloatArray_FloatArray(int count) {
 	DEBUG_M("Entering function...");
@@ -353,6 +354,7 @@ FloatArray* FloatArray_FloatArray(int count) {
 /**
  * A debuging function.
  * @param The array to dump.
+ * \memberof FloatArray
  */
 void FloatArray_Dump(FloatArray* array) {
 	int i;
@@ -366,6 +368,7 @@ void FloatArray_Dump(FloatArray* array) {
 /**
  * UnsortedTriangles deconstructor.
  * @param triangles Pointer to UnsortedTriangles to free.
+ * \memberof UnsortedTriangles
  */
 void UnsortedTriangles_0UnsortedTriangles(UnsortedTriangles* triangles) {
 	DEBUG_M("Entering function...");
@@ -390,6 +393,7 @@ static const ClassFunctions UnsortedTriangles_c = {
  * UnsortedTriangles constructor.
  * @param count Number of triangles.
  * @return A new empty UnsortedTriangles of specified size, NULL on err.
+ * \memberof UnsortedTriangles
  */
 UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count) {
 	DEBUG_M("Entering function...");
@@ -405,6 +409,7 @@ UnsortedTriangles* UnsortedTriangles_UnsortedTriangles(int count) {
  * Allocates space for raw COLLADA triangle indices.
  * @trinalges Pointer to UnsortedTriangles that needs space allocated.
  * @return 1 on error or 0 on success.
+ * \memberof UnsortedTriangles
  */
 int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles) {
 	DEBUG_M("Entering function...");
@@ -423,6 +428,7 @@ int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles) {
  * Image deconstructor.
  * @param image Pointer to the image to deconstruct.
  * @see Image_Image()
+ * \memberof Image
  */
 void Image_0Image(Image* image) {
 	DEBUG_M("Entering function %p, '%s'...", image, image->filename);
@@ -465,6 +471,10 @@ void Image_0Image(Image* image) {
 	free(image);
 };
 
+/**
+ * Reduces the refrence count by 1.
+ * \memberof Image
+ */
 void Image_DeRefrence(Image* image) {
 	image->refs--;
 }
@@ -475,6 +485,7 @@ static const ClassFunctions Image_c = {
 
 /**
  * Image Constructor.
+ * \memberof Image
  */
 Image* Image_Image(char* filename) {
 	DEBUG_M("Entering function...");
@@ -495,6 +506,7 @@ Image* Image_Image(char* filename) {
 
 /**
  * Finds an Images based on its filename
+ * \memberof Image
  */
 Image* Image_FindByName(List* images, char* filename) {
 	DEBUG_M("Entering function...");
@@ -515,6 +527,7 @@ Image* Image_FindByName(List* images, char* filename) {
 /**
  * Adds a image to the list of images or returns one already there.
  * Sets or increases the ref count of the image.
+ * \memberof Image
  */
 Image* Image_Add(List* images, char* filename, int refs) {
 	DEBUG_M("Entering function... '%s' %d", filename, refs);
@@ -534,6 +547,10 @@ Image* Image_Add(List* images, char* filename, int refs) {
 	return image;
 }
 
+/**
+ * Triangles deconstructor
+ * \memberof Triangles
+ */
 void Triangles_0Triangles(Triangles* triangles) {
 	DEBUG_M("Entering function...");
 
@@ -566,7 +583,10 @@ static const ClassFunctions Triangles_c = {
 	(void*)Triangles_0Triangles
 };
 
-/* Contains vertex data in arrays */
+/**
+ * Triangles constructor.
+ * \memberof Triangles
+ */
 Triangles* Triangles_Triangles(int count) {
 	DEBUG_M("Entering function...");
 
@@ -583,6 +603,7 @@ Triangles* Triangles_Triangles(int count) {
 
 /**
  * This takes a COLLADA interlaced-indexed model and turns it into vertex arrays.
+ * \memberof ModelTempory
  */
 void RCBC_SortTriangles(ModelTempory* tempory, UnsortedTriangles* unsorted) {
 	DEBUG_M("Entering function...");
@@ -640,6 +661,7 @@ void RCBC_SortTriangles(ModelTempory* tempory, UnsortedTriangles* unsorted) {
 /**
  * Checks to see if a ooc class is an Image.
  * @parm tocheck Pointer to the ooc class to check.
+ * \memberof Image
  */
 int isImage(void* tocheck) {
 	//Image* testimg = NEW(Image, "");

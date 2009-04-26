@@ -37,7 +37,6 @@ void Hookup_Execute(Hookup* source, List* sinks);
 void Hookup_Execute_Link(Hookup* source, Hookup* destination);
 void Hookups_DeleteMissing(List* list, List* sinks);
 
-
 /*@{*/
 
 #endif

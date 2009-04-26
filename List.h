@@ -3,10 +3,8 @@
 
 #include "ooc.h"
 
-/**
- * \defgroup ListNode
- */
-/*@{*/
+
+
 /**
  * A generic linked list node.
  * @see List
@@ -22,14 +20,10 @@ typedef struct ListNode {
 
 void ListNode_0ListNode(ListNode* node);
 ListNode* ListNode_ListNode(void* data);
-/*@}*/
 
 
 
-/**
- * \defgroup List
- */
-/*@{*/
+
 /**
  * A head Linked List.
  * @see ListNode
@@ -55,6 +49,5 @@ void List_ScrubImages(List* list);
 void List_FreeData(List* list);
 void List_DumpList(List* list);
 void List_NullifyData(List* list);
-/*@}*/
 
 #endif

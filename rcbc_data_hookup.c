@@ -5,6 +5,7 @@
 /**
  * Hookup deconstructor.
  * @param hookup The hookup to free.
+ * \memberof Hookup
  **/
 void Hookup_0Hookup(Hookup* hookup) {
 	DEBUG_M("Entering function...");
@@ -20,6 +21,7 @@ void Hookup_0Hookup(Hookup* hookup) {
 
 /**
  * String class functions.
+ * \memberof Hookup
  */
 static const ClassFunctions Hookup_c = {
 	(void*)Hookup_0Hookup
@@ -30,6 +32,7 @@ static const ClassFunctions Hookup_c = {
  * @param id The XML id.
  * @param pointer The pointer to the data, or the pointer to the place.
  * @return A pointer to a new Hookup or NULL on error.
+ * \memberof Hookup
  */
 Hookup* Hookup_Hookup(char* id, void* pointer) {
 	DEBUG_M("Entering function...");
@@ -57,6 +60,7 @@ Hookup* Hookup_Hookup(char* id, void* pointer) {
  * @param roothookup The head node of the List containing the Hookups.
  * @param id The XML id of the node to find.
  * @return The hookup if found or NULL.
+ * \memberof Hookup
  */
 Hookup* Hookup_Find(List* roothookup, char* id) {
 	ListNode* node = roothookup->first;
@@ -79,6 +83,7 @@ Hookup* Hookup_Find(List* roothookup, char* id) {
 /**
  * Prints a list of hookups for debugging
  * @param rootnode Lost of nodes to print.
+ * \memberof Hookup
  */
 void Hookup_Debug(List* rootnode) {
 	ListNode* itr;
@@ -95,6 +100,7 @@ void Hookup_Debug(List* rootnode) {
  * Links a source hookup data to the sinks pointer.
  * @param source The hookup with the pointer to the source data.
  * @param sink The hookup with the poitner to the data destiantion.
+ * \memberof Hookup
  */
 void Hookup_Execute_Link(Hookup* source, Hookup* destination) {
 	DEBUG_H("Entering function...", source->id);
@@ -116,6 +122,7 @@ void Hookup_Execute_Link(Hookup* source, Hookup* destination) {
  * Connects a single source data hookup to all matching sinks.
  * @param source The hookup to be hooked up.
  * @param sinks A List of sink hookups.
+ * \memberof Hookup
  */
 void Hookup_Execute(Hookup* source, List* sinks) {
 	ListNode* node = sinks->first;
@@ -140,6 +147,7 @@ void Hookup_Execute(Hookup* source, List* sinks) {
  * the triangle mesh.
  * @param sources The List containting source data to be hooked up.
  * @param sinks The List containing pointers to poitner to put the data.
+ * \memberof Hookup
  */
 void Hookups_Execute(List* sources, List* sinks) {
 	DEBUG_M("Entering function...");
@@ -169,6 +177,7 @@ void Hookups_Execute(List* sources, List* sinks) {
  * Removes node form list.
  * @param node The node to remove from the secondary list.
  * @param sinks The sinks.
+ * \memberof Hookup
  */
 /*void HoopkUps_DitchSecondary(ListNode* node, List* sinks) {
 	assert(node);
@@ -190,6 +199,7 @@ void Hookups_Execute(List* sources, List* sinks) {
  * DELETE's any hookup data that failed to find a sink from a List.
  * Also deletes the hookup itself and the list node.
  * @param list Pointer to the List head node containing the source hookups.
+ * \memberof Hookup
  */
 void Hookups_DeleteMissing(List* list, List* sinks) {
 	DEBUG_M("Entering function...");
@@ -231,6 +241,7 @@ void Hookups_DeleteMissing(List* list, List* sinks) {
  * Will also remove it from the other List if its there too.
  * @param images The list of Images.
  * @param sinks Another list that the Image will also be removed from.
+ * \memberof Hookup
  */
 /*void Hookups_DerefrenceMissingImages(List* images) {
 	DEBUG_M("Entering function...");
