@@ -10,8 +10,10 @@ void Hookup_0Hookup(Hookup* hookup) {
 	DEBUG_M("Entering function...");
 
 	free(hookup->id);
+	hookup->ptr = NULL;
+	hookup->id = NULL;
 	free(hookup);
-	
+
 	DEBUG_H("finished...");
 	return;
 }
@@ -56,9 +58,9 @@ Hookup* Hookup_Hookup(char* id, void* pointer) {
  * @param id The XML id of the node to find.
  * @return The hookup if found or NULL.
  */
-Hookup* HookupFind(List* roothookup, char* id) {
+Hookup* Hookup_Find(List* roothookup, char* id) {
 	ListNode* node = roothookup->first;
-	DEBUG_M("%sHookupFind(%s'%s'%s)", COLOUR_LIGHT_BLUE, COLOUR_YELLOW, id, COLOUR_LIGHT_BLUE);
+	DEBUG_M("%sHookup_Find(%s'%s'%s)", COLOUR_LIGHT_BLUE, COLOUR_YELLOW, id, COLOUR_LIGHT_BLUE);
 	while(node) {
 		DEBUG_H("\tCHECKING: '%s'", ((Hookup*)node->data)->id);
 		if(node->data 
@@ -117,7 +119,7 @@ void Hookup_Execute_Link(Hookup* source, Hookup* destination) {
  */
 void Hookup_Execute(Hookup* source, List* sinks) {
 	ListNode* node = sinks->first;
-	DEBUG_M("%sHookupFind(%s'%s'%s)", COLOUR_LIGHT_BLUE, COLOUR_YELLOW, source->id, COLOUR_LIGHT_BLUE);
+	DEBUG_M("%sHookup_Find(%s'%s'%s)", COLOUR_LIGHT_BLUE, COLOUR_YELLOW, source->id, COLOUR_LIGHT_BLUE);
 	while(node) {
 		DEBUG_H("\tCHECKING: '%s'", ((Hookup*)node->data)->id);
 		if(node->data 
@@ -158,42 +160,106 @@ void Hookups_Execute(List* sources, List* sinks) {
 		if(!source) {
 			continue;
 		}
-		
-		DEBUG_V("\t\tsearching for '%s'...", source->id);
-		/*destination = HookupFind(sinks, source->id);
-		Hookup_Execute_Link(source, destination);*/
-		
+
 		Hookup_Execute(source, sinks);
-		
-		/*if(!destination) {
-			#warning ['TODO']: Change error to a warning...
-			ERROR("Hookup failed to find sink '%s'", source->id);
-			continue;
-		}
-		DEBUG_H("\t\tfound '%s'...", source->id);
-		if(!destination->ptr) {
-			DEBUG(DEBUG_HIGH, "No sink in hookup...");
-			continue;
-		}
-		source->hooked = 1;
-		destination->hooked = 1;
-		*destination->ptr = source->ptr;*/
-		
 	}
 }
 
-void Hookups_DeleteMissing(List* list) {
+/**
+ * Removes node form list.
+ * @param node The node to remove from the secondary list.
+ * @param sinks The sinks.
+ */
+/*void HoopkUps_DitchSecondary(ListNode* node, List* sinks) {
+	assert(node);
+	assert(sinks);
+
+	ListNode* itr = sinks->first;
+	while(itr) {
+		//Hookup* hookup = itr->data;
+		if(itr->data == node->data) {
+			DEBUG_H("Removing secondary...");
+			List_DeleteNode(sinks, itr);
+		}
+		itr = itr->next;
+	}
+}*/
+
+
+/**
+ * DELETE's any hookup data that failed to find a sink from a List.
+ * Also deletes the hookup itself and the list node.
+ * @param list Pointer to the List head node containing the source hookups.
+ */
+void Hookups_DeleteMissing(List* list, List* sinks) {
+	DEBUG_M("Entering function...");
 	Hookup* hookup;
 	ListNode* itr;
+	ListNode* self;
 
-	for(itr = list->first; itr; itr = itr->next) {
+	//for(itr = list->first; itr; itr = itr->next) {
+	itr = list->first;
+	while(itr) {
 		hookup = itr->data;
+		self = itr;
+		itr = itr->next;
 
 		if(hookup->hooked == 0) {
 			DEBUG_M("\tMissing hookup found.....");
+			if(hookup->ptr) {
 
-			DELETE(hookup->ptr);
-			hookup->ptr = NULL;
+				// Don't delete Images as they are shared, but deref...
+				if(isImage(hookup->ptr)) {
+					DEBUG_H("\t\tIMAGE FOUND NOT DELETED YAY!");
+					Image* image = hookup->ptr;
+					image->refs--;
+				} else {
+					DELETE(hookup->ptr);
+				}
+				hookup->ptr = NULL;
+			}
+		}
+#warning ['TODO'] Remember why this is done here and not in the if above
+		DELETE(hookup);
+		List_DeleteNode(list, self);
+	}
+	DEBUG_H("Exiting function...");
+}
+
+/**
+ * Removes a refrence to an unused Image from a List of images.
+ * Will also remove it from the other List if its there too.
+ * @param images The list of Images.
+ * @param sinks Another list that the Image will also be removed from.
+ */
+/*void Hookups_DerefrenceMissingImages(List* images) {
+	DEBUG_M("Entering function...");
+	Hookup* hookup;
+	Image* testimg = NEW(Image, "");
+	ListNode* itr;
+	ListNode* self;
+
+	itr = images->first;
+	while(itr) {
+		hookup = itr->data;
+		self = itr;
+		itr = itr->next;
+
+		if(hookup->hooked == 0) {
+			Image* image = hookup->ptr;
+			// Check to ensure its an image...
+			//if(image->class_->deconstructor == testimg->class_->deconstructor) {
+				DEBUG_M("\tUnused image found.....");
+				//DELETE(hookup->ptr);
+				//hookup->ptr = NULL;
+				Image_DeRefrence(hookup->ptr);
+				hookup->ptr = NULL;
+				self->data = NULL;
+				DELETE(hookup);
+				List_DeleteNode(images, self);
+			//}
 		}
 	}
-}
+	DELETE(testimg);
+	DEBUG_H("Exiting...");
+}*/

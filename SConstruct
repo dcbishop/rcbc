@@ -2,6 +2,9 @@
 import os.path
 from glob import glob
 
+print "DO NOT USE SCONS!! try 'make'"
+Exit()
+
 prog_target = "rcbcview"
 loadcheck_target = "loadcheck"
 lib_target = "rcbc"
@@ -11,13 +14,13 @@ lib_sources.remove('loadcheck.c')
 env = Environment()
 
 AddOption('--prefix',
-		  dest='prefix',
-		  type='string',
-		  nargs=1,
-		  action='store',
-		  metavar='DIR',
-		  help='installation prefix',
-		  default='/usr/local')
+			dest='prefix',
+			type='string',
+			nargs=1,
+			action='store',
+			metavar='DIR',
+			help='installation prefix',
+			default='/usr/local')
 
 env = Environment(PREFIX = GetOption('prefix'))
 win32 = ARGUMENTS.get('win32', 0)
@@ -28,7 +31,7 @@ extra_objects=[]
 if int(debug_flag):
 	env.Append(CCFLAGS = ['-g'])
 	env.MergeFlags('-D_DEBUG')
-	
+
 # Setup libs
 if int(win32):
 	env.Tool('crossmingw', toolpath = ['scons-tools'])

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #define DO_OPENGL
-#ifdef DO_OPENGL
+#ifndef _SKIPGL
 #include <GL/gl.h>
 #include <IL/il.h>
 #endif
@@ -15,7 +15,7 @@
  * Initilize the GL render and DevIL library...
  */
 int RCBC_GL_Init() {
-#ifdef DO_OPENGL
+#ifndef _SKIPGL
 	LOG("Initilizing GL render...");
 
 	// Ensure DevIL is correct version...
@@ -50,7 +50,7 @@ int RCBC_GL_Init() {
  * @param node The node to draw.
  */
 void RCBC_GL_Draw_Node(SceneNode* node) {
-	#ifdef DO_OPENGL
+	#ifndef _SKIPGL
 	DEBUG_V("Entering function...");
 
 	if(!node) {return;}
@@ -178,7 +178,7 @@ void RCBC_GL_Draw_Node(SceneNode* node) {
  * @param node The root node to draw.
  */
 void RCBC_GL_Draw_Nodes(SceneNode* node) {
-#ifdef DO_OPENGL
+#ifndef _SKIPGL
 	DEBUG_V("Entering function...");
 	while(node) {
 		glPushMatrix();
@@ -198,7 +198,7 @@ void RCBC_GL_Draw_Nodes(SceneNode* node) {
  * @return 0 or crash
  */
 int RCBC_GL_Draw(Model* model) {
-#ifdef DO_OPENGL
+#ifndef _SKIPGL
 	DEBUG_V("Entering function...");
 	SceneNode* head = model->visual_scene;
 	#warning ['TODO']: Remove debug...

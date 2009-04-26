@@ -1,20 +1,31 @@
 PREFIX = /usr/local
 
 CC = $(shell which cc gcc colorgcc | tail -n 1)
-CFLAGS = $(shell pkg-config --cflags mxml)
+CFLAGS = $(shell pkg-config --cflags mxml) -g
 LIBS = -lmxml -lGL -lGLU -lglut -lIL
 OBJS = rcbc.o rcbc_data.o rcbc_render_gl.o rcbc_render_textinfo.o rcbc_xml_minixml.o console.o rcbc_xml_minixml_visualscene.o rcbc_xml_minixml_geometries.o rcbc_xml_minixml_textures.o rcbc_data_hookup.o List.o
 
-all: rcbcview librcbc.a
+#LIBS = -lmxml -lm
+#DEBUGFLAGS=-g -D_SKIPGL -D_DEBUG
+
+all: rcbcview librcbc.a loadcheck
+
+.o.c:
+	echo "MAKING OBJECT!!!!!!"
+	exit
+	$(CC) $(CFLAGS) $(DEBUGFLAGS) -c $<
 
 rcbcview: rcbcview.c ${OBJS} 
-	${CC} $< ${CFLAGS} ${INC} ${LIBS} ${OBJS} -o $@ -Wall
+	${CC} $< ${CFLAGS} ${LIBS} ${OBJS} ${DEBUGFLAGS} -o $@ -Wall
+
+loadcheck: loadcheck.c
+	${CC} $< ${CFLAGS} ${LIBS} ${OBJS} ${DEBUGFLAGS} -o $@ -Wall
 
 librcbc.a: rcbc.o ${OBJS}
 	ar rcs $@ $< ${OBJS}
 
 rcbc_render_gl.o: rcbc_render_gl.c rcbc_render_gl.h
-	${CC} ${CFLAGS} ${INC} -c $<
+	${CC} ${CFLAGS} ${DEBUGFLAGS} -c $<
 
 install: librcbc.a rcbcview
 	cp librcbc.a ${PREFIX}/lib
@@ -35,4 +46,4 @@ uninstall:
 	rm -f ${PREFIX}/include/ooc.h
 
 clean:
-	rm -f rcbcview rcbcview.exe *~ *.o *.a core *.so *.os .scon*
+	rm -f rcbcview rcbcview.exe loadcheck *~ *.o *.a core *.so *.os .scon*

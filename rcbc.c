@@ -94,5 +94,5 @@ int RCBC_Render(const Model* model) {
 		return 1;
 	}
 
-	rcbc_plugins.render_draw(model);	
+	rcbc_plugins.render_draw(model);
 }

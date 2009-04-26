@@ -32,6 +32,9 @@ void RCBC_FixAxis(const int up_axis, GLfloat *x, GLfloat *y, GLfloat *z) {
 /**
  * Model Deconstructor.
  * @param model Model to free.
+ * @see Model
+ * @see Model_Model()
+ * \ingroup Model
  */
 void Model_0Model(Model* model) {
 
@@ -40,16 +43,18 @@ void Model_0Model(Model* model) {
 	DEBUG_M("Deleting visual scene %p...", model->visual_scene);
 	DELETE(model->visual_scene);
 
-	#warning ['TODO']: Are there any situations where geometires exist but not in visual_scene?
-	//DEBUG_M("Deleting geometries...");
-	//List_DeleteData(model->geometries);
+	DEBUG_M("Deleting geometries...");
+	//List_DeleteData(model->geometries); //This is handled by List_DeleteMissing and the SceneNode
+	List_NullifyData(model->geometries);
 	DELETE(model->geometries);
 
+	DEBUG_M("freeing self...");
 	free(model);
 }
 
 /**
  * Model class function binds.
+ * @see Model
  */
 static const ClassFunctions Model_c = {
 	(void*)Model_0Model
@@ -58,6 +63,9 @@ static const ClassFunctions Model_c = {
 /**
  * Model Constructor.
  * @return A new blank model, or NULL.
+ * @see Model
+ * @see Model_0Model()
+ * \ingroup Model
  */
 Model* Model_Model() {
 	DEBUG_M("Entering function...");	
@@ -76,24 +84,37 @@ Model* Model_Model() {
 /**
  * ModelTempory deconstructor.
  * @param the ModelTempory to free.
+ * @see ModelTempory
+ * @see ModelTempory_ModelTempory()
+ * \ingroup ModelTempory
  */
 void ModelTempory_0ModelTempory(ModelTempory* tempory) {
 	DEBUG_M("Entering function...");
 
+	DEBUG_H("\tDeleting sinks...");
+	Hookup_Debug(tempory->sinks);
 	List_DeleteData(tempory->sinks);
 	DELETE(tempory->sinks);
 
+	DEBUG_H("\tDeleting sources...");
 	List_DeleteData(tempory->sources);
 	DELETE(tempory->sources);
 
+	DEBUG_H("\tDeleting unsorted...");
 	List_DeleteData(tempory->unsorted);
 	DELETE(tempory->unsorted);
 
+	DEBUG_H("\tDeleting deleteme...");
 	List_DeleteData(tempory->deleteme);
 	DELETE(tempory->deleteme);
 
+	DEBUG_H("\tfreeing freeme...");
 	List_FreeData(tempory->freeme);
 	DELETE(tempory->freeme);
+
+	/*DEBUG_H("\tDeleting image_sources...");
+	List_DeleteData(tempory->image_sources);
+	DELETE(tempory->image_sources);*/
 
 	free(tempory);
 }
@@ -108,6 +129,9 @@ static const ClassFunctions ModelTempory_c = {
 /**
  * ModelTempory constructor.
  * @return A new ModelTempory or NULL on error.
+ * @see ModelTempory
+ * @see ModelTempory_0ModelTempory()
+ * \ingroup ModelTempory
  */
 ModelTempory* ModelTempory_ModelTempory() {
 	DEBUG_M("Entering function...");
@@ -120,6 +144,7 @@ ModelTempory* ModelTempory_ModelTempory() {
 	tempory->model = NULL;
 	tempory->sinks = NEW(List);
 	tempory->sources = NEW(List);
+	//tempory->image_sources = NEW(List);
 	tempory->unsorted = NEW(List);
 	tempory->images = NULL;
 	tempory->freeme = NEW(List);
@@ -133,6 +158,7 @@ ModelTempory* ModelTempory_ModelTempory() {
 /**
  * Rotate deconstructor.
  * @param rotate The Rotate to free.
+ * \ingroup Rotate
  */
 void Rotate_0Rotate(Rotate* rotate) {
 	DEBUG_M("Entering function...");
@@ -149,6 +175,7 @@ static const ClassFunctions Rotate_c = {
 /**
  * Rotate constructor.
  * @return a new blank Rotate or NULL on error.
+ * \ingroup Rotate
  */
 Rotate* Rotate_Rotate() {
 	DEBUG_M("Entering function...");
@@ -164,6 +191,7 @@ Rotate* Rotate_Rotate() {
 /**
  * SceneNode deconstructor.
  * @param node The node to free.
+ * \ingroup SceneNode
  */
 void SceneNode_0SceneNode(SceneNode *node) {
 	DEBUG_M("Entering function...");
@@ -171,16 +199,21 @@ void SceneNode_0SceneNode(SceneNode *node) {
 
 	#warning ['TODO']: Free SceneNode memory recusivly, right now it leaks...
 
+	DEBUG_H("Deleting mesh...");
 	DELETE(node->mesh);
 	node->mesh = NULL;
-	
+
+	DEBUG_H("Deleting Child node...");
 	DELETE(node->child);
+	DEBUG_H("Deleting next node...");
 	DELETE(node->next);	
 
+	DEBUG_H("Deleting rotations...");
 	List_DeleteData(node->rotations);
 	DELETE(node->rotations);
 	node->rotations = NULL;
 
+	DEBUG_H("Deleting self...");
 	free(node);
 }
 
@@ -194,6 +227,7 @@ static const ClassFunctions SceneNode_c = {
 /**
  * SceneNode constructor
  * @return A new SceneNode or NULL on error.
+ * \ingroup SceneNode
  */
 SceneNode* SceneNode_SceneNode() {
 	DEBUG_M("Entering function...");
@@ -225,6 +259,7 @@ SceneNode* SceneNode_SceneNode() {
 /**
  * Dump some visual scene node info for debugging.
  * @param node The node to dump.
+ * \ingroup SceneNode
  */
 void SceneNodeDebugInfo(SceneNode* node) {
 	DEBUG(DEBUG_VERY_HIGH, "%sSceneNodeDebugInfo", COLOUR_LIGHT_BLUE);
@@ -241,6 +276,7 @@ void SceneNodeDebugInfo(SceneNode* node) {
 /**
  * Mesh deconstructor.
  * @param mesh The mesh to free.
+ * \ingroup Mesh
  */
 void Mesh_0Mesh(Mesh *mesh) {
 	DEBUG_M("Entering function...");
@@ -255,6 +291,7 @@ void Mesh_0Mesh(Mesh *mesh) {
 
 /**
  * Mesh class function binds.
+ * \ingroup Mesh
  */
 static const ClassFunctions Mesh_c = {
 	(void*)Mesh_0Mesh
@@ -263,6 +300,7 @@ static const ClassFunctions Mesh_c = {
 /**
  * Mesh constructor.
  * @return A new blank mesh or NULL on error.
+ * \ingroup Mesh
  */
 Mesh* Mesh_Mesh() {
 	DEBUG_M("Entering function...");
@@ -381,32 +419,55 @@ int UnsortedTrianglesAllocateIndices(UnsortedTriangles* triangles) {
 	return 0;
 }
 
+/**
+ * Image deconstructor.
+ * @param image Pointer to the image to deconstruct.
+ * @see Image_Image()
+ */
 void Image_0Image(Image* image) {
-	DEBUG_M("Entering function...");
-	if(!image) {
-		return;
-	}
+	DEBUG_M("Entering function %p, '%s'...", image, image->filename);
+	assert(image);
 
+	/*
 	#warning ['TODO']: Unload texture data if it exists, should we do this here?...
-	image->refs--;
+	//image->refs--;
+	DEBUG_H("\tImage '%s' refs @ %d", image->filename, image->refs);
 	if(image->refs <= 0) {
-		DEBUG_A("Freeing image %s", image->filename);
+		DEBUG_H("\tFreeing image...");
 		#warning ['TODO']: Free me
 		//FREE ME
-		/*if(image->filename) {
+		if(image->filename) {
 			free(image->filename);
 			image->filename = NULL;
 		}
 		
 		if(image->id != 0) {
+			#ifndef _SKIPGL
 			//SOIL_free_image_data(image->id);
-			glDeleteTextures( 1, &image->id);
+			//glDeleteTextures( 1, &image->id);
+			#endif
 			image->id = 0;
-		}*/
-		//free(image);
+		}
+		free(image);
 	}
-	//free(image);
-};	
+	//free(image);*/
+	if(image->filename) {
+		free(image->filename);
+		image->filename = NULL;
+	}
+	if(image->id != 0) {
+		#ifndef _SKIPGL
+		//SOIL_free_image_data(image->id);
+		//glDeleteTextures( 1, &image->id);
+		#endif
+		image->id = 0;
+	}
+	free(image);
+};
+
+void Image_DeRefrence(Image* image) {
+	image->refs--;
+}
 
 static const ClassFunctions Image_c = {
 	(void*)Image_0Image
@@ -418,10 +479,17 @@ static const ClassFunctions Image_c = {
 Image* Image_Image(char* filename) {
 	DEBUG_M("Entering function...");
 
-	ALLOCATE(Image, image);
-	image->class_ = &Image_c;
-	image->filename = filename;
+	DEBUG_H("Getting filename length...");
+	int filename_size = sizeof(char) * strlen(filename) + 1;
 
+	DEBUG_H("Size(%d) mallocing Image", filename_size);
+	Image* image = malloc(sizeof(Image));
+	image->class_ = &Image_c;
+	image->filename = malloc(filename_size);
+	image->id = 0;
+	strncpy(image->filename, filename, filename_size);
+
+	DEBUG_H("Finished... created %p", image);
 	return image;
 }
 
@@ -432,13 +500,9 @@ Image* Image_FindByName(List* images, char* filename) {
 	DEBUG_M("Entering function...");
 	assert(images);
 	assert(filename);
-	
-	#warning ['TODO']: Remove debug...
-	DEBUG_M("Pre first...");
-	ListNode* node = images->first;
-	#warning ['TODO']: Remove debug...
-	DEBUG_M("Got first...");
 
+	#warning ['TODO']: Remove debug...
+	ListNode* node = images->first;
 	while(node) {
 		if(strcasecmp( ((Image*)node->data)->filename, filename) == 0 ) {
 			return node->data;
@@ -453,7 +517,8 @@ Image* Image_FindByName(List* images, char* filename) {
  * Sets or increases the ref count of the image.
  */
 Image* Image_Add(List* images, char* filename, int refs) {
-	DEBUG_M("Entering function...");
+	DEBUG_M("Entering function... '%s' %d", filename, refs);
+
 	assert(images);
 	assert(filename);
 
@@ -478,19 +543,19 @@ void Triangles_0Triangles(Triangles* triangles) {
 		DELETE(triangles->vertices);
 		triangles->vertices = NULL;
 	}
-	
+
 	if(triangles->normals) {
 		DELETE(triangles->normals);
 		triangles->normals = NULL;
 	}
-	
+
 	if(triangles->texcoords) {
 		DELETE(triangles->texcoords);
 		triangles->texcoords = NULL;
 	}
-	
+
 	if(triangles->image) {
-		DELETE(triangles->image);
+		Image_DeRefrence(triangles->image);
 		triangles->image = NULL;
 	}
 
@@ -570,4 +635,17 @@ void RCBC_SortTriangles(ModelTempory* tempory, UnsortedTriangles* unsorted) {
 			triangles->texcoords->values[v++] = unsorted->texcoords->values[index+1];
 		}
 	}
+}
+
+/**
+ * Checks to see if a ooc class is an Image.
+ * @parm tocheck Pointer to the ooc class to check.
+ */
+int isImage(void* tocheck) {
+	//Image* testimg = NEW(Image, "");
+	Image* image = (Image*)tocheck;
+	if(image->class_->deconstructor == Image_c.deconstructor) {
+		return 1;
+	}
+	return 0;
 }

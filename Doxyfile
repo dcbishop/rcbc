@@ -186,7 +186,7 @@ ALIASES                =
 # For instance, some of the names that are used will be different. The list 
 # of all members will be omitted, etc.
 
-OPTIMIZE_OUTPUT_FOR_C  = NO
+OPTIMIZE_OUTPUT_FOR_C  = YES
 
 # Set the OPTIMIZE_OUTPUT_JAVA tag to YES if your project consists of Java 
 # sources only. Doxygen will then generate output that is more tailored for 
@@ -302,12 +302,12 @@ EXTRACT_ALL            = NO
 # If the EXTRACT_PRIVATE tag is set to YES all private members of a class 
 # will be included in the documentation.
 
-EXTRACT_PRIVATE        = NO
+EXTRACT_PRIVATE        = YES
 
 # If the EXTRACT_STATIC tag is set to YES all static members of a file 
 # will be included in the documentation.
 
-EXTRACT_STATIC         = NO
+EXTRACT_STATIC         = YES
 
 # If the EXTRACT_LOCAL_CLASSES tag is set to YES classes (and structs) 
 # defined locally in source files will be included in the documentation. 
@@ -320,7 +320,7 @@ EXTRACT_LOCAL_CLASSES  = YES
 # the interface are included in the documentation. 
 # If set to NO (the default) only methods in the interface are included.
 
-EXTRACT_LOCAL_METHODS  = NO
+EXTRACT_LOCAL_METHODS  = YES
 
 # If this flag is set to YES, the members of anonymous namespaces will be 
 # extracted and appear in the documentation as a namespace called 
@@ -378,7 +378,7 @@ CASE_SENSE_NAMES       = YES
 # will show members with their full class and namespace scopes in the 
 # documentation. If set to YES the scope will be hidden.
 
-HIDE_SCOPE_NAMES       = NO
+HIDE_SCOPE_NAMES       = YES
 
 # If the SHOW_INCLUDE_FILES tag is set to YES (the default) then Doxygen 
 # will put a list of the files that are included by a file in the documentation 
@@ -479,8 +479,7 @@ SHOW_DIRECTORIES       = NO
 SHOW_FILES             = YES
 
 # Set the SHOW_NAMESPACES tag to NO to disable the generation of the 
-# Namespaces page. 
-# This will remove the Namespaces entry from the Quick Index 
+# Namespaces page.  This will remove the Namespaces entry from the Quick Index 
 # and from the Folder Tree View (if specified). The default is YES.
 
 SHOW_NAMESPACES        = YES
@@ -648,17 +647,14 @@ IMAGE_PATH             =
 # by executing (via popen()) the command <filter> <input-file>, where <filter> 
 # is the value of the INPUT_FILTER tag, and <input-file> is the name of an 
 # input file. Doxygen will then use the output that the filter program writes 
-# to standard output. 
-# If FILTER_PATTERNS is specified, this tag will be 
+# to standard output.  If FILTER_PATTERNS is specified, this tag will be 
 # ignored.
 
 INPUT_FILTER           = 
 
 # The FILTER_PATTERNS tag can be used to specify filters on a per file pattern 
-# basis. 
-# Doxygen will compare the file name with each pattern and apply the 
-# filter if there is a match. 
-# The filters are a list of the form: 
+# basis.  Doxygen will compare the file name with each pattern and apply the 
+# filter if there is a match.  The filters are a list of the form: 
 # pattern=filter (like *.cpp=my_cpp_filter). See INPUT_FILTER for further 
 # info on how filters are used. If FILTER_PATTERNS is empty, INPUT_FILTER 
 # is applied to all files.
@@ -680,7 +676,7 @@ FILTER_SOURCE_FILES    = NO
 # Note: To get rid of all source code in the generated output, make sure also 
 # VERBATIM_HEADERS is set to NO.
 
-SOURCE_BROWSER         = NO
+SOURCE_BROWSER         = YES
 
 # Setting the INLINE_SOURCES tag to YES will include the body 
 # of functions and classes directly in the documentation.
@@ -708,8 +704,7 @@ REFERENCES_RELATION    = NO
 # If the REFERENCES_LINK_SOURCE tag is set to YES (the default) 
 # and SOURCE_BROWSER tag is set to YES, then the hyperlinks from 
 # functions in REFERENCES_RELATION and REFERENCED_BY_RELATION lists will 
-# link to the source code. 
-# Otherwise they will link to the documentation.
+# link to the source code.  Otherwise they will link to the documentation.
 
 REFERENCES_LINK_SOURCE = YES
 
@@ -1179,10 +1174,8 @@ GENERATE_PERLMOD       = NO
 PERLMOD_LATEX          = NO
 
 # If the PERLMOD_PRETTY tag is set to YES the Perl module output will be 
-# nicely formatted so it can be parsed by a human reader. 
-# This is useful 
-# if you want to understand what is going on. 
-# On the other hand, if this 
+# nicely formatted so it can be parsed by a human reader.  This is useful 
+# if you want to understand what is going on.  On the other hand, if this 
 # tag is set to NO the size of the Perl module output will be much smaller 
 # and Perl will parse it just the same.
 
@@ -1269,11 +1262,9 @@ SKIP_FUNCTION_MACROS   = YES
 # Optionally an initial location of the external documentation 
 # can be added for each tagfile. The format of a tag file without 
 # this location is as follows: 
-#  
-# TAGFILES = file1 file2 ... 
+#   TAGFILES = file1 file2 ... 
 # Adding location for the tag files is done as follows: 
-#  
-# TAGFILES = file1=loc1 "file2 = loc2" ... 
+#   TAGFILES = file1=loc1 "file2 = loc2" ... 
 # where "loc1" and "loc2" can be relative or absolute paths or 
 # URLs. If a location is present for each tag, the installdox tool 
 # does not have to be run to correct the links. 

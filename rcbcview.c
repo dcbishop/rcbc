@@ -4,7 +4,7 @@
 #include <math.h>
 
 #define DO_OPENGL
-#ifdef DO_OPENGL
+#ifndef _SKIPGL
 #include <GL/gl.h>
 #include <GL/glut.h>
 #endif
@@ -55,7 +55,7 @@ struct globals {
 };
 
 struct globals g;
-#ifdef DO_OPENGL
+#ifndef _SKIPGL
 
 /**
  * Position camera around box using some voodoo math.
@@ -252,10 +252,11 @@ int main(int argc, char** argv) {
 
 	RCBC_Init();
 	g.model = RCBC_LoadFile(filename, images);
+	Model* model2 = RCBC_LoadFile("data/models/3 sided wall.dae", images);
 
 	// Create window
 	LOG("Initilizing RCBC GLUT Viewer...");
-	#ifdef DO_OPENGL
+	#ifndef _SKIPGL
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(g.width, g.height);
@@ -275,7 +276,7 @@ int main(int argc, char** argv) {
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_TEXTURE_2D);
 	#endif
-	
+
 	g.mouse_x = 0;
 	g.mouse_y = 0;
 
@@ -293,14 +294,20 @@ int main(int argc, char** argv) {
 	g.cam_fov = 45.0f;
 
 	LOG("Starting GLUT main loop...");
-	
-	#ifdef DO_OPENGL
+
+	#ifndef _SKIPGL
 	glutMainLoop();
 	#endif
-	
+
 	DELETE(g.model);
-	List_DeleteData(images);
-	DELETE(images);
+	DELETE(model2);
+	//List_DeleteData(images);
+	DEBUG_A("-------------------------");
+	DEBUG_A("-------------------------");
+	DEBUG_A("-------------------------");
+	List_ScrubImages(images);
+
+	DELETE(images);	
 
 	exit(EXIT_SUCCESS);
 }

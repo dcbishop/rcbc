@@ -15,3 +15,4 @@ doc/*
 loadcheck
 *.supp
 data/*
+*.swp

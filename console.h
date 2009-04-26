@@ -74,10 +74,10 @@
 
 #define ERROR(fmt, ...) errorit("%s[%s%s:%u%s]: [%s%s%s] %s" fmt, COLOUR_WHITE, COLOUR_LIGHT_CYAN, __FILE__, __LINE__, COLOUR_WHITE, COLOUR_LIGHT_BLUE, __FUNCTION__, COLOUR_WHITE, COLOUR_NONE, ## __VA_ARGS__)
 
-#ifndef _DEBUG
+/*#ifndef _DEBUG
 #undef DEBUG
 #define DEBUG(level, fmt, ...)
-#endif
+#endif*/
 
 #define BREAK() char buffer[255]; ERROR("Break point..."); fgets(buffer, 254, stdin)
 

@@ -51,11 +51,11 @@ void RCBC_MiniXML_ProcessTextureImages(ModelTempory *tempory, mxml_node_t *node)
 						snprintf(rname, rname_len, "%s%s", DIRECTORY_TEXTURES, filename);
 					}
 
-					#warning ['TODO']: What happenes to Images that arent correctly hooked up?
 					Image* image = Image_Add(tempory->images, rname, 1);
 
 					Hookup* hookup = NEW(Hookup, (char*)id, (void*)image);
 					ListAdd(tempory->sources, hookup);
+					free(rname);
 				}
 			}
 

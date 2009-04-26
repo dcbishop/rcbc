@@ -126,8 +126,11 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 	Hookup_Debug(tempory->sinks);
 
 	Hookups_Execute(tempory->sources, tempory->sinks);
+	//Hookups_Execute(tempory->image_sources, tempory->sinks);
 	Hookups_Execute(tempory->sources, tempory->sinks);
+	//Hookups_Execute(tempory->image_sources, tempory->sinks);
 	Hookups_Execute(tempory->sources, tempory->sinks);
+	//Hookups_Execute(tempory->image_sources, tempory->sinks);
 
 	DEBUG_M("[MINIXML]: Hookups processed");
 
@@ -140,9 +143,16 @@ int RCBC_MiniXML_Load(Model* model, List* images, char* filename) {
 	#warning ['TODO']: Consider removing nodes with no geometry or children (camera/light nodes.)
 
 	// Free memory
-	Hookups_DeleteMissing(tempory->sources);
+	//DEBUG_H("Deleted missing, derefrenceing...");
+	//Hookups_DerefrenceMissingImages(tempory->image_sources);
+	DEBUG_H("Deleting missing...");
+	Hookups_DeleteMissing(tempory->sources, tempory->sinks);
+	DEBUG_H("Done than, deleting tempory...");
+	//List_DeleteData(tempory->image_sources);
+	//DELETE(tempory->image_sources);
+	//tempory->image_sources == NULL;
 	DELETE(tempory)
 	mxmlDelete(tree);
-	
+
 	return 0;
 }
