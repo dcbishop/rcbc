@@ -1,0 +1,15 @@
+RCBC is a simple COLLADA model parser and renderer library written in C for a uni project.
+This is far from production ready and has been abandonded.
+
+To build:
+=========
+'make'
+
+To Install:
+===========
+'make install'
+
+Libraries:
+=========
+libmxml-dev
+glut (freeglut3-dev)
