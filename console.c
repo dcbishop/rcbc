@@ -66,6 +66,8 @@ void errorit(const char* format, ...) {
  * @param ... The string args.
  */
 void debugit(int level, const char* format, ...) {
+	return; // Quick hack to stop all debuging...
+
 	if(DEBUG_LEVEL < level) {
 		return;
 	}
